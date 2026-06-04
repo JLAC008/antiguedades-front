@@ -11,14 +11,15 @@ import { Catalog } from '../../models';
   template: `
     <div class="page-home">
       <section class="hero">
+        <video class="hero-video" autoplay muted playsinline poster="assets/hero-bg.mp4">
+          <source src="assets/hero-bg.mp4" type="video/mp4">
+        </video>
+        <div class="hero-overlay"></div>
         <div class="hero-content">
-          <p class="hero-overline">Colección privada</p>
-          <h1 class="hero-title">Antigüedades &amp; Piezas de Colección</h1>
-          <p class="hero-subtitle">Explora nuestra selección de piezas únicas con historia, reunidas con pasión y cuidado a lo largo de los años.</p>
-          <a routerLink="/coleccion" class="hero-cta">Ver toda la colección</a>
-        </div>
-        <div class="hero-ornament">
-          <span>&#9775;</span>
+          <p class="hero-overline">Colecci&oacute;n privada</p>
+          <h1 class="hero-title">Nuestra Colecci&oacute;n Familiar</h1>
+          <p class="hero-subtitle">Piezas &uacute;nicas reunidas con pasi&oacute;n, guardadas para la familia.</p>
+          <a routerLink="/coleccion" class="hero-cta">Ver toda la colecci&oacute;n</a>
         </div>
       </section>
 
@@ -52,7 +53,6 @@ import { Catalog } from '../../models';
   styles: [`
     .page-home { min-height: 100vh; }
     .hero {
-      background: var(--color-primary);
       color: white;
       padding: 5rem 1.5rem;
       display: flex;
@@ -62,17 +62,25 @@ import { Catalog } from '../../models';
       position: relative;
       overflow: hidden;
     }
-    .hero::before {
-      content: '';
+    .hero-video {
       position: absolute;
       inset: 0;
-      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(28, 22, 18, 0.6);
+      z-index: 1;
     }
     .hero-content {
       max-width: 620px;
       text-align: center;
       position: relative;
-      z-index: 1;
+      z-index: 2;
     }
     .hero-overline {
       font-size: 0.8125rem;
@@ -108,16 +116,6 @@ import { Catalog } from '../../models';
       transition: background 0.2s, transform 0.2s;
     }
     .hero-cta:hover { background: var(--color-accent-light); transform: translateY(-2px); }
-    .hero-ornament {
-      position: absolute;
-      right: 8%;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 12rem;
-      color: rgba(255,255,255,0.04);
-      pointer-events: none;
-      line-height: 1;
-    }
     .section {
       max-width: 1200px;
       margin: 0 auto;
