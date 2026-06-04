@@ -21,16 +21,16 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
           }
           @if (step() === 2) {
             <button class="breadcrumb" (click)="step.set(1)">&larr; Volver</button>
-            <h1 class="page-title">Antigüedades</h1>
-            <p class="page-subtitle">Selecciona el tipo de antigüedad</p>
+            <h1 class="page-title">{{ categoryLabel }}</h1>
+            <p class="page-subtitle">Selecciona el tipo de {{ categoryLabel.toLowerCase() }}</p>
           }
           @if (step() === 3) {
             <button class="breadcrumb" (click)="step.set(2)">&larr; Volver</button>
-            <h1 class="page-title">Antigüedades - {{ subcategoryLabel }}</h1>
+            <h1 class="page-title">{{ categoryLabel }} - {{ subcategoryLabel }}</h1>
             <p class="page-subtitle">Selecciona el tipo de {{ subcategoryLabel.toLowerCase() }}</p>
           }
           @if (step() === 4) {
-            <button class="breadcrumb" (click)="step.set(category() === 'antiguedad' ? (form.subcategory === 'escultura' || form.subcategory === 'pintura' ? 3 : 2) : 1)">&larr; Volver</button>
+            <button class="breadcrumb" (click)="step.set(hasDetail(form.subcategory) ? 3 : 2)">&larr; Volver</button>
             <h1 class="page-title">{{ categoryLabel }}{{ subcategoryLabel ? ' - ' + subcategoryLabel : '' }}{{ detailLabel ? ' - ' + detailLabel : '' }}</h1>
             <p class="page-subtitle">Completa los datos de la pieza</p>
           }
@@ -62,52 +62,75 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
 
         @if (step() === 2 && !editMode) {
           <div class="subcategory-selector">
-            <div class="category-card" (click)="selectSubcategory('escultura')">
-              <div class="category-icon">&#9997;</div>
-              <h2 class="category-name">Escultura</h2>
-              <p class="category-desc">Figuras, relieves y piezas tridimensionales</p>
-              <span class="category-action">Seleccionar &rarr;</span>
-            </div>
-            <div class="category-card" (click)="selectSubcategory('pintura')">
-              <div class="category-icon">&#127912;</div>
-              <h2 class="category-name">Pintura</h2>
-              <p class="category-desc">Óleos, acuarelas, grabados y obras en lienzo</p>
-              <span class="category-action">Seleccionar &rarr;</span>
-            </div>
-            <div class="category-card" (click)="selectSubcategory('cristal')">
-              <div class="category-icon">&#128161;</div>
-              <h2 class="category-name">Cristal</h2>
-              <p class="category-desc">Vidrio, cristal tallado, lámparas y objetos de vidrio</p>
-              <span class="category-action">Seleccionar &rarr;</span>
-            </div>
-            <div class="category-card" (click)="selectSubcategory('ceramica')">
-              <div class="category-icon">&#127834;</div>
-              <h2 class="category-name">Cerámica</h2>
-              <p class="category-desc">Porcelana, loza, azulejos y piezas de barro</p>
-              <span class="category-action">Seleccionar &rarr;</span>
-            </div>
+            @if (category() === 'antiguedad') {
+              <div class="category-card" (click)="selectSubcategory('escultura')">
+                <div class="category-icon">&#9997;</div>
+                <h2 class="category-name">Escultura</h2>
+                <p class="category-desc">Figuras, relieves y piezas tridimensionales</p>
+                <span class="category-action">Seleccionar &rarr;</span>
+              </div>
+              <div class="category-card" (click)="selectSubcategory('pintura')">
+                <div class="category-icon">&#127912;</div>
+                <h2 class="category-name">Pintura</h2>
+                <p class="category-desc">Óleos, acuarelas, grabados y obras en lienzo</p>
+                <span class="category-action">Seleccionar &rarr;</span>
+              </div>
+              <div class="category-card" (click)="selectSubcategory('cristal')">
+                <div class="category-icon">&#128161;</div>
+                <h2 class="category-name">Cristal</h2>
+                <p class="category-desc">Vidrio, cristal tallado, lámparas y objetos de vidrio</p>
+                <span class="category-action">Seleccionar &rarr;</span>
+              </div>
+              <div class="category-card" (click)="selectSubcategory('ceramica')">
+                <div class="category-icon">&#127834;</div>
+                <h2 class="category-name">Cerámica</h2>
+                <p class="category-desc">Porcelana, loza, azulejos y piezas de barro</p>
+                <span class="category-action">Seleccionar &rarr;</span>
+              </div>
+            }
+            @if (category() === 'papeleria') {
+              <div class="category-card" (click)="selectSubcategory('filatelia')">
+                <div class="category-icon">&#9993;</div>
+                <h2 class="category-name">Filatelia</h2>
+                <p class="category-desc">Sellos, colecciones postales y material de correo</p>
+                <span class="category-action">Seleccionar &rarr;</span>
+              </div>
+              <div class="category-card" (click)="selectSubcategory('fotos')">
+                <div class="category-icon">&#128248;</div>
+                <h2 class="category-name">Fotos</h2>
+                <p class="category-desc">Fotografías antiguas, albumes y positivos</p>
+                <span class="category-action">Seleccionar &rarr;</span>
+              </div>
+              <div class="category-card" (click)="selectSubcategory('revistas')">
+                <div class="category-icon">&#128214;</div>
+                <h2 class="category-name">Revistas / Periódicos</h2>
+                <p class="category-desc">Publicaciones periódicas, diarios y revistas históricas</p>
+                <span class="category-action">Seleccionar &rarr;</span>
+              </div>
+              <div class="category-card" (click)="selectSubcategory('documentos')">
+                <div class="category-icon">&#128203;</div>
+                <h2 class="category-name">Documentos</h2>
+                <p class="category-desc">Escrituras, cartas, mapas y documentos históricos</p>
+                <span class="category-action">Seleccionar &rarr;</span>
+              </div>
+              <div class="category-card" (click)="selectSubcategory('libros')">
+                <div class="category-icon">&#128218;</div>
+                <h2 class="category-name">Libros</h2>
+                <p class="category-desc">Libros antiguos, primeras ediciones y volúmenes de colección</p>
+                <span class="category-action">Seleccionar &rarr;</span>
+              </div>
+            }
           </div>
         }
 
-        @if (step() === 3 && !editMode && (form.subcategory === 'escultura' || form.subcategory === 'pintura')) {
+        @if (step() === 3 && !editMode && hasDetail(form.subcategory)) {
           <div class="subcategory-selector">
-            @if (form.subcategory === 'escultura') {
-              @for (d of esculturaDetails; track d.key) {
-                <div class="category-card" (click)="selectDetail(d.key)">
-                  <h2 class="category-name">{{ d.label }}</h2>
-                  <p class="category-desc">{{ d.desc }}</p>
-                  <span class="category-action">Seleccionar &rarr;</span>
-                </div>
-              }
-            }
-            @if (form.subcategory === 'pintura') {
-              @for (d of pinturaDetails; track d.key) {
-                <div class="category-card" (click)="selectDetail(d.key)">
-                  <h2 class="category-name">{{ d.label }}</h2>
-                  <p class="category-desc">{{ d.desc }}</p>
-                  <span class="category-action">Seleccionar &rarr;</span>
-                </div>
-              }
+            @for (d of detailsForCurrent(); track d.key) {
+              <div class="category-card" (click)="selectDetail(d.key)">
+                <h2 class="category-name">{{ d.label }}</h2>
+                <p class="category-desc">{{ d.desc }}</p>
+                <span class="category-action">Seleccionar &rarr;</span>
+              </div>
             }
           </div>
         }
@@ -642,6 +665,58 @@ export class UploadAntiqueComponent implements OnInit {
     { key: 'acuarela', label: 'Acuarela', desc: 'Pintura ligera con pigmentos diluidos en agua' },
   ];
 
+  filateliaDetails = [
+    { key: 'hist-postal', label: 'Hist. postal', desc: 'Historia y evolución de los servicios postales' },
+    { key: 'entero-postal', label: 'Entero postal', desc: 'Tarjetas, sobres y aerogramas con estampilla impresa' },
+    { key: 'sello', label: 'Sello', desc: 'Sellos individuales, series y bloques' },
+    { key: 'pre-filatelia', label: 'Pre-filatelia', desc: 'Marcas postales anteriores al sello adhesivo' },
+    { key: 'censura', label: 'Censura', desc: 'Correspondencia con marcas de censura militar o política' },
+  ];
+
+  fotosDetails = [
+    { key: 'familiar', label: 'Familiar', desc: 'Retratos y escenas familiares' },
+    { key: 'boda', label: 'Boda', desc: 'Fotografías de ceremonias nupciales' },
+    { key: 'ninos', label: 'Niños', desc: 'Retratos infantiles y de grupo' },
+    { key: 'hombres', label: 'Hombres', desc: 'Retratos masculinos individuales o grupales' },
+    { key: 'mujeres', label: 'Mujeres', desc: 'Retratos femeninos individuales o grupales' },
+    { key: 'militar', label: 'Militar', desc: 'Fotografías de uniformes, campamentos y conflictos' },
+    { key: 'etnica', label: 'Étnica', desc: 'Pueblos, tradiciones y vestimentas tradicionales' },
+    { key: 'paisaje', label: 'Paisaje', desc: 'Vistas, ciudades y entornos naturales' },
+    { key: 'retrato', label: 'Retrato', desc: 'Retratos de estudio formales' },
+    { key: 'blanco-negro', label: 'Blanco y negro', desc: 'Fotografía clásica en monocromo' },
+    { key: 'estudio', label: 'Estudio', desc: 'Fotografías realizadas en estudio profesional' },
+    { key: 'reportaje', label: 'Reportaje', desc: 'Escenas callejeras, eventos y documental' },
+    { key: 'arquitectura', label: 'Arquitectura', desc: 'Edificios, monumentos y construcciones' },
+    { key: 'naturaleza', label: 'Naturaleza', desc: 'Plantas, animales y paisajes naturales' },
+    { key: 'post-mortem', label: 'Post mortem', desc: 'Fotografía funeraria y de difuntos' },
+  ];
+
+  revistasDetails = [
+    { key: 'motos', label: 'Motos', desc: 'Revistas especializadas en motociclismo' },
+    { key: 'coches', label: 'Coches', desc: 'Publicaciones del mundo del automóvil' },
+    { key: 'politica', label: 'Política', desc: 'Revistas de actualidad política y social' },
+    { key: 'historia', label: 'Historia', desc: 'Publicaciones de divulgación histórica' },
+    { key: 'ciencia', label: 'Ciencia', desc: 'Revistas científicas y de divulgación' },
+    { key: 'deportes', label: 'Deportes', desc: 'Publicaciones deportivas especializadas' },
+    { key: 'moda', label: 'Moda', desc: 'Revistas de moda, tendencias y estilo' },
+    { key: 'arte', label: 'Arte', desc: 'Revistas de arte, museos y exposiciones' },
+    { key: 'musica', label: 'Música', desc: 'Publicaciones musicales y de artistas' },
+    { key: 'humor', label: 'Humor', desc: 'Revistas satíricas y de humor gráfico' },
+    { key: 'viajes', label: 'Viajes', desc: 'Revistas de viajes y turismo' },
+    { key: 'economia', label: 'Economía', desc: 'Publicaciones económicas y financieras' },
+    { key: 'cultura', label: 'Cultura', desc: 'Revistas culturales y literarias' },
+    { key: 'tecnologia', label: 'Tecnología', desc: 'Revistas de innovación y tecnología' },
+  ];
+
+  documentosDetails = [
+    { key: 'folletos', label: 'Folletos', desc: 'Folletos publicitarios, turísticos e informativos' },
+    { key: 'partituras', label: 'Partituras', desc: 'Partituras musicales originales o impresas' },
+    { key: 'escrituras', label: 'Escrituras', desc: 'Escrituras notariales, legales y oficiales' },
+    { key: 'mapas', label: 'Mapas', desc: 'Mapas, planos y cartografía histórica' },
+    { key: 'carteles', label: 'Carteles', desc: 'Carteles publicitarios, políticos y culturales' },
+    { key: 'otros', label: 'Otros', desc: 'Otros documentos no clasificados' },
+  ];
+
   form: {
     name: string;
     catalog_id: string;
@@ -673,7 +748,14 @@ export class UploadAntiqueComponent implements OnInit {
   }
 
   get detailLabel(): string {
-    const all = [...this.esculturaDetails, ...this.pinturaDetails];
+    const all = [
+      ...this.esculturaDetails,
+      ...this.pinturaDetails,
+      ...this.filateliaDetails,
+      ...this.fotosDetails,
+      ...this.revistasDetails,
+      ...this.documentosDetails,
+    ];
     const found = all.find(d => d.key === this.form.detail);
     return found ? found.label : '';
   }
@@ -705,23 +787,46 @@ export class UploadAntiqueComponent implements OnInit {
   }
 
   get subcategoryLabel(): string {
-    const found = this.subcategories.find(s => s.key === this.form.subcategory);
+    const all = [
+      ...this.subcategories,
+      { key: 'filatelia', label: 'Filatelia' },
+      { key: 'fotos', label: 'Fotos' },
+      { key: 'revistas', label: 'Revistas / Periódicos' },
+      { key: 'documentos', label: 'Documentos' },
+      { key: 'libros', label: 'Libros' },
+    ];
+    const found = all.find(s => s.key === this.form.subcategory);
     return found ? found.label : '';
   }
 
   selectCategory(type: AntiqueType) {
     this.category.set(type);
     this.form.type = type;
-    this.step.set(type === 'antiguedad' ? 2 : 3);
+    this.step.set(2);
+  }
+
+  hasDetail(key: string): boolean {
+    if (this.category() === 'antiguedad') {
+      return key === 'escultura' || key === 'pintura';
+    }
+    return key === 'filatelia' || key === 'fotos' || key === 'revistas' || key === 'documentos';
+  }
+
+  detailsForCurrent(): { key: string; label: string; desc: string }[] {
+    switch (this.form.subcategory) {
+      case 'escultura': return this.esculturaDetails;
+      case 'pintura': return this.pinturaDetails;
+      case 'filatelia': return this.filateliaDetails;
+      case 'fotos': return this.fotosDetails;
+      case 'revistas': return this.revistasDetails;
+      case 'documentos': return this.documentosDetails;
+      default: return [];
+    }
   }
 
   selectSubcategory(key: string) {
     this.form.subcategory = key;
-    if (key === 'escultura' || key === 'pintura') {
-      this.step.set(3);
-    } else {
-      this.step.set(4);
-    }
+    this.step.set(this.hasDetail(key) ? 3 : 4);
   }
 
   selectDetail(key: string) {
@@ -730,14 +835,10 @@ export class UploadAntiqueComponent implements OnInit {
   }
 
   goBack() {
-    if (this.category() === 'antiguedad') {
-      if (this.form.subcategory === 'escultura' || this.form.subcategory === 'pintura') {
-        this.step.set(3);
-      } else {
-        this.step.set(2);
-      }
+    if (this.hasDetail(this.form.subcategory)) {
+      this.step.set(3);
     } else {
-      this.step.set(1);
+      this.step.set(2);
     }
   }
 
