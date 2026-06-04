@@ -15,6 +15,11 @@ export interface Antique {
   catalog_id: string | null;
   name: string;
   type: AntiqueType;
+  subcategory: string;
+  detail: string;
+  country: string;
+  region: string;
+  element: string;
   description: string;
   price: number;
   year_era: string;

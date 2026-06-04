@@ -21,12 +21,22 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
           }
           @if (step() === 2) {
             <button class="breadcrumb" (click)="step.set(1)">&larr; Volver</button>
-            <h1 class="page-title">{{ categoryLabel }}</h1>
+            <h1 class="page-title">Antigüedades</h1>
+            <p class="page-subtitle">Selecciona el tipo de antigüedad</p>
+          }
+          @if (step() === 3) {
+            <button class="breadcrumb" (click)="step.set(2)">&larr; Volver</button>
+            <h1 class="page-title">Antigüedades - {{ subcategoryLabel }}</h1>
+            <p class="page-subtitle">Selecciona el tipo de {{ subcategoryLabel.toLowerCase() }}</p>
+          }
+          @if (step() === 4) {
+            <button class="breadcrumb" (click)="step.set(category() === 'antiguedad' ? (form.subcategory === 'escultura' || form.subcategory === 'pintura' ? 3 : 2) : 1)">&larr; Volver</button>
+            <h1 class="page-title">{{ categoryLabel }}{{ subcategoryLabel ? ' - ' + subcategoryLabel : '' }}{{ detailLabel ? ' - ' + detailLabel : '' }}</h1>
             <p class="page-subtitle">Completa los datos de la pieza</p>
           }
           @if (editMode) {
             <a routerLink="/coleccion" class="breadcrumb">&larr; Cancelar</a>
-            <h1 class="page-title">Editar pieza</h1>
+            <h1 class="page-title">{{ categoryLabel }}{{ subcategoryLabel ? ' - ' + subcategoryLabel : '' }}</h1>
             <p class="page-subtitle">Modifica los datos de la pieza</p>
           }
         </div>
@@ -50,7 +60,59 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
           </div>
         }
 
-        @if (step() === 2 || editMode) {
+        @if (step() === 2 && !editMode) {
+          <div class="subcategory-selector">
+            <div class="category-card" (click)="selectSubcategory('escultura')">
+              <div class="category-icon">&#9997;</div>
+              <h2 class="category-name">Escultura</h2>
+              <p class="category-desc">Figuras, relieves y piezas tridimensionales</p>
+              <span class="category-action">Seleccionar &rarr;</span>
+            </div>
+            <div class="category-card" (click)="selectSubcategory('pintura')">
+              <div class="category-icon">&#127912;</div>
+              <h2 class="category-name">Pintura</h2>
+              <p class="category-desc">Óleos, acuarelas, grabados y obras en lienzo</p>
+              <span class="category-action">Seleccionar &rarr;</span>
+            </div>
+            <div class="category-card" (click)="selectSubcategory('cristal')">
+              <div class="category-icon">&#128161;</div>
+              <h2 class="category-name">Cristal</h2>
+              <p class="category-desc">Vidrio, cristal tallado, lámparas y objetos de vidrio</p>
+              <span class="category-action">Seleccionar &rarr;</span>
+            </div>
+            <div class="category-card" (click)="selectSubcategory('ceramica')">
+              <div class="category-icon">&#127834;</div>
+              <h2 class="category-name">Cerámica</h2>
+              <p class="category-desc">Porcelana, loza, azulejos y piezas de barro</p>
+              <span class="category-action">Seleccionar &rarr;</span>
+            </div>
+          </div>
+        }
+
+        @if (step() === 3 && !editMode && (form.subcategory === 'escultura' || form.subcategory === 'pintura')) {
+          <div class="subcategory-selector">
+            @if (form.subcategory === 'escultura') {
+              @for (d of esculturaDetails; track d.key) {
+                <div class="category-card" (click)="selectDetail(d.key)">
+                  <h2 class="category-name">{{ d.label }}</h2>
+                  <p class="category-desc">{{ d.desc }}</p>
+                  <span class="category-action">Seleccionar &rarr;</span>
+                </div>
+              }
+            }
+            @if (form.subcategory === 'pintura') {
+              @for (d of pinturaDetails; track d.key) {
+                <div class="category-card" (click)="selectDetail(d.key)">
+                  <h2 class="category-name">{{ d.label }}</h2>
+                  <p class="category-desc">{{ d.desc }}</p>
+                  <span class="category-action">Seleccionar &rarr;</span>
+                </div>
+              }
+            }
+          </div>
+        }
+
+        @if ((step() === 4 && !editMode) || editMode) {
           <div class="form-container">
             @if (error()) {
               <div class="form-error">{{ error() }}</div>
@@ -76,6 +138,20 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
                           <option [value]="cat.id">{{ cat.name }}</option>
                         }
                       </select>
+                    </div>
+                    <div class="form-row form-row-3">
+                      <div class="form-group">
+                        <label class="form-label">País</label>
+                        <input type="text" class="form-input" [(ngModel)]="form.country" name="country" placeholder="Ej. España, Francia..." />
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label">Región</label>
+                        <input type="text" class="form-input" [(ngModel)]="form.region" name="region" placeholder="Ej. Cataluña, Provenza..." />
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label">Elemento</label>
+                        <input type="text" class="form-input" [(ngModel)]="form.element" name="element" placeholder="Ej. Madera, Bronce..." />
+                      </div>
                     </div>
                     <div class="form-row">
                       <div class="form-group">
@@ -259,7 +335,7 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
 
               <div class="form-actions">
                 @if (!editMode) {
-                  <button type="button" class="btn-cancel" (click)="step.set(1)">Volver</button>
+                  <button type="button" class="btn-cancel" (click)="goBack()">Volver</button>
                 }
                 @if (editMode) {
                   <a routerLink="/coleccion" class="btn-cancel">Cancelar</a>
@@ -396,6 +472,7 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
       border-bottom: 1px solid var(--color-border);
     }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-row-3 { grid-template-columns: 1fr 1fr 1fr; }
     .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
     .form-label { font-size: 0.875rem; font-weight: 600; color: var(--color-text); }
     .required { color: var(--color-error); }
@@ -514,10 +591,20 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
     }
     .btn-submit:hover:not(:disabled) { background: var(--color-secondary); }
     .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+    .subcategory-selector {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+      max-width: 620px;
+      margin: 0 auto;
+      padding-top: 2rem;
+    }
     @media (max-width: 768px) {
       .category-selector { grid-template-columns: 1fr; }
+      .subcategory-selector { grid-template-columns: 1fr; }
       .form-grid { grid-template-columns: 1fr; }
       .form-row { grid-template-columns: 1fr; }
+      .form-row-3 { grid-template-columns: 1fr; }
     }
   `]
 })
@@ -536,10 +623,34 @@ export class UploadAntiqueComponent implements OnInit {
   step = signal(1);
   category = signal<AntiqueType | null>(null);
 
+  subcategories = [
+    { key: 'escultura', label: 'Escultura', icon: '&#9997;' },
+    { key: 'pintura', label: 'Pintura', icon: '&#127912;' },
+    { key: 'cristal', label: 'Cristal', icon: '&#128161;' },
+    { key: 'ceramica', label: 'Cerámica', icon: '&#127834;' },
+  ];
+
+  esculturaDetails = [
+    { key: 'busto', label: 'Busto', desc: 'Representación de la parte superior del torso humano' },
+    { key: 'figura', label: 'Figura', desc: 'Escultura completa de cuerpo entero' },
+    { key: 'belen', label: 'Belén', desc: 'Figuras y escenas del belén tradicional' },
+  ];
+
+  pinturaDetails = [
+    { key: 'oleo', label: 'Óleo', desc: 'Pintura al óleo sobre lienzo, tabla u otros soportes' },
+    { key: 'grabado', label: 'Grabado', desc: 'Estampas, aguafuertes y técnicas de impresión' },
+    { key: 'acuarela', label: 'Acuarela', desc: 'Pintura ligera con pigmentos diluidos en agua' },
+  ];
+
   form: {
     name: string;
     catalog_id: string;
     type: AntiqueType;
+    subcategory: string;
+    detail: string;
+    country: string;
+    region: string;
+    element: string;
     year_era: string;
     condition: string;
     material: string;
@@ -561,11 +672,22 @@ export class UploadAntiqueComponent implements OnInit {
     this.form = this.defaultForm();
   }
 
+  get detailLabel(): string {
+    const all = [...this.esculturaDetails, ...this.pinturaDetails];
+    const found = all.find(d => d.key === this.form.detail);
+    return found ? found.label : '';
+  }
+
   defaultForm() {
     return {
       name: '',
       catalog_id: '',
       type: 'antiguedad' as AntiqueType,
+      subcategory: '',
+      detail: '',
+      country: '',
+      region: '',
+      element: '',
       year_era: '',
       condition: 'Bueno',
       material: '',
@@ -582,10 +704,41 @@ export class UploadAntiqueComponent implements OnInit {
     return this.category() === 'papeleria' ? 'Papelería' : 'Antigüedades';
   }
 
+  get subcategoryLabel(): string {
+    const found = this.subcategories.find(s => s.key === this.form.subcategory);
+    return found ? found.label : '';
+  }
+
   selectCategory(type: AntiqueType) {
     this.category.set(type);
     this.form.type = type;
-    this.step.set(2);
+    this.step.set(type === 'antiguedad' ? 2 : 3);
+  }
+
+  selectSubcategory(key: string) {
+    this.form.subcategory = key;
+    if (key === 'escultura' || key === 'pintura') {
+      this.step.set(3);
+    } else {
+      this.step.set(4);
+    }
+  }
+
+  selectDetail(key: string) {
+    this.form.detail = key;
+    this.step.set(4);
+  }
+
+  goBack() {
+    if (this.category() === 'antiguedad') {
+      if (this.form.subcategory === 'escultura' || this.form.subcategory === 'pintura') {
+        this.step.set(3);
+      } else {
+        this.step.set(2);
+      }
+    } else {
+      this.step.set(1);
+    }
   }
 
   async ngOnInit() {
@@ -601,6 +754,11 @@ export class UploadAntiqueComponent implements OnInit {
           name: antique.name,
           catalog_id: antique.catalog_id ?? '',
           type: antique.type,
+          subcategory: antique.subcategory ?? '',
+          detail: antique.detail ?? '',
+          country: antique.country ?? '',
+          region: antique.region ?? '',
+          element: antique.element ?? '',
           year_era: antique.year_era,
           condition: antique.condition,
           material: antique.material,
@@ -653,6 +811,11 @@ export class UploadAntiqueComponent implements OnInit {
       const payload: Partial<Antique> = {
         name: this.form.name,
         type: this.form.type,
+        subcategory: this.form.subcategory,
+        detail: this.form.detail,
+        country: this.form.country,
+        region: this.form.region,
+        element: this.form.element,
         catalog_id: this.form.catalog_id || null,
         year_era: this.form.year_era,
         condition: this.form.condition,
