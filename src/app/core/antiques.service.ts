@@ -32,6 +32,7 @@ export class AntiquesService {
       id: getNextAntiqueId(),
       catalog_id: antique.catalog_id ?? null,
       name: antique.name ?? '',
+      type: antique.type ?? 'antiguedad',
       description: antique.description ?? '',
       price: antique.price ?? 0,
       year_era: antique.year_era ?? '',

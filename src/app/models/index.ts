@@ -8,10 +8,13 @@ export interface Catalog {
   antiques_count?: number;
 }
 
+export type AntiqueType = 'antiguedad' | 'papeleria';
+
 export interface Antique {
   id: string;
   catalog_id: string | null;
   name: string;
+  type: AntiqueType;
   description: string;
   price: number;
   year_era: string;
