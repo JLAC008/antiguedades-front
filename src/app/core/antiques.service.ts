@@ -32,6 +32,12 @@ export class AntiquesService {
       id: getNextAntiqueId(),
       catalog_id: antique.catalog_id ?? null,
       name: antique.name ?? '',
+      type: antique.type ?? 'antiguedad',
+      subcategory: antique.subcategory ?? '',
+      detail: antique.detail ?? '',
+      country: antique.country ?? '',
+      region: antique.region ?? '',
+      element: antique.element ?? '',
       description: antique.description ?? '',
       price: antique.price ?? 0,
       year_era: antique.year_era ?? '',
@@ -62,5 +68,16 @@ export class AntiquesService {
       reader.onload = () => resolve(reader.result as string);
       reader.readAsDataURL(file);
     });
+  }
+
+  getCountByType(type: string): number {
+    return antiques.filter(a => a.type === type).length;
+  }
+
+  getCounts() {
+    return {
+      antiguedad: antiques.filter(a => a.type === 'antiguedad').length,
+      papeleria: antiques.filter(a => a.type === 'papeleria').length,
+    };
   }
 }
