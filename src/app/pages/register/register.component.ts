@@ -9,63 +9,70 @@ import { AuthService } from '../../core/auth.service';
   imports: [FormsModule, RouterLink],
   template: `
     <div class="auth-page">
-      <div class="auth-card">
-        <div class="auth-header">
-          <span class="auth-icon">&#9775;</span>
-          <h1 class="auth-title">Crear cuenta</h1>
-          <p class="auth-subtitle">Regístrate para gestionar la colección</p>
+      <div class="auth-split">
+        <div class="auth-left">
+          <div class="auth-brand">
+            <div class="auth-logo">A</div>
+            <h2 class="auth-brand-name">ANTIGÜEDADES</h2>
+          </div>
+          <img src="assets/login-bg.jpg" class="auth-bg-img" alt="" />
         </div>
+        <div class="auth-right">
+          <div class="auth-form-container">
+            <h1 class="auth-title">Crear cuenta</h1>
 
-        @if (error()) {
-          <div class="auth-error">{{ error() }}</div>
-        }
-        @if (success()) {
-          <div class="auth-success">{{ success() }}</div>
-        }
+            @if (error()) {
+              <div class="auth-error">{{ error() }}</div>
+            }
+            @if (success()) {
+              <div class="auth-success">{{ success() }}</div>
+            }
 
-        <form (ngSubmit)="onSubmit()" class="auth-form">
-          <div class="form-group">
-            <label class="form-label">Correo electrónico</label>
-            <input
-              type="email"
-              class="form-input"
-              [(ngModel)]="email"
-              name="email"
-              placeholder="tu@correo.com"
-              required
-            />
-          </div>
-          <div class="form-group">
-            <label class="form-label">Contraseña</label>
-            <input
-              type="password"
-              class="form-input"
-              [(ngModel)]="password"
-              name="password"
-              placeholder="Mínimo 6 caracteres"
-              required
-              minlength="6"
-            />
-          </div>
-          <div class="form-group">
-            <label class="form-label">Confirmar contraseña</label>
-            <input
-              type="password"
-              class="form-input"
-              [(ngModel)]="confirmPassword"
-              name="confirmPassword"
-              placeholder="Repite la contraseña"
-              required
-            />
-          </div>
-          <button type="submit" class="btn-submit" [disabled]="loading()">
-            @if (loading()) { Creando cuenta... } @else { Crear cuenta }
-          </button>
-        </form>
+            <form (ngSubmit)="onSubmit()" class="auth-form">
+              <div class="form-group">
+                <label class="form-label">Correo electrónico</label>
+                <input
+                  type="email"
+                  class="form-input"
+                  [(ngModel)]="email"
+                  name="email"
+                  placeholder="tu@correo.com"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Contraseña</label>
+                <input
+                  type="password"
+                  class="form-input"
+                  [(ngModel)]="password"
+                  name="password"
+                  placeholder="Mínimo 6 caracteres"
+                  required
+                  minlength="6"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Confirmar contraseña</label>
+                <input
+                  type="password"
+                  class="form-input"
+                  [(ngModel)]="confirmPassword"
+                  name="confirmPassword"
+                  placeholder="Repite la contraseña"
+                  required
+                />
+              </div>
+              <button type="submit" class="btn-submit" [disabled]="loading()">
+                @if (loading()) { Creando cuenta... } @else { Crear cuenta }
+              </button>
+            </form>
 
-        <p class="auth-footer">
-          ¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión</a>
-        </p>
+            <p class="auth-footer">
+              ¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión</a>
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   `,
@@ -75,28 +82,94 @@ import { AuthService } from '../../core/auth.service';
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 2rem 1.5rem;
+      padding: 2rem;
       background: var(--color-bg);
     }
-    .auth-card {
-      background: var(--color-surface);
-      border: 1px solid var(--color-border);
-      border-radius: 16px;
-      padding: 2.5rem;
+    .auth-split {
+      display: flex;
       width: 100%;
-      max-width: 420px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+      max-width: 960px;
+      min-height: 320px;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.12);
     }
-    .auth-header { text-align: center; margin-bottom: 2rem; }
-    .auth-icon { font-size: 2.5rem; color: var(--color-accent); display: block; margin-bottom: 1rem; }
+    .auth-left {
+      flex: 1;
+      background: #0a0a0a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      position: relative;
+      overflow: hidden;
+    }
+    .auth-brand {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding-top: 2rem;
+    }
+    .auth-bg-img {
+      width: 100%;
+      flex: 1;
+      object-fit: contain;
+    }
+    .auth-bg-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .auth-brand {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
+    .auth-logo {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 2px solid var(--color-accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 2.25rem;
+      font-weight: 700;
+      color: var(--color-accent);
+      margin: 0 auto 1rem;
+      background: rgba(184,149,90,0.08);
+    }
+    .auth-brand-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.125rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      color: var(--color-accent-light);
+      margin: 0;
+    }
+    .auth-right {
+      flex: 1;
+      background: var(--color-surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2.5rem;
+    }
+    .auth-form-container {
+      width: 100%;
+      max-width: 320px;
+    }
     .auth-title {
       font-family: 'Playfair Display', serif;
       font-size: 1.75rem;
       font-weight: 700;
       color: var(--color-primary);
-      margin: 0 0 0.5rem;
+      margin: 0 0 1.5rem;
+      text-align: center;
     }
-    .auth-subtitle { color: var(--color-text-muted); font-size: 0.9375rem; margin: 0; }
     .auth-error {
       background: #FEF2F2;
       border: 1px solid #FECACA;
@@ -104,7 +177,7 @@ import { AuthService } from '../../core/auth.service';
       padding: 0.75rem 1rem;
       border-radius: 8px;
       font-size: 0.875rem;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.25rem;
     }
     .auth-success {
       background: #F0FDF4;
@@ -113,16 +186,16 @@ import { AuthService } from '../../core/auth.service';
       padding: 0.75rem 1rem;
       border-radius: 8px;
       font-size: 0.875rem;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.25rem;
     }
     .auth-form { display: flex; flex-direction: column; gap: 1.25rem; }
-    .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
-    .form-label { font-size: 0.875rem; font-weight: 600; color: var(--color-text); }
+    .form-group { display: flex; flex-direction: column; gap: 0.375rem; }
+    .form-label { font-size: 0.8125rem; font-weight: 600; color: var(--color-text); }
     .form-input {
       padding: 0.75rem 1rem;
       border: 1px solid var(--color-border);
       border-radius: 8px;
-      font-size: 1rem;
+      font-size: 0.9375rem;
       color: var(--color-text);
       background: var(--color-bg);
       transition: border-color 0.2s, box-shadow 0.2s;
@@ -132,17 +205,22 @@ import { AuthService } from '../../core/auth.service';
       border-color: var(--color-accent);
       box-shadow: 0 0 0 3px rgba(184,149,90,0.12);
     }
+    .form-input::placeholder {
+      color: var(--color-text-muted);
+      opacity: 0.6;
+    }
     .btn-submit {
       background: var(--color-primary);
       color: white;
       border: none;
       padding: 0.875rem;
       border-radius: 8px;
-      font-size: 1rem;
+      font-size: 0.9375rem;
       font-weight: 600;
       cursor: pointer;
       transition: background 0.2s, transform 0.2s;
       margin-top: 0.5rem;
+      width: 100%;
     }
     .btn-submit:hover:not(:disabled) { background: var(--color-secondary); transform: translateY(-1px); }
     .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
@@ -150,10 +228,14 @@ import { AuthService } from '../../core/auth.service';
       text-align: center;
       margin-top: 1.5rem;
       color: var(--color-text-muted);
-      font-size: 0.9375rem;
+      font-size: 0.875rem;
     }
     .auth-footer a { color: var(--color-accent); font-weight: 600; text-decoration: none; }
     .auth-footer a:hover { text-decoration: underline; }
+    @media (max-width: 700px) {
+      .auth-left { display: none; }
+      .auth-split { min-height: auto; }
+    }
   `]
 })
 export class RegisterComponent {
