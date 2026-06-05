@@ -1,17 +1,15 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { CatalogsService } from '../../core/catalogs.service';
-import { CatalogCardComponent } from '../../components/catalog-card/catalog-card.component';
-import { Catalog } from '../../models';
+import { AntiquesService } from '../../core/antiques.service';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink, CatalogCardComponent],
+  imports: [RouterLink],
   template: `
     <div class="page-home">
       <section class="hero">
-        <video class="hero-video" autoplay muted playsinline poster="assets/hero-bg.mp4">
+        <video class="hero-video" autoplay muted playsinline>
           <source src="assets/hero-bg.mp4" type="video/mp4">
         </video>
         <div class="hero-overlay"></div>
@@ -25,28 +23,26 @@ import { Catalog } from '../../models';
 
       <section class="section">
         <div class="section-header">
-          <h2 class="section-title">Catálogos</h2>
-          <p class="section-subtitle">Colecciones organizadas por temática, época o estilo</p>
+          <h2 class="section-title">Explora por tipo</h2>
+          <p class="section-subtitle">Navega por las categor&iacute;as de la colecci&oacute;n</p>
         </div>
 
-        @if (loading()) {
-          <div class="loading-grid">
-            @for (i of [1,2,3,4]; track i) {
-              <div class="skeleton-card"></div>
-            }
-          </div>
-        } @else if (catalogs().length === 0) {
-          <div class="empty-state">
-            <span class="empty-icon">&#128193;</span>
-            <p>Aún no hay catálogos disponibles.</p>
-          </div>
-        } @else {
-          <div class="catalogs-grid">
-            @for (catalog of catalogs(); track catalog.id) {
-              <app-catalog-card [catalog]="catalog" />
-            }
-          </div>
-        }
+        <div class="type-cards">
+          <a routerLink="/coleccion" [queryParams]="{tipo: 'antiguedad'}" class="type-card">
+            <div class="type-card-icon">&#9876;</div>
+            <h3 class="type-card-name">Antigüedades</h3>
+            <p class="type-card-count">{{ counts.antiguedad }} pieza{{ counts.antiguedad !== 1 ? 's' : '' }}</p>
+            <p class="type-card-desc">Escultura, pintura, cristal, cer&aacute;mica y piezas hist&oacute;ricas</p>
+            <span class="type-card-action">Explorar &rarr;</span>
+          </a>
+          <a routerLink="/coleccion" [queryParams]="{tipo: 'papeleria'}" class="type-card">
+            <div class="type-card-icon">&#128196;</div>
+            <h3 class="type-card-name">Papelería</h3>
+            <p class="type-card-count">{{ counts.papeleria }} pieza{{ counts.papeleria !== 1 ? 's' : '' }}</p>
+            <p class="type-card-desc">Filatelia, fotos, revistas, documentos y libros</p>
+            <span class="type-card-action">Explorar &rarr;</span>
+          </a>
+        </div>
       </section>
     </div>
   `,
@@ -137,46 +133,82 @@ import { Catalog } from '../../models';
       font-size: 1rem;
       margin: 0;
     }
-    .catalogs-grid {
+    .type-cards {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 1.5rem;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      max-width: 720px;
+      margin: 0 auto;
     }
-    .loading-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 1.5rem;
-    }
-    .skeleton-card {
-      height: 320px;
-      background: linear-gradient(90deg, var(--color-bg-2) 25%, var(--color-border) 50%, var(--color-bg-2) 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.5s infinite;
-      border-radius: 12px;
-    }
-    @keyframes shimmer {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
-    .empty-state {
+    .type-card {
+      background: var(--color-surface);
+      border: 2px solid var(--color-border);
+      border-radius: 16px;
+      padding: 2.5rem 2rem;
       text-align: center;
-      padding: 4rem 1rem;
-      color: var(--color-text-muted);
+      text-decoration: none;
+      transition: all 0.3s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
     }
-    .empty-icon { font-size: 3rem; display: block; margin-bottom: 1rem; }
+    .type-card:hover {
+      border-color: var(--color-accent);
+      box-shadow: 0 8px 32px rgba(184,149,90,0.15);
+      transform: translateY(-4px);
+    }
+    .type-card-icon {
+      font-size: 3rem;
+      color: var(--color-accent);
+      width: 80px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--color-bg-2);
+      border-radius: 50%;
+      margin-bottom: 0.5rem;
+    }
+    .type-card-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.375rem;
+      font-weight: 700;
+      color: var(--color-primary);
+      margin: 0;
+    }
+    .type-card-count {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--color-accent);
+      background: rgba(184,149,90,0.1);
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      margin: 0;
+    }
+    .type-card-desc {
+      color: var(--color-text-muted);
+      font-size: 0.875rem;
+      margin: 0;
+      line-height: 1.5;
+    }
+    .type-card-action {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--color-accent);
+      margin-top: 0.25rem;
+    }
+    @media (max-width: 640px) {
+      .type-cards { grid-template-columns: 1fr; }
+    }
   `]
 })
 export class HomeComponent implements OnInit {
-  catalogs = signal<Catalog[]>([]);
-  loading = signal(true);
+  counts = { antiguedad: 0, papeleria: 0 };
 
-  constructor(private catalogsService: CatalogsService) {}
+  constructor(private antiquesService: AntiquesService) {}
 
-  async ngOnInit() {
-    try {
-      this.catalogs.set(await this.catalogsService.getAll());
-    } finally {
-      this.loading.set(false);
-    }
+  ngOnInit() {
+    this.counts = this.antiquesService.getCounts();
   }
 }

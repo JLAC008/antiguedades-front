@@ -14,7 +14,7 @@ import { AuthService } from '../../core/auth.service';
           <span>Antiguedades</span>
         </a>
         <div class="nav-links">
-          <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" class="nav-link">Catálogos</a>
+          <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" class="nav-link">Inicio</a>
           <a routerLink="/coleccion" routerLinkActive="active" class="nav-link">Colección</a>
           @if (auth.isLoggedIn) {
             <a routerLink="/subir" routerLinkActive="active" class="nav-link">Subir Pieza</a>
@@ -30,7 +30,7 @@ import { AuthService } from '../../core/auth.service';
       </div>
       @if (menuOpen) {
         <div class="nav-mobile">
-          <a routerLink="/" class="nav-mobile-link" (click)="closeMenu()">Catálogos</a>
+          <a routerLink="/" class="nav-mobile-link" (click)="closeMenu()">Inicio</a>
           <a routerLink="/coleccion" class="nav-mobile-link" (click)="closeMenu()">Colección</a>
           @if (auth.isLoggedIn) {
             <a routerLink="/subir" class="nav-mobile-link" (click)="closeMenu()">Subir Pieza</a>
