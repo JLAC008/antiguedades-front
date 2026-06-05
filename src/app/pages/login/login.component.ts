@@ -9,7 +9,6 @@ import { AuthService } from '../../core/auth.service';
   imports: [FormsModule, RouterLink],
   template: `
     <div class="auth-page">
-      <div class="prototype-badge">Prototipo 2</div>
 
       <section class="auth-card" aria-label="Acceso al catálogo privado">
         <span class="corner corner-tl"></span>
@@ -111,22 +110,6 @@ import { AuthService } from '../../core/auth.service';
         radial-gradient(circle at 50% 45%, rgba(184,149,90,0.08), transparent 24rem),
         rgba(0,0,0,0.3);
       pointer-events: none;
-    }
-    .prototype-badge {
-      position: absolute;
-      top: clamp(1rem, 3vw, 2rem);
-      left: clamp(1rem, 3vw, 2rem);
-      z-index: 2;
-      background: rgba(10, 8, 6, 0.86);
-      color: #f1d9a3;
-      border: 1px solid rgba(184,149,90,0.45);
-      border-radius: 7px;
-      padding: 0.75rem 1rem;
-      font-size: 0.95rem;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      box-shadow: 0 14px 28px rgba(0,0,0,0.32);
     }
     .auth-card {
       position: relative;
@@ -329,10 +312,6 @@ import { AuthService } from '../../core/auth.service';
       .auth-page {
         align-items: center;
         padding: 5.2rem 1rem 1rem;
-      }
-      .prototype-badge {
-        font-size: 0.78rem;
-        padding: 0.6rem 0.75rem;
       }
       .auth-card {
         padding: 2rem 1.35rem;
