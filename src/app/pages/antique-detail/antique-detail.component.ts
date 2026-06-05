@@ -110,14 +110,19 @@ import { Antique } from '../../models';
     </div>
   `,
   styles: [`
-    .page { min-height: 100vh; background: var(--color-bg); }
-    .page-content { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
+    .page {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(184, 149, 90, 0.09), transparent 36rem),
+        #fbfaf7;
+    }
+    .page-content { max-width: 1100px; margin: 0 auto; padding: 3.2rem 1.5rem 4rem; }
     .breadcrumb {
       display: inline-block;
-      font-size: 0.875rem;
-      color: var(--color-text-muted);
+      font-size: 1rem;
+      color: #7c6a58;
       text-decoration: none;
-      font-weight: 500;
+      font-weight: 700;
       margin-bottom: 2rem;
       transition: color 0.2s;
     }
@@ -129,11 +134,12 @@ import { Antique } from '../../models';
       align-items: start;
     }
     .gallery-main {
-      border-radius: 12px;
+      border-radius: 10px;
       overflow: hidden;
       aspect-ratio: 1;
       background: var(--color-bg-2);
-      border: 1px solid var(--color-border);
+      border: 1px solid #dccdbd;
+      box-shadow: 0 16px 42px rgba(64, 47, 29, 0.05);
     }
     .gallery-main-img {
       width: 100%;
@@ -188,7 +194,7 @@ import { Antique } from '../../models';
     .catalog-tag:hover { background: rgba(184,149,90,0.18); }
     .antique-title {
       font-family: 'Playfair Display', serif;
-      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-size: clamp(2rem, 3.4vw, 2.75rem);
       font-weight: 700;
       color: var(--color-primary);
       margin: 0 0 0.5rem;
@@ -236,8 +242,8 @@ import { Antique } from '../../models';
     .antique-specs {
       display: grid;
       gap: 0.75rem;
-      background: var(--color-bg-2);
-      border: 1px solid var(--color-border);
+      background: rgba(255, 255, 255, 0.5);
+      border: 1px solid #dccdbd;
       border-radius: 10px;
       padding: 1.25rem;
       margin-bottom: 1.5rem;
@@ -289,7 +295,38 @@ import { Antique } from '../../models';
       margin-top: 1rem;
     }
     @media (max-width: 768px) {
-      .antique-layout { grid-template-columns: 1fr; gap: 2rem; }
+      .page-content {
+        padding: 2rem 1rem 3rem;
+      }
+      .breadcrumb {
+        margin-bottom: 1.25rem;
+        font-size: 0.95rem;
+      }
+      .antique-layout { grid-template-columns: 1fr; gap: 1.5rem; }
+      .gallery-thumbs {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 0.2rem;
+      }
+      .gallery-thumb {
+        flex: 0 0 auto;
+        width: 64px;
+        height: 64px;
+      }
+      .antique-title {
+        font-size: clamp(2rem, 11vw, 2.55rem);
+      }
+      .spec-item {
+        align-items: flex-start;
+        gap: 1rem;
+      }
+      .spec-value {
+        text-align: right;
+        overflow-wrap: anywhere;
+      }
+      .admin-actions {
+        flex-direction: column;
+      }
     }
   `]
 })

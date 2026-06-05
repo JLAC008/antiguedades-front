@@ -16,6 +16,7 @@ import { Catalog, Antique } from '../../models';
           <a routerLink="/" class="breadcrumb">&larr; Catálogos</a>
           @if (catalog()) {
             <h1 class="page-title">{{ catalog()!.name }}</h1>
+            <div class="page-flourish" aria-hidden="true">⌘</div>
             @if (catalog()!.description) {
               <p class="page-subtitle">{{ catalog()!.description }}</p>
             }
@@ -47,32 +48,57 @@ import { Catalog, Antique } from '../../models';
     </div>
   `,
   styles: [`
-    .page { min-height: 100vh; background: var(--color-bg); }
+    .page {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(184, 149, 90, 0.09), transparent 36rem),
+        #fbfaf7;
+    }
     .page-header {
-      background: var(--color-surface);
-      border-bottom: 1px solid var(--color-border);
-      padding: 2rem 1.5rem 2.5rem;
+      background: rgba(255, 255, 255, 0.64);
+      border-bottom: 1px solid #ded3c4;
+      padding: 3.55rem 1.5rem 3rem;
     }
     .page-header-inner { max-width: 1200px; margin: 0 auto; }
     .breadcrumb {
-      font-size: 0.875rem;
-      color: var(--color-text-muted);
+      font-size: 1rem;
+      color: #7c6a58;
       text-decoration: none;
-      font-weight: 500;
+      font-weight: 700;
       display: inline-block;
-      margin-bottom: 1rem;
+      margin-bottom: 1.45rem;
       transition: color 0.2s;
     }
     .breadcrumb:hover { color: var(--color-accent); }
     .page-title {
       font-family: 'Playfair Display', serif;
-      font-size: clamp(1.5rem, 3vw, 2.25rem);
+      font-size: clamp(2rem, 3.4vw, 2.75rem);
       font-weight: 700;
       color: var(--color-primary);
-      margin: 0 0 0.5rem;
+      margin: 0;
     }
-    .page-subtitle { color: var(--color-text-muted); font-size: 1rem; margin: 0; }
-    .page-content { max-width: 1200px; margin: 0 auto; padding: 2.5rem 1.5rem; }
+    .page-flourish {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      color: var(--color-accent);
+      font-family: Georgia, serif;
+      font-size: 0.92rem;
+      margin: 1rem 0 1.05rem;
+      opacity: 0.78;
+    }
+    .page-flourish::before,
+    .page-flourish::after {
+      content: '';
+      width: 4.1rem;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(184, 149, 90, 0.78), transparent);
+    }
+    .page-flourish::before {
+      background: linear-gradient(90deg, transparent, rgba(184, 149, 90, 0.78));
+    }
+    .page-subtitle { color: #5f5145; font-size: 1.02rem; margin: 0; }
+    .page-content { max-width: 1200px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
     .antiques-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -107,6 +133,32 @@ import { Catalog, Antique } from '../../models';
       transition: background 0.2s;
     }
     .btn-primary:hover { background: var(--color-secondary); }
+    @media (max-width: 768px) {
+      .page-header {
+        padding: 2.35rem 1rem 2.15rem;
+      }
+      .breadcrumb {
+        margin-bottom: 1.05rem;
+        font-size: 0.95rem;
+      }
+      .page-title {
+        font-size: clamp(2rem, 11vw, 2.55rem);
+      }
+      .page-flourish {
+        margin: 0.82rem 0 0.92rem;
+      }
+      .page-flourish::before,
+      .page-flourish::after {
+        width: 3.3rem;
+      }
+      .page-content {
+        padding: 1.5rem 1rem 3rem;
+      }
+      .antiques-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1rem;
+      }
+    }
   `]
 })
 export class CatalogDetailComponent implements OnInit {
