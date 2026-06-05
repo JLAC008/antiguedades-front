@@ -2,6 +2,9 @@ import { Injectable, signal } from '@angular/core';
 import { User } from '@supabase/supabase-js';
 import { MOCK_ADMIN } from './mock-data';
 
+const ADMIN_EMAIL = 'admin@antiguedades.com';
+const ADMIN_PASSWORD = 'admin123';
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   currentUser = signal<User | null>(null);
@@ -17,6 +20,10 @@ export class AuthService {
   }
 
   async signIn(email: string, password: string) {
+    if (email.trim().toLowerCase() !== ADMIN_EMAIL || password !== ADMIN_PASSWORD) {
+      throw new Error('Correo o contraseña incorrectos.');
+    }
+
     this.currentUser.set(MOCK_ADMIN);
     return { user: MOCK_ADMIN };
   }
