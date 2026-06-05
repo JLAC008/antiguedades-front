@@ -163,11 +163,20 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
               <div class="form-success">{{ success() }}</div>
             }
 
-            <form (ngSubmit)="onSubmit()" class="antique-form">
+            <form (ngSubmit)="onSubmit()" class="antique-form" [class.form-step-1]="formStep() === 1" [class.form-step-2]="formStep() === 2" [class.form-step-3]="formStep() === 3" [class.form-step-4]="formStep() === 4">
+              <div class="form-step-nav" aria-label="Secciones del formulario">
+                <button type="button" class="form-step-item" [class.active]="formStep() === 1" (click)="formStep.set(1)">1. Información básica</button>
+                <button type="button" class="form-step-item" [class.active]="formStep() === 2" (click)="formStep.set(2)">2. Detalles</button>
+                <button type="button" class="form-step-item" [class.active]="formStep() === 3" (click)="formStep.set(3)">3. Fotografías</button>
+                <button type="button" class="form-step-item" [class.active]="formStep() === 4" (click)="formStep.set(4)">4. Revisión</button>
+              </div>
+
+              <div class="form-option-c-layout">
+                <div class="form-panel-main">
               @if (category() === 'antiguedad') {
                 <div class="form-grid">
                   <div class="form-col">
-                    <div class="form-section-title">Información básica</div>
+                    <div id="form-basic" class="form-section-title">Información básica</div>
                     <div class="form-group">
                       <label class="form-label">Nombre <span class="required">*</span></label>
                       <input type="text" class="form-input" [(ngModel)]="form.name" name="name" placeholder="Ej. Reloj de péndulo del siglo XIX" required />
@@ -195,6 +204,8 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
                         <input type="text" class="form-input" [(ngModel)]="form.element" name="element" placeholder="Ej. Madera, Bronce..." />
                       </div>
                     </div>
+                    <div id="form-details" class="form-section-anchor"></div>
+                    <div class="form-section-title form-details-title">Detalles de la pieza</div>
                     <div class="form-row">
                       <div class="form-group">
                         <label class="form-label">Época / Año</label>
@@ -230,7 +241,7 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
                   </div>
 
                   <div class="form-col">
-                    <div class="form-section-title">Fotografías</div>
+                    <div id="form-photos" class="form-section-title">Fotografías</div>
                     <div class="form-group">
                       <label class="form-label">Añadir imágenes</label>
                       <label class="upload-zone">
@@ -270,7 +281,7 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
               @if (category() === 'papeleria') {
                 <div class="form-grid">
                   <div class="form-col">
-                    <div class="form-section-title">Información del documento</div>
+                    <div id="form-basic" class="form-section-title">Información del documento</div>
                     <div class="form-group">
                       <label class="form-label">Nombre <span class="required">*</span></label>
                       <input type="text" class="form-input" [(ngModel)]="form.name" name="name" placeholder="Ej. Mapa del siglo XVIII, Carta antigua..." required />
@@ -284,6 +295,8 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
                         }
                       </select>
                     </div>
+                    <div id="form-details" class="form-section-anchor"></div>
+                    <div class="form-section-title form-details-title">Detalles del documento</div>
                     <div class="form-row">
                       <div class="form-group">
                         <label class="form-label">Tipo de papel</label>
@@ -338,7 +351,7 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
                   </div>
 
                   <div class="form-col">
-                    <div class="form-section-title">Fotografías</div>
+                    <div id="form-photos" class="form-section-title">Fotografías</div>
                     <div class="form-group">
                       <label class="form-label">Añadir imágenes</label>
                       <label class="upload-zone">
@@ -375,16 +388,73 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
                 </div>
               }
 
-              <div class="form-actions">
-                @if (!editMode) {
+                  <div class="review-panel">
+                    <div class="form-section-title">Revisión</div>
+                    <div class="review-grid">
+                      <div class="review-item">
+                        <span>Tipo</span>
+                        <strong>{{ categoryLabel }}</strong>
+                      </div>
+                      <div class="review-item">
+                        <span>Categoría</span>
+                        <strong>{{ subcategoryLabel || 'Sin seleccionar' }}</strong>
+                      </div>
+                      @if (detailLabel) {
+                        <div class="review-item">
+                          <span>Detalle</span>
+                          <strong>{{ detailLabel }}</strong>
+                        </div>
+                      }
+                      <div class="review-item">
+                        <span>Nombre</span>
+                        <strong>{{ form.name || 'Pendiente' }}</strong>
+                      </div>
+                      <div class="review-item">
+                        <span>Estado</span>
+                        <strong>{{ form.condition }}</strong>
+                      </div>
+                      <div class="review-item">
+                        <span>Precio</span>
+                        <strong>{{ form.price || 0 }} €</strong>
+                      </div>
+                      <div class="review-item">
+                        <span>Imágenes</span>
+                        <strong>{{ existingImages().length }}</strong>
+                      </div>
+                    </div>
+                    <p class="review-note">Revisa que los datos principales estén correctos antes de publicar la pieza.</p>
+                  </div>
+                </div>
+
+                <aside class="form-guidance" aria-label="Ayuda del formulario">
+                  <div class="guidance-kicker">En esta sección</div>
+                  <p>Ingresa la información general para identificar y clasificar tu pieza.</p>
+                  <div class="guidance-figure" aria-hidden="true">
+                    <svg viewBox="0 0 120 120">
+                      <path d="M62 17c14 0 25 10 25 24 0 7-3 13-8 18l-2 18 12 6v14H35V83l13-6-2-18c-5-5-8-11-8-18 0-14 10-24 24-24Z"/>
+                      <path d="M48 48c8 4 18 4 27 0M51 36c3-4 7-6 12-6 6 0 10 2 13 6M48 77h29M42 97h41"/>
+                    </svg>
+                  </div>
+                </aside>
+              </div>
+
+              <div id="form-review" class="form-actions">
+                @if (formStep() === 1 && !editMode) {
                   <button type="button" class="btn-cancel" (click)="goBack()">Volver</button>
+                }
+                @if (formStep() > 1) {
+                  <button type="button" class="btn-cancel" (click)="previousFormStep()">Atrás</button>
                 }
                 @if (editMode) {
                   <a routerLink="/coleccion" class="btn-cancel">Cancelar</a>
                 }
-                <button type="submit" class="btn-submit" [disabled]="saving()">
-                  @if (saving()) { Guardando... } @else { {{ editMode ? 'Guardar cambios' : 'Publicar pieza' }} }
-                </button>
+                @if (formStep() < 4) {
+                  <button type="button" class="btn-submit" (click)="nextFormStep()">Siguiente &rarr;</button>
+                } @else {
+                  <button type="submit" class="btn-submit" [disabled]="saving()">
+                    @if (saving()) { Guardando... } @else { {{ editMode ? 'Guardar cambios' : 'Publicar pieza' }} }
+                  </button>
+                }
               </div>
             </form>
           </div>
@@ -564,17 +634,138 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
       margin-top: 0;
     }
     .form-container { max-width: 1100px; margin: 0 auto; }
-    .antique-form { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 16px; padding: 2rem; }
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; margin-bottom: 2rem; }
+    .antique-form {
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      padding: 0;
+    }
+    .form-step-nav {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      border-bottom: 1px solid #dccdbd;
+      margin-bottom: 1.7rem;
+    }
+    .form-step-item {
+      position: relative;
+      padding: 0 0 1rem;
+      color: #7b6d60;
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-align: center;
+      text-decoration: none;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: color 0.2s;
+      background: none;
+      border: none;
+      font-family: inherit;
+    }
+    .form-step-item:hover {
+      color: var(--color-primary);
+    }
+    .form-step-item:focus-visible {
+      outline: 2px solid rgba(184,149,90,0.45);
+      outline-offset: 4px;
+      border-radius: 3px;
+    }
+    .form-step-item::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -1px;
+      height: 2px;
+      background: transparent;
+    }
+    .form-step-item.active {
+      color: var(--color-primary);
+    }
+    .form-step-item.active::after {
+      background: var(--color-accent);
+    }
+    .form-option-c-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 190px;
+      gap: 1rem;
+      align-items: stretch;
+    }
+    .form-panel-main {
+      background: rgba(255, 255, 255, 0.68);
+      border: 1px solid #dccdbd;
+      border-radius: 8px;
+      padding: 2rem;
+      box-shadow: 0 16px 42px rgba(64, 47, 29, 0.045);
+    }
+    .form-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 0; }
     .form-col { display: flex; flex-direction: column; gap: 1.25rem; }
+    .review-panel { display: none; }
+    .form-step-1 .form-col:first-child > :nth-child(n+5),
+    .form-step-1 .form-col:nth-child(2),
+    .form-step-1 .review-panel {
+      display: none;
+    }
+    .form-step-2 .form-col:first-child > :nth-child(-n+4),
+    .form-step-2 .form-col:nth-child(2),
+    .form-step-2 .review-panel {
+      display: none;
+    }
+    .form-step-3 .form-col:first-child,
+    .form-step-3 .review-panel {
+      display: none;
+    }
+    .form-step-4 .form-grid {
+      display: none;
+    }
+    .form-step-4 .review-panel {
+      display: block;
+    }
     .form-section-title {
+      scroll-margin-top: 100px;
       font-size: 0.75rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.1em;
-      color: var(--color-text-muted);
+      color: #8a6f4c;
       padding-bottom: 0.75rem;
       border-bottom: 1px solid var(--color-border);
+    }
+    .form-section-anchor {
+      scroll-margin-top: 100px;
+    }
+    .review-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.9rem;
+      margin-top: 1.25rem;
+    }
+    .review-item {
+      background: rgba(250, 248, 244, 0.84);
+      border: 1px solid #e2d6c8;
+      border-radius: 6px;
+      padding: 0.85rem 0.95rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      min-width: 0;
+    }
+    .review-item span {
+      color: #7b6d60;
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .review-item strong {
+      color: var(--color-primary);
+      font-size: 0.95rem;
+      overflow-wrap: anywhere;
+    }
+    .review-note {
+      color: #5f5145;
+      margin: 1.25rem 0 0;
+      line-height: 1.6;
     }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
     .form-row-3 { grid-template-columns: 1fr 1fr 1fr; }
@@ -582,12 +773,12 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
     .form-label { font-size: 0.875rem; font-weight: 600; color: var(--color-text); }
     .required { color: var(--color-error); }
     .form-input, .form-select, .form-textarea {
-      padding: 0.75rem 1rem;
-      border: 1px solid var(--color-border);
-      border-radius: 8px;
-      font-size: 0.9375rem;
+      padding: 0.78rem 0.95rem;
+      border: 1px solid #ddcfbe;
+      border-radius: 5px;
+      font-size: 0.9rem;
       color: var(--color-text);
-      background: var(--color-bg);
+      background: rgba(255, 255, 255, 0.82);
       transition: border-color 0.2s, box-shadow 0.2s;
       font-family: inherit;
     }
@@ -600,12 +791,12 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
     .upload-zone {
       display: block;
       cursor: pointer;
-      border: 2px dashed var(--color-border);
-      border-radius: 10px;
+      border: 1px dashed #d7c7b5;
+      border-radius: 5px;
       transition: border-color 0.2s, background 0.2s;
     }
     .upload-zone:hover { border-color: var(--color-accent); background: rgba(184,149,90,0.04); }
-    .upload-zone-inner { padding: 2.5rem 1.5rem; text-align: center; }
+    .upload-zone-inner { padding: 2rem 1.5rem; text-align: center; }
     .upload-icon { font-size: 2rem; display: block; margin-bottom: 0.75rem; }
     .upload-text { color: var(--color-text); font-weight: 500; font-size: 0.9375rem; margin: 0 0 0.375rem; }
     .upload-hint { color: var(--color-text-muted); font-size: 0.8125rem; margin: 0; }
@@ -668,12 +859,55 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
       border-radius: 4px;
       text-transform: uppercase;
     }
-    .form-actions { display: flex; justify-content: flex-end; gap: 0.75rem; padding-top: 1.5rem; border-top: 1px solid var(--color-border); }
+    .form-guidance {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(246, 239, 229, 0.7));
+      border: 1px solid rgba(220, 205, 189, 0.72);
+      border-radius: 8px;
+      padding: 1.45rem 1.25rem;
+      color: #5f5145;
+      min-height: 100%;
+    }
+    .guidance-kicker {
+      color: var(--color-primary);
+      font-size: 0.78rem;
+      font-weight: 800;
+      margin-bottom: 0.85rem;
+    }
+    .form-guidance p {
+      margin: 0;
+      font-size: 0.86rem;
+      line-height: 1.7;
+    }
+    .guidance-figure {
+      margin-top: 2rem;
+      display: flex;
+      justify-content: center;
+      color: rgba(140, 113, 73, 0.5);
+    }
+    .guidance-figure svg {
+      width: 100px;
+      height: 100px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      margin-top: 1rem;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.68);
+      border: 1px solid #dccdbd;
+      border-radius: 8px;
+    }
     .btn-cancel {
       text-decoration: none;
       padding: 0.875rem 1.75rem;
       border: 1px solid var(--color-border);
-      border-radius: 8px;
+      border-radius: 5px;
       font-size: 0.9375rem;
       font-weight: 600;
       color: var(--color-text-muted);
@@ -688,7 +922,7 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
       color: white;
       border: none;
       padding: 0.875rem 2rem;
-      border-radius: 8px;
+      border-radius: 5px;
       font-size: 0.9375rem;
       font-weight: 600;
       cursor: pointer;
@@ -815,8 +1049,36 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
       .form-row { grid-template-columns: 1fr; }
       .form-row-3 { grid-template-columns: 1fr; }
       .antique-form {
+        padding: 0;
+        border-radius: 0;
+      }
+      .form-step-nav {
+        display: flex;
+        overflow-x: auto;
+        gap: 1.4rem;
+        padding-bottom: 0.05rem;
+      }
+      .form-step-item {
+        flex: 0 0 auto;
+        text-align: left;
+        font-size: 0.78rem;
+      }
+      .form-option-c-layout {
+        grid-template-columns: 1fr;
+      }
+      .form-panel-main {
         padding: 1.25rem;
         border-radius: 10px;
+      }
+      .form-guidance {
+        min-height: auto;
+        padding: 1.15rem;
+      }
+      .review-grid {
+        grid-template-columns: 1fr;
+      }
+      .guidance-figure {
+        display: none;
       }
       .form-actions {
         flex-direction: column-reverse;
@@ -851,6 +1113,7 @@ export class UploadAntiqueComponent implements OnInit {
 
   step = signal(1);
   category = signal<AntiqueType | null>(null);
+  formStep = signal(1);
 
   subcategories = [
     { key: 'escultura', label: 'Escultura', icon: '&#9997;' },
@@ -1032,11 +1295,13 @@ export class UploadAntiqueComponent implements OnInit {
 
   selectSubcategory(key: string) {
     this.form.subcategory = key;
+    this.formStep.set(1);
     this.step.set(this.hasDetail(key) ? 3 : 4);
   }
 
   selectDetail(key: string) {
     this.form.detail = key;
+    this.formStep.set(1);
     this.step.set(4);
   }
 
@@ -1046,6 +1311,14 @@ export class UploadAntiqueComponent implements OnInit {
     } else {
       this.step.set(2);
     }
+  }
+
+  nextFormStep() {
+    this.formStep.set(Math.min(this.formStep() + 1, 4));
+  }
+
+  previousFormStep() {
+    this.formStep.set(Math.max(this.formStep() - 1, 1));
   }
 
   async ngOnInit() {
