@@ -17,26 +17,31 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
           @if (step() === 1) {
             <a routerLink="/coleccion" class="breadcrumb">&larr; Cancelar</a>
             <h1 class="page-title">Nueva pieza</h1>
+            <div class="page-flourish" aria-hidden="true">⌘</div>
             <p class="page-subtitle">Selecciona el tipo de pieza que quieres añadir</p>
           }
           @if (step() === 2) {
             <button class="breadcrumb" (click)="step.set(1)">&larr; Volver</button>
             <h1 class="page-title">{{ categoryLabel }}</h1>
+            <div class="page-flourish" aria-hidden="true">⌘</div>
             <p class="page-subtitle">Selecciona el tipo de {{ categoryLabel.toLowerCase() }}</p>
           }
           @if (step() === 3) {
             <button class="breadcrumb" (click)="step.set(2)">&larr; Volver</button>
             <h1 class="page-title">{{ categoryLabel }} - {{ subcategoryLabel }}</h1>
+            <div class="page-flourish" aria-hidden="true">⌘</div>
             <p class="page-subtitle">Selecciona el tipo de {{ subcategoryLabel.toLowerCase() }}</p>
           }
           @if (step() === 4) {
             <button class="breadcrumb" (click)="step.set(hasDetail(form.subcategory) ? 3 : 2)">&larr; Volver</button>
             <h1 class="page-title">{{ categoryLabel }}{{ subcategoryLabel ? ' - ' + subcategoryLabel : '' }}{{ detailLabel ? ' - ' + detailLabel : '' }}</h1>
+            <div class="page-flourish" aria-hidden="true">⌘</div>
             <p class="page-subtitle">Completa los datos de la pieza</p>
           }
           @if (editMode) {
             <a routerLink="/coleccion" class="breadcrumb">&larr; Cancelar</a>
             <h1 class="page-title">{{ categoryLabel }}{{ subcategoryLabel ? ' - ' + subcategoryLabel : '' }}</h1>
+            <div class="page-flourish" aria-hidden="true">⌘</div>
             <p class="page-subtitle">Modifica los datos de la pieza</p>
           }
         </div>
@@ -46,15 +51,29 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
         @if (step() === 1 && !editMode) {
           <div class="category-selector">
             <div class="category-card" (click)="selectCategory('antiguedad')">
-              <div class="category-icon">&#9876;</div>
+              <div class="category-icon category-icon-swords" aria-hidden="true">
+                <svg viewBox="0 0 24 24" role="img">
+                  <path d="m14.5 5 4.4-3.4 1.5 1.5-3.4 4.4"/>
+                  <path d="m9.5 5-4.4-3.4-1.5 1.5 3.4 4.4"/>
+                  <path d="m8 8 8 8M16 8l-8 8"/>
+                  <path d="m6.5 17.5-2 2M17.5 17.5l2 2M6.7 15.3l2 2M17.3 15.3l-2 2"/>
+                </svg>
+              </div>
               <h2 class="category-name">Antigüedades</h2>
               <p class="category-desc">Muebles, relojes, porcelana, cerámica y piezas históricas</p>
+              <span class="category-divider" aria-hidden="true"></span>
               <span class="category-action">Seleccionar &rarr;</span>
             </div>
             <div class="category-card" (click)="selectCategory('papeleria')">
-              <div class="category-icon">&#128196;</div>
+              <div class="category-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" role="img">
+                  <path d="M7 3h7l5 5v13H7Z"/>
+                  <path d="M14 3v6h5M10 13h6M10 17h6"/>
+                </svg>
+              </div>
               <h2 class="category-name">Papelería</h2>
               <p class="category-desc">Documentos, sellos, mapas, grabados y material de archivo</p>
+              <span class="category-divider" aria-hidden="true"></span>
               <span class="category-action">Seleccionar &rarr;</span>
             </div>
           </div>
@@ -374,20 +393,28 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
     </div>
   `,
   styles: [`
-    .page { min-height: 100vh; background: var(--color-bg); }
-    .page-header {
-      background: var(--color-surface);
-      border-bottom: 1px solid var(--color-border);
-      padding: 2rem 1.5rem 2.5rem;
+    .page {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(184, 149, 90, 0.09), transparent 36rem),
+        #fbfaf7;
     }
-    .page-header-inner { max-width: 1100px; margin: 0 auto; }
+    .page-header {
+      background: rgba(255, 255, 255, 0.64);
+      border-bottom: 1px solid #ded3c4;
+      padding: 3.55rem 1.5rem 3rem;
+    }
+    .page-header-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
     .breadcrumb {
-      font-size: 0.875rem;
-      color: var(--color-text-muted);
+      font-size: 1rem;
+      color: #7c6a58;
       text-decoration: none;
-      font-weight: 500;
+      font-weight: 700;
       display: inline-block;
-      margin-bottom: 1rem;
+      margin-bottom: 1.45rem;
       background: none;
       border: none;
       cursor: pointer;
@@ -398,13 +425,41 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
     .breadcrumb:hover { color: var(--color-accent); }
     .page-title {
       font-family: 'Playfair Display', serif;
-      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-size: clamp(2rem, 3.4vw, 2.75rem);
       font-weight: 700;
       color: var(--color-primary);
-      margin: 0 0 0.375rem;
+      margin: 0;
     }
-    .page-subtitle { color: var(--color-text-muted); font-size: 0.9375rem; margin: 0; }
-    .page-content { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
+    .page-flourish {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      color: var(--color-accent);
+      font-family: Georgia, serif;
+      font-size: 0.92rem;
+      margin: 1rem 0 1.05rem;
+      opacity: 0.78;
+    }
+    .page-flourish::before,
+    .page-flourish::after {
+      content: '';
+      width: 4.1rem;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(184, 149, 90, 0.78), transparent);
+    }
+    .page-flourish::before {
+      background: linear-gradient(90deg, transparent, rgba(184, 149, 90, 0.78));
+    }
+    .page-subtitle {
+      color: #5f5145;
+      font-size: 1.02rem;
+      margin: 0;
+    }
+    .page-content {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 4rem 1.5rem 5rem;
+    }
     .form-error {
       background: #FEF2F2;
       border: 1px solid #FECACA;
@@ -427,59 +482,86 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
     .category-selector {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-      max-width: 720px;
+      gap: 2.45rem;
+      max-width: 790px;
       margin: 0 auto;
-      padding-top: 2rem;
+      padding-top: 0.25rem;
     }
     .category-card {
-      background: var(--color-surface);
-      border: 2px solid var(--color-border);
-      border-radius: 16px;
-      padding: 2.5rem 2rem;
+      background: rgba(255, 255, 255, 0.48);
+      border: 1px solid #dccdbd;
+      border-radius: 10px;
+      padding: 2.25rem 2rem 2.35rem;
       text-align: center;
       cursor: pointer;
       transition: all 0.3s;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.85rem;
+      min-height: 360px;
+      box-shadow: 0 16px 42px rgba(64, 47, 29, 0.035);
     }
     .category-card:hover {
       border-color: var(--color-accent);
-      box-shadow: 0 8px 32px rgba(184,149,90,0.15);
+      box-shadow: 0 18px 38px rgba(84, 61, 38, 0.12);
       transform: translateY(-4px);
     }
     .category-icon {
-      font-size: 3rem;
       color: var(--color-accent);
-      width: 80px;
-      height: 80px;
+      width: 94px;
+      height: 94px;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: var(--color-bg-2);
+      background: radial-gradient(circle at 32% 22%, #33312d, #090909 68%);
       border-radius: 50%;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.45rem;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.11), 0 14px 28px rgba(0,0,0,0.18);
+      font-size: 2.3rem;
+    }
+    .category-icon svg {
+      width: 44px;
+      height: 44px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.45;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      display: block;
+    }
+    .category-icon-swords svg {
+      width: 48px;
+      height: 48px;
     }
     .category-name {
       font-family: 'Playfair Display', serif;
-      font-size: 1.375rem;
+      font-size: 1.85rem;
       font-weight: 700;
       color: var(--color-primary);
       margin: 0;
     }
     .category-desc {
-      color: var(--color-text-muted);
-      font-size: 0.9375rem;
+      color: #5b5046;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.02rem;
       margin: 0;
-      line-height: 1.5;
+      line-height: 1.55;
+      max-width: 270px;
+      min-height: 3.1rem;
+    }
+    .category-divider {
+      display: block;
+      width: 92px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(184,149,90,0.72), transparent);
+      margin: 0.8rem 0 0.55rem;
     }
     .category-action {
-      font-size: 0.875rem;
-      font-weight: 600;
+      font-size: 1rem;
+      font-weight: 700;
       color: var(--color-accent);
-      margin-top: 0.5rem;
+      margin-top: 0;
     }
     .form-container { max-width: 1100px; margin: 0 auto; }
     .antique-form { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 16px; padding: 2rem; }
@@ -617,17 +699,141 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
     .subcategory-selector {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 1.5rem;
-      max-width: 620px;
+      gap: 2rem;
+      max-width: 790px;
       margin: 0 auto;
-      padding-top: 2rem;
+      padding-top: 0.25rem;
+    }
+    .subcategory-selector .category-card {
+      min-height: 276px;
+      padding: 1.9rem 1.75rem 1.75rem;
+    }
+    .subcategory-selector .category-icon {
+      width: 72px;
+      height: 72px;
+      font-size: 2.2rem;
+      margin-bottom: 0.2rem;
+    }
+    .subcategory-selector .category-name {
+      font-size: 1.45rem;
+    }
+    .subcategory-selector .category-desc {
+      font-size: 0.95rem;
+      min-height: 2.95rem;
+    }
+    .subcategory-selector .category-action {
+      margin-top: auto;
+      padding-top: 0.85rem;
+      position: relative;
+    }
+    .subcategory-selector .category-action::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0;
+      width: 82px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(184,149,90,0.72), transparent);
+      transform: translateX(-50%);
     }
     @media (max-width: 768px) {
-      .category-selector { grid-template-columns: 1fr; }
-      .subcategory-selector { grid-template-columns: 1fr; }
+      .page-header {
+        padding: 2.35rem 1rem 2.15rem;
+      }
+      .breadcrumb {
+        margin-bottom: 1.05rem;
+        font-size: 0.95rem;
+      }
+      .page-title {
+        font-size: clamp(2rem, 11vw, 2.55rem);
+      }
+      .page-flourish {
+        margin: 0.82rem 0 0.92rem;
+      }
+      .page-flourish::before,
+      .page-flourish::after {
+        width: 3.3rem;
+      }
+      .page-subtitle {
+        font-size: 0.98rem;
+        max-width: 26rem;
+      }
+      .page-content {
+        padding: 2.4rem 1rem 3.5rem;
+      }
+      .category-selector,
+      .subcategory-selector {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1.2rem;
+        max-width: 430px;
+      }
+      .category-card {
+        min-height: auto;
+        padding: 1.65rem 1.25rem 1.55rem;
+        gap: 0.65rem;
+      }
+      .category-icon {
+        width: 72px;
+        height: 72px;
+        margin-bottom: 0.2rem;
+      }
+      .category-icon svg {
+        width: 34px;
+        height: 34px;
+      }
+      .category-icon-swords svg {
+        width: 38px;
+        height: 38px;
+      }
+      .category-name {
+        font-size: 1.55rem;
+      }
+      .category-desc {
+        font-size: 0.96rem;
+        min-height: auto;
+        max-width: 20rem;
+      }
+      .category-divider {
+        margin: 0.45rem 0 0.35rem;
+      }
+      .subcategory-selector .category-card {
+        min-height: auto;
+        padding: 1.45rem 1.2rem;
+      }
+      .subcategory-selector .category-icon {
+        width: 62px;
+        height: 62px;
+        font-size: 1.75rem;
+      }
+      .subcategory-selector .category-name {
+        font-size: 1.35rem;
+      }
+      .subcategory-selector .category-desc {
+        min-height: auto;
+      }
       .form-grid { grid-template-columns: 1fr; }
       .form-row { grid-template-columns: 1fr; }
       .form-row-3 { grid-template-columns: 1fr; }
+      .antique-form {
+        padding: 1.25rem;
+        border-radius: 10px;
+      }
+      .form-actions {
+        flex-direction: column-reverse;
+      }
+      .btn-cancel,
+      .btn-submit {
+        width: 100%;
+        text-align: center;
+      }
+    }
+    @media (max-width: 420px) {
+      .page-header {
+        padding-top: 1.9rem;
+      }
+      .category-card {
+        padding-inline: 1rem;
+      }
     }
   `]
 })

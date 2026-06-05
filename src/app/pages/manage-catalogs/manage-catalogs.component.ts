@@ -13,6 +13,7 @@ import { Catalog } from '../../models';
       <div class="page-header">
         <div class="page-header-inner">
           <h1 class="page-title">Gestionar catálogos</h1>
+          <div class="page-flourish" aria-hidden="true">⌘</div>
           <p class="page-subtitle">Crea y organiza los catálogos de tu colección</p>
         </div>
       </div>
@@ -98,22 +99,47 @@ import { Catalog } from '../../models';
     </div>
   `,
   styles: [`
-    .page { min-height: 100vh; background: var(--color-bg); }
+    .page {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(184, 149, 90, 0.09), transparent 36rem),
+        #fbfaf7;
+    }
     .page-header {
-      background: var(--color-surface);
-      border-bottom: 1px solid var(--color-border);
-      padding: 2rem 1.5rem 2.5rem;
+      background: rgba(255, 255, 255, 0.64);
+      border-bottom: 1px solid #ded3c4;
+      padding: 3.55rem 1.5rem 3rem;
     }
     .page-header-inner { max-width: 1100px; margin: 0 auto; }
     .page-title {
       font-family: 'Playfair Display', serif;
-      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-size: clamp(2rem, 3.4vw, 2.75rem);
       font-weight: 700;
       color: var(--color-primary);
-      margin: 0 0 0.375rem;
+      margin: 0;
     }
-    .page-subtitle { color: var(--color-text-muted); font-size: 0.9375rem; margin: 0; }
-    .page-content { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
+    .page-flourish {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      color: var(--color-accent);
+      font-family: Georgia, serif;
+      font-size: 0.92rem;
+      margin: 1rem 0 1.05rem;
+      opacity: 0.78;
+    }
+    .page-flourish::before,
+    .page-flourish::after {
+      content: '';
+      width: 4.1rem;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(184, 149, 90, 0.78), transparent);
+    }
+    .page-flourish::before {
+      background: linear-gradient(90deg, transparent, rgba(184, 149, 90, 0.78));
+    }
+    .page-subtitle { color: #5f5145; font-size: 1.02rem; margin: 0; }
+    .page-content { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
     .layout { display: grid; grid-template-columns: 380px 1fr; gap: 2rem; align-items: start; }
     .form-panel, .list-panel {
       background: var(--color-surface);
@@ -252,7 +278,40 @@ import { Catalog } from '../../models';
     .btn-edit:hover { border-color: var(--color-primary); background: rgba(28,22,18,0.06); }
     .btn-delete:hover { border-color: var(--color-error); background: rgba(184,84,80,0.08); }
     @media (max-width: 768px) {
-      .layout { grid-template-columns: 1fr; }
+      .page-header {
+        padding: 2.35rem 1rem 2.15rem;
+      }
+      .page-title {
+        font-size: clamp(2rem, 11vw, 2.55rem);
+      }
+      .page-flourish {
+        margin: 0.82rem 0 0.92rem;
+      }
+      .page-flourish::before,
+      .page-flourish::after {
+        width: 3.3rem;
+      }
+      .page-content {
+        padding: 1.5rem 1rem 3rem;
+      }
+      .layout { grid-template-columns: 1fr; gap: 1rem; }
+      .form-panel, .list-panel {
+        padding: 1.25rem;
+        border-radius: 10px;
+      }
+      .form-actions {
+        flex-direction: column;
+      }
+      .btn-cancel,
+      .btn-submit {
+        width: 100%;
+      }
+      .catalog-item {
+        align-items: flex-start;
+      }
+      .catalog-item-actions {
+        flex-direction: column;
+      }
     }
   `]
 })
