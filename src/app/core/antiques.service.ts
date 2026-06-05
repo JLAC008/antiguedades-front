@@ -69,4 +69,15 @@ export class AntiquesService {
       reader.readAsDataURL(file);
     });
   }
+
+  getCountByType(type: string): number {
+    return antiques.filter(a => a.type === type).length;
+  }
+
+  getCounts() {
+    return {
+      antiguedad: antiques.filter(a => a.type === 'antiguedad').length,
+      papeleria: antiques.filter(a => a.type === 'papeleria').length,
+    };
+  }
 }
