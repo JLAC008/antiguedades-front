@@ -26,6 +26,9 @@ export interface Antique {
   condition: string;
   material: string;
   dimensions: string;
+  paper_type?: string;
+  paper_format?: string;
+  paper_weight?: number;
   images: string[];
   created_by: string;
   created_at: string;

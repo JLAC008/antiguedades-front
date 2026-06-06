@@ -1399,8 +1399,11 @@ export class UploadAntiqueComponent implements OnInit {
         catalog_id: this.form.catalog_id || null,
         year_era: this.form.year_era,
         condition: this.form.condition,
-        material: this.form.type === 'papeleria' ? this.form.paper_type : this.form.material,
-        dimensions: this.form.type === 'papeleria' ? `${this.form.paper_format} ${this.form.paper_weight ? '- ' + this.form.paper_weight + 'g' : ''}`.trim() : this.form.dimensions,
+        paper_type: this.form.type === 'papeleria' ? this.form.paper_type : undefined,
+        paper_format: this.form.type === 'papeleria' ? this.form.paper_format : undefined,
+        paper_weight: this.form.type === 'papeleria' ? this.form.paper_weight : undefined,
+        material: this.form.type === 'antiguedad' ? this.form.material : this.form.paper_type,
+        dimensions: this.form.type === 'antiguedad' ? this.form.dimensions : `${this.form.paper_format} ${this.form.paper_weight ? '- ' + this.form.paper_weight + 'g' : ''}`.trim(),
         price: this.form.price,
         description: this.form.description,
         images: this.existingImages()

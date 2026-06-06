@@ -69,6 +69,8 @@ import { Antique } from '../../models';
               }
 
               <div class="antique-badge-row">
+                <span class="antique-badge">{{ antique()!.type === 'antiguedad' ? 'Antigüedades' : 'Papelería' }}</span>
+                <span class="antique-badge">{{ subLabel(antique()!.subcategory) }}{{ antique()!.detail ? ' → ' + detLabel(antique()!.detail) : '' }}</span>
                 <span class="antique-badge">{{ antique()!.condition }}</span>
               </div>
 
@@ -80,6 +82,46 @@ import { Antique } from '../../models';
               }
 
               <div class="antique-specs">
+                @if (antique()!.type === 'antiguedad') {
+                  @if (antique()!.country) {
+                    <div class="spec-item">
+                      <span class="spec-label">País</span>
+                      <span class="spec-value">{{ antique()!.country }}</span>
+                    </div>
+                  }
+                  @if (antique()!.region) {
+                    <div class="spec-item">
+                      <span class="spec-label">Región</span>
+                      <span class="spec-value">{{ antique()!.region }}</span>
+                    </div>
+                  }
+                  @if (antique()!.element) {
+                    <div class="spec-item">
+                      <span class="spec-label">Elemento</span>
+                      <span class="spec-value">{{ antique()!.element }}</span>
+                    </div>
+                  }
+                }
+                @if (antique()!.type === 'papeleria') {
+                  @if (antique()!.paper_type) {
+                    <div class="spec-item">
+                      <span class="spec-label">Tipo de papel</span>
+                      <span class="spec-value">{{ antique()!.paper_type }}</span>
+                    </div>
+                  }
+                  @if (antique()!.paper_format) {
+                    <div class="spec-item">
+                      <span class="spec-label">Formato</span>
+                      <span class="spec-value">{{ antique()!.paper_format }}</span>
+                    </div>
+                  }
+                  @if (antique()!.paper_weight) {
+                    <div class="spec-item">
+                      <span class="spec-label">Gramaje</span>
+                      <span class="spec-value">{{ antique()!.paper_weight }} g/m²</span>
+                    </div>
+                  }
+                }
                 @if (antique()!.material) {
                   <div class="spec-item">
                     <span class="spec-label">Material</span>
@@ -379,6 +421,30 @@ export class AntiqueDetailComponent implements OnInit {
   images: string[] = [];
   currentIndex = 0;
 
+  subcategoryLabels: Record<string, string> = {
+    escultura: 'Escultura', pintura: 'Pintura', cristal: 'Cristal', ceramica: 'Cerámica',
+    filatelia: 'Filatelia', fotos: 'Fotos', revistas: 'Revistas / Periódicos',
+    documentos: 'Documentos', libros: 'Libros',
+  };
+
+  detailLabels: Record<string, string> = {
+    busto: 'Busto', figura: 'Figura', belen: 'Belén',
+    oleo: 'Óleo', grabado: 'Grabado', acuarela: 'Acuarela',
+    'hist-postal': 'Hist. postal', 'entero-postal': 'Entero postal', sello: 'Sello',
+    'pre-filatelia': 'Pre-filatelia', censura: 'Censura',
+    familiar: 'Familiar', boda: 'Boda', ninos: 'Niños', hombres: 'Hombres',
+    mujeres: 'Mujeres', militar: 'Militar', etnica: 'Étnica', paisaje: 'Paisaje',
+    retrato: 'Retrato', 'blanco-negro': 'Blanco y negro', estudio: 'Estudio',
+    reportaje: 'Reportaje', arquitectura: 'Arquitectura', naturaleza: 'Naturaleza',
+    'post-mortem': 'Post mortem',
+    motos: 'Motos', coches: 'Coches', politica: 'Política', historia: 'Historia',
+    ciencia: 'Ciencia', deportes: 'Deportes', moda: 'Moda', arte: 'Arte',
+    musica: 'Música', humor: 'Humor', viajes: 'Viajes', economia: 'Economía',
+    cultura: 'Cultura', tecnologia: 'Tecnología',
+    folletos: 'Folletos', partituras: 'Partituras', escrituras: 'Escrituras',
+    mapas: 'Mapas', carteles: 'Carteles', otros: 'Otros',
+  };
+
   constructor(
     private route: ActivatedRoute,
     private antiquesService: AntiquesService,
@@ -398,6 +464,14 @@ export class AntiqueDetailComponent implements OnInit {
     } finally {
       this.loading.set(false);
     }
+  }
+
+  subLabel(key: string): string {
+    return this.subcategoryLabels[key] ?? key;
+  }
+
+  detLabel(key: string): string {
+    return this.detailLabels[key] ?? key;
   }
 
   goBack() {
