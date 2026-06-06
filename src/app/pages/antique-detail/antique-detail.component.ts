@@ -1,6 +1,7 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink, Router } from '@angular/router';
 import { CurrencyPipe, DatePipe } from '@angular/common';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { AntiquesService } from '../../core/antiques.service';
 import { AuthService } from '../../core/auth.service';
 import { Antique } from '../../models';
@@ -69,9 +70,22 @@ import { Antique } from '../../models';
               }
 
               <div class="antique-badge-row">
-                <span class="antique-badge">{{ antique()!.type === 'antiguedad' ? 'Antigüedades' : 'Papelería' }}</span>
-                <span class="antique-badge">{{ subLabel(antique()!.subcategory) }}{{ antique()!.detail ? ' → ' + detLabel(antique()!.detail) : '' }}</span>
-                <span class="antique-badge">{{ antique()!.condition }}</span>
+                <span class="antique-badge badge-type">
+                  <span [innerHTML]="typeIcon(antique()!.type)" class="badge-icon"></span>
+                  {{ antique()!.type === 'antiguedad' ? 'Antigüedades' : 'Papelería' }}
+                </span>
+                <span class="antique-badge badge-subcat">
+                  <span [innerHTML]="subcategoryIcon(antique()!.subcategory)" class="badge-icon"></span>
+                  {{ subLabel(antique()!.subcategory) }}
+                  @if (antique()!.detail) {
+                    <span class="badge-arrow">&rarr;</span>
+                    <span [innerHTML]="detailIcon(antique()!.detail)" class="badge-icon"></span>
+                    {{ detLabel(antique()!.detail) }}
+                  }
+                </span>
+                <span class="antique-badge badge-cond">
+                  {{ antique()!.condition }}
+                </span>
               </div>
 
               @if (antique()!.description) {
@@ -144,7 +158,7 @@ import { Antique } from '../../models';
                 </div>
               </div>
 
-              @if (auth.isLoggedIn) {
+              @if (auth.isAdmin) {
                 <div class="admin-actions">
                   <a [routerLink]="['/editar', antique()!.id]" class="btn-edit">Editar pieza</a>
                   <button class="btn-delete" (click)="confirmDelete()">Eliminar</button>
@@ -297,9 +311,17 @@ import { Antique } from '../../models';
       color: var(--color-primary);
       margin: 0 0 1rem;
     }
-    .antique-badge-row { margin-bottom: 1.5rem; }
+    .antique-badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      align-items: center;
+    }
     .antique-badge {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
       background: var(--color-bg-2);
       border: 1px solid var(--color-border);
       color: var(--color-secondary);
@@ -307,6 +329,30 @@ import { Antique } from '../../models';
       font-weight: 600;
       padding: 0.375rem 0.875rem;
       border-radius: 20px;
+    }
+    .badge-icon {
+      display: inline-flex;
+      align-items: center;
+    }
+    .badge-icon svg {
+      display: block;
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .badge-icon svg.icon-fill {
+      fill: currentColor;
+      stroke: none;
+    }
+    .badge-arrow {
+      color: var(--color-accent);
+      font-size: 0.9rem;
+      line-height: 1;
+      margin: 0 0.1rem;
     }
     .antique-section { margin-bottom: 1.5rem; }
     .section-label {
@@ -445,11 +491,88 @@ export class AntiqueDetailComponent implements OnInit {
     mapas: 'Mapas', carteles: 'Carteles', otros: 'Otros',
   };
 
+  private iconSvgs: Record<string, string> = {
+    type_antiguedad: '<svg viewBox="0 0 24 24"><path d="M5 20h14M7 17h10M8 8h8M6 11h12M9 8v9M15 8v9M11 8v9M13 8v9M12 3 5 7h14Z"/></svg>',
+    type_papeleria: '<svg viewBox="0 0 24 24"><path d="M7 3h7l5 5v13H7Z"/><path d="M14 3v6h5M10 13h6M10 17h6"/></svg>',
+
+    sub_escultura: '<svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"/><path d="M8 9h8v2H8z"/><path d="M6 11h12v1H6z"/><path d="M5 12h14v8H5zM7 14h10v4H7z"/></svg>',
+    sub_pintura: '<svg viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M7 20V8l4-4v16"/><path d="M11 20V4l4 4v12"/><path d="M15 20V8l3-3"/></svg>',
+    sub_cristal: '<svg viewBox="0 0 24 24"><path d="M8 3h8l-2 10H10L8 3Z"/><path d="M6 13h12l-1 8H7l-1-8Z"/><path d="M12 13v8"/></svg>',
+    sub_ceramica: '<svg viewBox="0 0 24 24"><path d="M7 8h10l1 4H6l1-4Z"/><path d="M6 12h12l-2 8H8l-2-8Z"/><path d="M12 8V5a2 2 0 0 1 2-2"/></svg>',
+    sub_filatelia: '<svg viewBox="0 0 24 24"><path d="M4 4h16v16H4Z"/><path d="M4 9h7v7H4z"/><path d="M17 8v8M15 12h4"/><path d="M9 4v21"/></svg>',
+    sub_fotos: '<svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="15" rx="2"/><circle cx="12" cy="13" r="4"/><path d="M17 5l-2-3H9L7 5"/></svg>',
+    sub_revistas: '<svg viewBox="0 0 24 24"><path d="M4 3h12l4 4v14H4Z"/><path d="M16 3v4h4M7 10h10M7 14h10M7 18h6"/></svg>',
+    sub_documentos: '<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Z"/><path d="M14 2v6h6M8 13h8M8 17h6"/></svg>',
+    sub_libros: '<svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/><path d="M10 9h6M10 13h4"/></svg>',
+
+    det_busto: '<svg viewBox="0 0 24 24"><path d="M12 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>',
+    det_figura: '<svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"/><path d="M5 21v-4a7 7 0 0 1 14 0v4"/></svg>',
+    det_belen: '<svg viewBox="0 0 24 24"><path d="M12 2l2 5h5l-4 3 2 5-5-3-5 3 2-5-4-3h5l2-5Z"/><path d="M8 17l-2 5M16 17l2 5M12 14v8"/></svg>',
+    det_oleo: '<svg viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M7 20V8l4-4v16"/><path d="M11 20V4l4 4v12"/></svg>',
+    det_grabado: '<svg viewBox="0 0 24 24"><path d="M5 5h14v14H5z"/><path d="M8 8l8 8M16 8l-8 8"/></svg>',
+    det_acuarela: '<svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-1 14 3 3 0 0 1 0 4"/><path d="M12 2a10 10 0 0 1 1 14 3 3 0 0 0 0 4"/><path d="M12 20v2"/><path d="M8 22h8"/></svg>',
+    det_hist_postal: '<svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 7L2 7"/></svg>',
+    det_entero_postal: '<svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 7L2 7"/><rect x="10" y="13" width="4" height="3" rx="0.5"/></svg>',
+    det_sello: '<svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 12l3 3 5-6"/></svg>',
+    det_pre_filatelia: '<svg viewBox="0 0 24 24"><path d="M4 6h16"/><path d="M4 10h16"/><path d="M4 14h16"/><path d="M4 18h16"/><path d="M4 6v12"/><path d="M20 6v12"/></svg>',
+    det_censura: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>',
+    det_familiar: '<svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="3"/><circle cx="15" cy="7" r="3"/><path d="M3 21v-2a4 4 0 0 1 4-4h2"/><path d="M21 21v-2a4 4 0 0 0-4-4"/><circle cx="12" cy="18" r="2"/></svg>',
+    det_boda: '<svg viewBox="0 0 24 24"><path d="M8 5l4 4-4 4"/><path d="M16 5l-4 4 4 4"/><path d="M4 16h16"/><path d="M8 20h8"/><path d="M12 16v4"/></svg>',
+    det_ninos: '<svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3"/><path d="M6 21v-4a6 6 0 0 1 12 0v4"/><path d="M12 10v2"/><path d="M10 14h4"/></svg>',
+    det_hombres: '<svg viewBox="0 0 24 24"><circle cx="12" cy="6" r="3"/><path d="M5 21v-5a7 7 0 0 1 14 0v5"/></svg>',
+    det_mujeres: '<svg viewBox="0 0 24 24"><circle cx="12" cy="6" r="3"/><path d="M5 21v-5a7 7 0 0 1 14 0v5"/><path d="M12 9v9"/></svg>',
+    det_militar: '<svg viewBox="0 0 24 24"><path d="M12 2l2 7 7 1-5 4 2 7-6-4-6 4 2-7-5-4 7-1 2-7Z"/></svg>',
+    det_etnica: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20Z"/><path d="M4.5 7.5a12 12 0 0 1 15 0M4.5 16.5a12 12 0 0 0 15 0"/></svg>',
+    det_paisaje: '<svg viewBox="0 0 24 24"><path d="M3 18l6-9 5 6 4-3 3 6H3Z"/><circle cx="18" cy="7" r="2"/></svg>',
+    det_retrato: '<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a6 6 0 0 1 12 0v2"/><path d="M20 12v9M17 17l3-3 3 3"/></svg>',
+    det_blanco_negro: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2v20"/><path d="M12 2a10 10 0 0 0 0 20"/></svg>',
+    det_estudio: '<svg viewBox="0 0 24 24"><path d="M2 12h4l3-9 3 9h4"/><path d="M6 12v9h12v-9"/><path d="M10 12l2-6 2 6"/></svg>',
+    det_reportaje: '<svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M8 8v8"/><path d="M12 10v4"/><path d="M16 6v12"/></svg>',
+    det_arquitectura: '<svg viewBox="0 0 24 24"><path d="M3 21h18"/><path d="M5 21V7l7-5 7 5v14"/><path d="M9 21V9h6v12"/><path d="M11 12h2v3h-2z"/></svg>',
+    det_naturaleza: '<svg viewBox="0 0 24 24"><path d="M17 12a7 7 0 0 0-14 0c0 3.3 2.5 6 5.5 7l1 5h1l1-5a7 7 0 0 0 5.5-7Z"/><path d="M17 12a5 5 0 0 0-8-4 7 7 0 0 0-1 8"/></svg>',
+    det_post_mortem: '<svg viewBox="0 0 24 24"><path d="M12 2v20"/><path d="M2 12h20"/><path d="M5 5l14 14M19 5l-14 14"/></svg>',
+    det_motos: '<svg viewBox="0 0 24 24"><circle cx="6" cy="16" r="4"/><circle cx="18" cy="16" r="4"/><path d="M14 16H8"/><path d="M4 12h16"/><path d="M12 4l-2 8h6"/><path d="M18 12l2-4h-4"/></svg>',
+    det_coches: '<svg viewBox="0 0 24 24"><circle cx="6" cy="17" r="3"/><circle cx="18" cy="17" r="3"/><path d="M4 17h2M18 17h2"/><path d="M3 12h18l-2-5H6L3 12Z"/><path d="M6 12V8"/><path d="M18 12V8"/></svg>',
+    det_politica: '<svg viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M7 9l5-4 5 4v2H7V9Z"/><path d="M5 21h14"/><path d="M7 15h10v4H7z"/></svg>',
+    det_historia: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>',
+    det_ciencia: '<svg viewBox="0 0 24 24"><path d="M9 3h6v5l5 9v2H4v-2l5-9V3Z"/><path d="M4 17h16"/></svg>',
+    det_deportes: '<svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0 0 20"/><path d="M12 2a10 10 0 0 1 0 20"/><path d="M2 12h20"/><path d="M12 2v20"/><path d="M7 4.5a10 10 0 0 0 0 15"/><path d="M17 4.5a10 10 0 0 1 0 15"/></svg>',
+    det_moda: '<svg viewBox="0 0 24 24"><path d="M7 3h10l-2 5h4l-1 3-6 3-6-3-1-3h4l-2-5Z"/><path d="M6 14l1 7h10l1-7"/></svg>',
+    det_arte: '<svg viewBox="0 0 24 24"><circle cx="13" cy="11" r="9"/><path d="M6 7l4 4 3-3 5 5"/><path d="M6 15l4-4 3 3 5-5"/></svg>',
+    det_musica: '<svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>',
+    det_humor: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 9h1M15 9h1"/><path d="M8 15a4 4 0 0 0 8 0"/></svg>',
+    det_viajes: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20Z"/><path d="M2 12h20"/><path d="M5 8h14M5 16h14"/></svg>',
+    det_economia: '<svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 16l4-8 4 4 4-6"/></svg>',
+    det_cultura: '<svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5Z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>',
+    det_tecnologia: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>',
+    det_folletos: '<svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 8h8"/><path d="M8 12h8"/><path d="M8 16h5"/><path d="M18 4v16"/></svg>',
+    det_partituras: '<svg viewBox="0 0 24 24"><path d="M6 18V3l12-2v15"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/><path d="M9 15V6l9-2"/></svg>',
+    det_escrituras: '<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Z"/><path d="M14 2v6h6M8 12h8M8 16h6"/></svg>',
+    det_mapas: '<svg viewBox="0 0 24 24"><path d="M3 7l6-3 6 3 6-3v13l-6 3-6-3-6 3V7Z"/><path d="M9 4v13M15 7v13"/><circle cx="12" cy="10" r="2"/></svg>',
+    det_carteles: '<svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h8M8 15h5"/></svg>',
+    det_otros: '<svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>',
+  };
+
+  typeIcon(type: string): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(this.iconSvgs['type_' + type] ?? '');
+  }
+
+  subcategoryIcon(key: string): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(this.iconSvgs['sub_' + key] ?? '');
+  }
+
+  detailIcon(key: string): SafeHtml {
+    const clean = key.replace(/[\s-]+/g, '_').replace(/[^a-z0-9_]/gi, '').toLowerCase();
+    const svg = this.iconSvgs['det_' + clean];
+    return this.sanitizer.bypassSecurityTrustHtml(svg ?? this.iconSvgs['det_otros'] ?? '');
+  }
+
   constructor(
     private route: ActivatedRoute,
     private antiquesService: AntiquesService,
     public auth: AuthService,
-    private router: Router
+    private router: Router,
+    private sanitizer: DomSanitizer
   ) {}
 
   async ngOnInit() {

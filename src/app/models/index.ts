@@ -38,3 +38,14 @@ export interface Antique {
 export type AntiqueCondition = 'Excelente' | 'Bueno' | 'Regular' | 'Para restaurar';
 
 export const CONDITIONS: AntiqueCondition[] = ['Excelente', 'Bueno', 'Regular', 'Para restaurar'];
+
+export type UserRole = 'admin' | 'user';
+
+export interface AppUser {
+  id: string;
+  email: string;
+  password: string;
+  role: UserRole;
+  name: string;
+  createdAt: string;
+}

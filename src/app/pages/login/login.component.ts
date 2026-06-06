@@ -1,12 +1,12 @@
 import { Component, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { RouterLink, Router } from '@angular/router';
 import { AuthService } from '../../core/auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule],
   template: `
     <div class="auth-page">
 
@@ -66,14 +66,6 @@ import { AuthService } from '../../core/auth.service';
                 required
               />
             </div>
-          </div>
-
-          <div class="form-options">
-            <label class="remember-row">
-              <input type="checkbox" />
-              <span>Recordarme</span>
-            </label>
-            <a routerLink="/login">¿Olvidaste tu contraseña?</a>
           </div>
 
           <button type="submit" class="btn-submit" [disabled]="loading()">
@@ -245,29 +237,6 @@ import { AuthService } from '../../core/auth.service';
     .form-input::placeholder {
       color: rgba(255,255,255,0.5);
     }
-    .form-options {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1rem;
-      color: rgba(255,255,255,0.72);
-      font-size: 0.82rem;
-    }
-    .remember-row {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.45rem;
-      cursor: pointer;
-    }
-    .remember-row input {
-      accent-color: var(--color-accent);
-    }
-    .form-options a {
-      color: #c89545;
-      text-decoration: none;
-      font-weight: 700;
-    }
-    .form-options a:hover { text-decoration: underline; }
     .btn-submit,
     .btn-quick {
       width: 100%;
@@ -318,10 +287,6 @@ import { AuthService } from '../../core/auth.service';
       }
       .auth-brand-name {
         letter-spacing: 0.14em;
-      }
-      .form-options {
-        align-items: flex-start;
-        flex-direction: column;
       }
     }
   `]

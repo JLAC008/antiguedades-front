@@ -1,12 +1,10 @@
-import { Component, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { RouterLink, Router } from '@angular/router';
-import { AuthService } from '../../core/auth.service';
+import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [FormsModule, RouterLink],
+  imports: [RouterLink],
   template: `
     <div class="auth-page">
       <div class="auth-split">
@@ -19,58 +17,12 @@ import { AuthService } from '../../core/auth.service';
         </div>
         <div class="auth-right">
           <div class="auth-form-container">
-            <h1 class="auth-title">Crear cuenta</h1>
-
-            @if (error()) {
-              <div class="auth-error">{{ error() }}</div>
-            }
-            @if (success()) {
-              <div class="auth-success">{{ success() }}</div>
-            }
-
-            <form (ngSubmit)="onSubmit()" class="auth-form">
-              <div class="form-group">
-                <label class="form-label">Correo electrónico</label>
-                <input
-                  type="email"
-                  class="form-input"
-                  [(ngModel)]="email"
-                  name="email"
-                  placeholder="tu@correo.com"
-                  required
-                />
-              </div>
-              <div class="form-group">
-                <label class="form-label">Contraseña</label>
-                <input
-                  type="password"
-                  class="form-input"
-                  [(ngModel)]="password"
-                  name="password"
-                  placeholder="Mínimo 6 caracteres"
-                  required
-                  minlength="6"
-                />
-              </div>
-              <div class="form-group">
-                <label class="form-label">Confirmar contraseña</label>
-                <input
-                  type="password"
-                  class="form-input"
-                  [(ngModel)]="confirmPassword"
-                  name="confirmPassword"
-                  placeholder="Repite la contraseña"
-                  required
-                />
-              </div>
-              <button type="submit" class="btn-submit" [disabled]="loading()">
-                @if (loading()) { Creando cuenta... } @else { Crear cuenta }
-              </button>
-            </form>
-
-            <p class="auth-footer">
-              ¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión</a>
+            <h1 class="auth-title">Registro no disponible</h1>
+            <p class="auth-message">
+              El registro de nuevos usuarios solo está disponible a través del administrador.
+              Contacta con el administrador para que cree una cuenta para ti.
             </p>
+            <a routerLink="/login" class="btn-submit">Ir a iniciar sesión</a>
           </div>
         </div>
       </div>
@@ -170,6 +122,13 @@ import { AuthService } from '../../core/auth.service';
       margin: 0 0 1.5rem;
       text-align: center;
     }
+    .auth-message {
+      color: var(--color-text-muted);
+      line-height: 1.7;
+      margin: 0 0 2rem;
+      font-size: 0.95rem;
+      text-align: center;
+    }
     .auth-error {
       background: #FEF2F2;
       border: 1px solid #FECACA;
@@ -239,31 +198,5 @@ import { AuthService } from '../../core/auth.service';
   `]
 })
 export class RegisterComponent {
-  email = '';
-  password = '';
-  confirmPassword = '';
-  loading = signal(false);
-  error = signal('');
-  success = signal('');
-
-  constructor(private auth: AuthService, private router: Router) {}
-
-  async onSubmit() {
-    if (!this.email || !this.password) return;
-    if (this.password !== this.confirmPassword) {
-      this.error.set('Las contraseñas no coinciden.');
-      return;
-    }
-    this.loading.set(true);
-    this.error.set('');
-    try {
-      await this.auth.signUp(this.email, this.password);
-      this.success.set('Cuenta creada correctamente. Ya puedes iniciar sesión.');
-      setTimeout(() => this.router.navigate(['/login']), 2000);
-    } catch (err: any) {
-      this.error.set(err?.message ?? 'Error al crear la cuenta.');
-    } finally {
-      this.loading.set(false);
-    }
-  }
+  constructor() {}
 }
