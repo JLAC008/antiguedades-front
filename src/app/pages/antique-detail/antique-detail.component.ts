@@ -25,8 +25,13 @@ import { Antique } from '../../models';
           <div class="antique-layout">
             <div class="antique-gallery">
               @if (antique()!.images && antique()!.images.length > 0) {
-                <div class="gallery-main">
+                <div class="gallery-main" tabindex="0" (keydown)="onKeydown($event)">
                   <img [src]="selectedImage()" [alt]="antique()!.name" class="gallery-main-img" />
+                  @if (images.length > 1) {
+                    <button class="gallery-arrow gallery-arrow-left" (click)="prevImage()" [disabled]="currentIndex === 0">&#8249;</button>
+                    <button class="gallery-arrow gallery-arrow-right" (click)="nextImage()" [disabled]="currentIndex === images.length - 1">&#8250;</button>
+                    <span class="gallery-counter">{{ currentIndex + 1 }} / {{ images.length }}</span>
+                  }
                 </div>
                 @if (antique()!.images.length > 1) {
                   <div class="gallery-thumbs">
@@ -36,7 +41,7 @@ import { Antique } from '../../models';
                         [alt]="antique()!.name"
                         class="gallery-thumb"
                         [class.active]="selectedImage() === img"
-                        (click)="selectedImage.set(img)"
+                        (click)="selectImage(img)"
                       />
                     }
                   </div>
@@ -134,6 +139,7 @@ import { Antique } from '../../models';
       align-items: start;
     }
     .gallery-main {
+      position: relative;
       border-radius: 10px;
       overflow: hidden;
       aspect-ratio: 1;
@@ -145,6 +151,42 @@ import { Antique } from '../../models';
       width: 100%;
       height: 100%;
       object-fit: cover;
+    }
+    .gallery-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(0,0,0,0.4);
+      color: white;
+      font-size: 1.5rem;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+      z-index: 2;
+    }
+    .gallery-arrow:hover:not(:disabled) { background: rgba(0,0,0,0.65); }
+    .gallery-arrow:disabled { opacity: 0.25; cursor: default; }
+    .gallery-arrow-left { left: 0.75rem; }
+    .gallery-arrow-right { right: 0.75rem; }
+    .gallery-counter {
+      position: absolute;
+      bottom: 0.75rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.45);
+      color: white;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      z-index: 2;
     }
     .gallery-thumbs {
       display: flex;
@@ -334,6 +376,8 @@ export class AntiqueDetailComponent implements OnInit {
   antique = signal<Antique | null>(null);
   loading = signal(true);
   selectedImage = signal('');
+  images: string[] = [];
+  currentIndex = 0;
 
   constructor(
     private route: ActivatedRoute,
@@ -348,6 +392,7 @@ export class AntiqueDetailComponent implements OnInit {
       const antique = await this.antiquesService.getById(id);
       this.antique.set(antique);
       if (antique?.images?.length) {
+        this.images = antique.images;
         this.selectedImage.set(antique.images[0]);
       }
     } finally {
@@ -357,6 +402,30 @@ export class AntiqueDetailComponent implements OnInit {
 
   goBack() {
     window.history.back();
+  }
+
+  prevImage() {
+    if (this.currentIndex > 0) {
+      this.currentIndex--;
+      this.selectedImage.set(this.images[this.currentIndex]);
+    }
+  }
+
+  nextImage() {
+    if (this.currentIndex < this.images.length - 1) {
+      this.currentIndex++;
+      this.selectedImage.set(this.images[this.currentIndex]);
+    }
+  }
+
+  selectImage(img: string) {
+    this.currentIndex = this.images.indexOf(img);
+    this.selectedImage.set(img);
+  }
+
+  onKeydown(event: KeyboardEvent) {
+    if (event.key === 'ArrowLeft') { this.prevImage(); event.preventDefault(); }
+    if (event.key === 'ArrowRight') { this.nextImage(); event.preventDefault(); }
   }
 
   async confirmDelete() {
