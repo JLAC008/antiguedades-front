@@ -38,27 +38,38 @@ import { AntiquesService } from '../../core/antiques.service';
 
         <div class="type-cards">
           <a routerLink="/coleccion" [queryParams]="{tipo: 'antiguedad'}" class="type-card">
-            <div class="type-card-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" role="img">
-                <path d="M5 20h14M7 17h10M8 8h8M6 11h12M9 8v9M15 8v9M11 8v9M13 8v9M12 3 5 7h14Z"/>
-              </svg>
+            <div class="type-card-media">
+              <img src="assets/home-antiguedades-card.png" alt="" loading="lazy" />
             </div>
-            <h3 class="type-card-name">Antigüedades</h3>
-            <p class="type-card-count">{{ counts.antiguedad }} pieza{{ counts.antiguedad !== 1 ? 's' : '' }}</p>
-            <p class="type-card-desc">Escultura, pintura, cristal, cerámica y piezas históricas</p>
-            <span class="type-card-action">Explorar &rarr;</span>
+            <div class="type-card-content">
+              <div class="type-card-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" role="img">
+                  <path d="M5 20h14M7 17h10M8 8h8M6 11h12M9 8v9M15 8v9M11 8v9M13 8v9M12 3 5 7h14Z"/>
+                </svg>
+              </div>
+              <h3 class="type-card-name">Antigüedades</h3>
+              <p class="type-card-count">{{ counts.antiguedad }} pieza{{ counts.antiguedad !== 1 ? 's' : '' }}</p>
+              <p class="type-card-desc">Escultura, pintura, cristal, cerámica y piezas históricas</p>
+              <span class="type-card-action">Explorar &rarr;</span>
+            </div>
           </a>
+
           <a routerLink="/coleccion" [queryParams]="{tipo: 'papeleria'}" class="type-card">
-            <div class="type-card-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" role="img">
-                <path d="M7 3h7l5 5v13H7Z"/>
-                <path d="M14 3v6h5M10 13h6M10 17h6"/>
-              </svg>
+            <div class="type-card-media">
+              <img src="assets/home-papeleria-card.png" alt="" loading="lazy" />
             </div>
-            <h3 class="type-card-name">Papelería</h3>
-            <p class="type-card-count">{{ counts.papeleria }} pieza{{ counts.papeleria !== 1 ? 's' : '' }}</p>
-            <p class="type-card-desc">Filatelia, fotos, revistas, documentos y libros</p>
-            <span class="type-card-action">Explorar &rarr;</span>
+            <div class="type-card-content">
+              <div class="type-card-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" role="img">
+                  <path d="M7 3h7l5 5v13H7Z"/>
+                  <path d="M14 3v6h5M10 13h6M10 17h6"/>
+                </svg>
+              </div>
+              <h3 class="type-card-name">Papelería</h3>
+              <p class="type-card-count">{{ counts.papeleria }} pieza{{ counts.papeleria !== 1 ? 's' : '' }}</p>
+              <p class="type-card-desc">Filatelia, fotos, revistas, documentos y libros</p>
+              <span class="type-card-action">Explorar &rarr;</span>
+            </div>
           </a>
         </div>
       </section>
@@ -192,17 +203,18 @@ import { AntiquesService } from '../../core/antiques.service';
       transform: translateY(-2px);
       box-shadow: 0 22px 42px rgba(0,0,0,0.34);
     }
+
     .section {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 2.2rem 1.5rem 5rem;
+      padding: 2.25rem 1.5rem 5rem;
     }
     .section-header {
-      margin-bottom: 1.05rem;
+      margin-bottom: 1.45rem;
       text-align: center;
     }
     .section-overline {
-      color: #6a5845;
+      color: #8a6f4c;
       font-size: 0.75rem;
       font-weight: 700;
       letter-spacing: 0.34em;
@@ -211,13 +223,13 @@ import { AntiquesService } from '../../core/antiques.service';
     }
     .section-title {
       font-family: 'Playfair Display', serif;
-      font-size: clamp(1.75rem, 3vw, 2.25rem);
+      font-size: clamp(1.8rem, 3vw, 2.35rem);
       font-weight: 700;
       color: var(--color-primary);
       margin: 0;
     }
     .section-flourish {
-      margin: 0.1rem auto 0.1rem;
+      margin: 0.08rem auto 0.1rem;
       transform: scale(0.58);
     }
     .section-subtitle {
@@ -228,46 +240,80 @@ import { AntiquesService } from '../../core/antiques.service';
     }
     .type-cards {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
-      max-width: 710px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.65rem;
+      max-width: 980px;
       margin: 0 auto;
     }
     .type-card {
-      background: rgba(255, 255, 255, 0.52);
-      border: 1px solid #dfd1bf;
-      border-radius: 10px;
-      padding: 1.6rem 2rem 1.35rem;
-      text-align: center;
+      min-height: 220px;
+      display: grid;
+      grid-template-columns: 48% 52%;
+      overflow: hidden;
       text-decoration: none;
-      transition: all 0.3s;
+      color: #fff8ed;
+      border: 1px solid rgba(184,149,90,0.5);
+      border-radius: 8px;
+      background: #0c0c0b;
+      box-shadow: 0 18px 42px rgba(64, 47, 29, 0.16);
+      transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+    }
+    .type-card:hover {
+      border-color: #d4ac62;
+      transform: translateY(-4px);
+      box-shadow: 0 24px 52px rgba(64, 47, 29, 0.24);
+    }
+    .type-card-media {
+      position: relative;
+      min-height: 220px;
+      overflow: hidden;
+      background: #080808;
+    }
+    .type-card-media::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent 0%, rgba(9,9,8,0.25) 58%, #0c0c0b 100%);
+      pointer-events: none;
+    }
+    .type-card-media img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      transition: transform 0.45s;
+    }
+    .type-card:hover .type-card-media img {
+      transform: scale(1.05);
+    }
+    .type-card-content {
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
       gap: 0.55rem;
-      min-height: 276px;
-      box-shadow: 0 14px 40px rgba(58, 42, 27, 0.04);
-    }
-    .type-card:hover {
-      border-color: var(--color-accent);
-      box-shadow: 0 16px 38px rgba(88, 63, 37, 0.12);
-      transform: translateY(-4px);
+      min-width: 0;
+      padding: 1.35rem 1.45rem;
+      text-align: center;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(184,149,90,0.12), transparent 8rem),
+        linear-gradient(90deg, #121110, #0b0b0a);
     }
     .type-card-icon {
-      color: var(--color-accent);
-      width: 64px;
-      height: 64px;
+      width: 62px;
+      height: 62px;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: radial-gradient(circle at 32% 22%, #34312c, #080808 68%);
+      color: #d4ac62;
+      border: 1px solid rgba(212,172,98,0.65);
       border-radius: 50%;
-      margin-bottom: 0.3rem;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 10px 22px rgba(0,0,0,0.18);
+      background: rgba(0,0,0,0.32);
+      margin-bottom: 0.25rem;
     }
     .type-card-icon svg {
-      width: 30px;
-      height: 30px;
+      width: 28px;
+      height: 28px;
       fill: none;
       stroke: currentColor;
       stroke-width: 1.45;
@@ -276,44 +322,44 @@ import { AntiquesService } from '../../core/antiques.service';
     }
     .type-card-name {
       font-family: 'Playfair Display', serif;
-      font-size: 1.42rem;
+      font-size: 1.45rem;
       font-weight: 700;
-      color: var(--color-primary);
+      color: #fff8ed;
       margin: 0;
     }
     .type-card-count {
       font-family: 'Playfair Display', serif;
       font-size: 0.83rem;
       font-weight: 600;
-      color: var(--color-accent);
-      background: rgba(255,255,255,0.72);
-      border: 1px solid rgba(184,149,90,0.56);
+      color: #d4ac62;
+      border: 1px solid rgba(184,149,90,0.65);
       padding: 0.08rem 0.72rem 0.12rem;
       border-radius: 20px;
       margin: 0;
       line-height: 1.35;
+      background: rgba(0,0,0,0.22);
     }
     .type-card-desc {
-      color: var(--color-text-muted);
+      color: rgba(255,248,237,0.86);
       font-family: 'Playfair Display', serif;
-      font-size: 0.96rem;
+      font-size: 0.95rem;
       margin: 0;
       line-height: 1.35;
-      max-width: 240px;
+      max-width: 245px;
       min-height: 2.65rem;
     }
     .type-card-action {
       display: inline-block;
       font-family: 'Playfair Display', serif;
-      font-size: 0.92rem;
+      font-size: 0.93rem;
       font-weight: 600;
-      color: var(--color-accent);
-      margin-top: auto;
-      padding-bottom: 0.35rem;
+      color: #d4ac62;
+      margin-top: 0.4rem;
+      padding-bottom: 0.28rem;
       border-bottom: 1px solid currentColor;
       min-width: 86px;
     }
-    @media (max-width: 640px) {
+    @media (max-width: 760px) {
       .hero {
         min-height: 500px;
         padding: 5.5rem 1rem 4rem;
@@ -325,9 +371,21 @@ import { AntiquesService } from '../../core/antiques.service';
         width: min(100%, 270px);
       }
       .section {
-        padding: 2.5rem 1rem 3.5rem;
+        padding: 2.4rem 1rem 3.5rem;
       }
-      .type-cards { grid-template-columns: 1fr; }
+      .type-cards {
+        grid-template-columns: 1fr;
+        max-width: 520px;
+      }
+      .type-card {
+        grid-template-columns: 1fr;
+      }
+      .type-card-media {
+        min-height: 180px;
+      }
+      .type-card-media::after {
+        background: linear-gradient(180deg, transparent 0%, rgba(12,12,11,0.86) 100%);
+      }
     }
   `]
 })
