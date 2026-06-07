@@ -184,6 +184,22 @@ import { AppUser, UserRole } from '../../models';
           </div>
         </div>
       </main>
+
+      @if (deleteTarget()) {
+        <div class="modal-overlay" (click)="cancelDelete()">
+          <div class="modal" (click)="$event.stopPropagation()">
+            <h3 class="modal-title">Eliminar usuario</h3>
+            <p class="modal-text">
+              ¿Estás seguro de que deseas eliminar a <strong>{{ deleteTarget()?.name }}</strong>?
+              <br/>Esta acción no se puede deshacer.
+            </p>
+            <div class="modal-actions">
+              <button class="btn-cancel" (click)="cancelDelete()">Cancelar</button>
+              <button class="btn-delete-confirm" (click)="confirmDelete()">Eliminar</button>
+            </div>
+          </div>
+        </div>
+      }
     </div>
   `,
   styles: [`
@@ -833,6 +849,78 @@ import { AppUser, UserRole } from '../../models';
         align-items: flex-start;
       }
     }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 1rem;
+    }
+    .modal {
+      background: #1c1b1a;
+      border: 1px solid rgba(184,149,90,0.35);
+      border-radius: 12px;
+      padding: 2rem;
+      max-width: 420px;
+      width: 100%;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+      color: #f0e8db;
+    }
+    .modal-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin: 0 0 0.75rem;
+      color: #f0e8db;
+    }
+    .modal-text {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin: 0 0 1.5rem;
+      color: rgba(240,232,219,0.8);
+    }
+    .modal-text strong {
+      color: #f0e8db;
+    }
+    .modal-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+    .modal-actions .btn-cancel {
+      flex: 1;
+      background: transparent;
+      border: 1px solid rgba(184,149,90,0.3);
+      color: rgba(240,232,219,0.7);
+      padding: 0.8rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .modal-actions .btn-cancel:hover {
+      border-color: rgba(184,149,90,0.6);
+      color: #f0e8db;
+    }
+    .btn-delete-confirm {
+      flex: 1;
+      background: #b85450;
+      color: white;
+      border: none;
+      padding: 0.8rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-delete-confirm:hover {
+      background: #d4605a;
+    }
   `]
 })
 export class ManageUsersComponent {
@@ -845,20 +933,22 @@ export class ManageUsersComponent {
   showFormPassword = signal(false);
   revealed = new Set<string>();
 
-  searchTerm = '';
-  roleFilter = '';
+  deleteTarget = signal<AppUser | null>(null);
+
+  searchTerm = signal('');
+  roleFilter = signal('');
   formName = '';
   formEmail = '';
   formPassword = '';
   formRole: UserRole = 'user';
 
   filteredUsers = computed(() => {
-    const term = this.searchTerm.trim().toLowerCase();
+    const term = this.searchTerm().trim().toLowerCase();
     return this.users().filter(user => {
       const matchesTerm = !term ||
         user.name.toLowerCase().includes(term) ||
         user.email.toLowerCase().includes(term);
-      const matchesRole = !this.roleFilter || user.role === this.roleFilter;
+      const matchesRole = !this.roleFilter() || user.role === this.roleFilter();
       return matchesTerm && matchesRole;
     });
   });
@@ -971,9 +1061,20 @@ export class ManageUsersComponent {
   }
 
   async deleteUser(id: string) {
-    if (!confirm('¿Eliminar este usuario?')) return;
+    const user = this.users().find(u => u.id === id);
+    if (user) this.deleteTarget.set(user);
+  }
+
+  cancelDelete() {
+    this.deleteTarget.set(null);
+  }
+
+  async confirmDelete() {
+    const user = this.deleteTarget();
+    if (!user) return;
+    this.deleteTarget.set(null);
     try {
-      await this.auth.deleteUser(id);
+      await this.auth.deleteUser(user.id);
       this.loadUsers();
     } catch (err: any) {
       this.error.set(err?.message ?? 'Error al eliminar usuario.');
