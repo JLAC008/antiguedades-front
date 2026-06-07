@@ -12,13 +12,14 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
   imports: [FormsModule, RouterLink],
   template: `
     <div class="page">
-      <div class="page-header">
+      <div class="page-header" [class.upload-type-hero]="step() === 1 && !editMode">
         <div class="page-header-inner">
           @if (step() === 1) {
-            <a routerLink="/coleccion" class="breadcrumb">&larr; Cancelar</a>
-            <h1 class="page-title">Nueva pieza</h1>
-            <div class="page-flourish" aria-hidden="true">⌘</div>
-            <p class="page-subtitle">Selecciona el tipo de pieza que quieres añadir</p>
+            <a routerLink="/coleccion" class="breadcrumb">&larr; Volver</a>
+            <div class="hero-mark" aria-hidden="true">&loz;</div>
+            <h1 class="page-title">A&ntilde;adir nueva pieza</h1>
+            <p class="page-subtitle">Incorpora una nueva pieza a tu colecci&oacute;n privada</p>
+            <div class="page-flourish" aria-hidden="true">&loz;</div>
           }
           @if (step() === 2) {
             <button class="breadcrumb" (click)="step.set(1)">&larr; Volver</button>
@@ -47,10 +48,11 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
         </div>
       </div>
 
-      <div class="page-content">
+      <div class="page-content" [class.upload-type-content]="step() === 1 && !editMode">
         @if (step() === 1 && !editMode) {
+          <p class="category-intro">Selecciona el tipo de pieza que quieres a&ntilde;adir para continuar</p>
           <div class="category-selector">
-            <div class="category-card" (click)="selectCategory('antiguedad')">
+            <div class="category-card category-card-antique" (click)="selectCategory('antiguedad')">
               <div class="category-icon category-icon-swords" aria-hidden="true">
                 <svg viewBox="0 0 24 24" role="img">
                   <path d="m14.5 5 4.4-3.4 1.5 1.5-3.4 4.4"/>
@@ -60,11 +62,13 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
                 </svg>
               </div>
               <h2 class="category-name">Antigüedades</h2>
-              <p class="category-desc">Muebles, relojes, porcelana, cerámica y piezas históricas</p>
               <span class="category-divider" aria-hidden="true"></span>
+              <p class="category-desc">Muebles, relojes, porcelana, cerámica y piezas históricas</p>
+              <span class="category-examples-title">Ejemplos:</span>
+              <span class="category-examples">Muebles · Relojes · Esculturas · Porcelana · Cerámica · Arte</span>
               <span class="category-action">Seleccionar &rarr;</span>
             </div>
-            <div class="category-card" (click)="selectCategory('papeleria')">
+            <div class="category-card category-card-paper" (click)="selectCategory('papeleria')">
               <div class="category-icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24" role="img">
                   <path d="M7 3h7l5 5v13H7Z"/>
@@ -72,9 +76,18 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
                 </svg>
               </div>
               <h2 class="category-name">Papelería</h2>
-              <p class="category-desc">Documentos, sellos, mapas, grabados y material de archivo</p>
               <span class="category-divider" aria-hidden="true"></span>
+              <p class="category-desc">Documentos, sellos, mapas, grabados y material de archivo</p>
+              <span class="category-examples-title">Ejemplos:</span>
+              <span class="category-examples">Documentos · Sellos · Mapas · Grabados · Libros · Archivos</span>
               <span class="category-action">Seleccionar &rarr;</span>
+            </div>
+          </div>
+          <div class="category-help">
+            <span class="category-help-icon" aria-hidden="true">i</span>
+            <div>
+              <strong>¿No estás seguro de qué categoría elegir?</strong>
+              <p>Puedes cambiar la categoría más adelante desde la edición de la pieza.</p>
             </div>
           </div>
         }
@@ -474,6 +487,65 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
       border-bottom: 1px solid #ded3c4;
       padding: 3.55rem 1.5rem 3rem;
     }
+    .page-header.upload-type-hero {
+      position: relative;
+      overflow: hidden;
+      min-height: 260px;
+      padding: 3.75rem 1.5rem 2.15rem;
+      text-align: center;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,0.28), rgba(0,0,0,0.78)),
+        url('/assets/login-bg-gallery.png') center 42% / cover no-repeat;
+      border-bottom: 1px solid rgba(184,149,90,0.32);
+      color: #fff8ed;
+    }
+    .page-header.upload-type-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(0,0,0,0.62), transparent 26%, transparent 72%, rgba(0,0,0,0.55)),
+        radial-gradient(circle at 15% 45%, rgba(184,149,90,0.14), transparent 18rem);
+      pointer-events: none;
+    }
+    .page-header.upload-type-hero .page-header-inner {
+      position: relative;
+      z-index: 1;
+    }
+    .page-header.upload-type-hero .breadcrumb {
+      position: absolute;
+      left: 0;
+      top: 3.15rem;
+      color: #d4ac62;
+      margin: 0;
+    }
+    .page-header.upload-type-hero .breadcrumb:hover {
+      color: #f2d292;
+    }
+    .page-header.upload-type-hero .page-title {
+      color: #fff8ed;
+      font-size: clamp(2.8rem, 5vw, 4.9rem);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      text-shadow: 0 16px 42px rgba(0,0,0,0.62);
+    }
+    .page-header.upload-type-hero .page-subtitle {
+      color: #d4ac62;
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.1rem, 2vw, 1.45rem);
+      margin-top: 0.65rem;
+    }
+    .page-header.upload-type-hero .page-flourish {
+      justify-content: center;
+      color: #d4ac62;
+      margin: 1.25rem auto 0;
+    }
+    .hero-mark {
+      color: #d4ac62;
+      font-family: Georgia, serif;
+      font-size: 1rem;
+      margin-bottom: 0.85rem;
+    }
     .page-header-inner {
       max-width: 1120px;
       margin: 0 auto;
@@ -530,6 +602,16 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
       margin: 0 auto;
       padding: 4rem 1.5rem 5rem;
     }
+    .page-content.upload-type-content {
+      max-width: 1280px;
+      padding: 1.8rem 1.5rem 3.6rem;
+    }
+    .page:has(.upload-type-content) {
+      background:
+        radial-gradient(circle at 50% 0%, rgba(184,149,90,0.12), transparent 30rem),
+        linear-gradient(180deg, #050505 0%, #0b0b0a 48%, #10100f 100%);
+      color: #f7efe3;
+    }
     .form-error {
       background: #FEF2F2;
       border: 1px solid #FECACA;
@@ -552,42 +634,79 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
     .category-selector {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 2.45rem;
-      max-width: 790px;
+      gap: 1.4rem;
+      max-width: 1080px;
       margin: 0 auto;
       padding-top: 0.25rem;
     }
     .category-card {
-      background: rgba(255, 255, 255, 0.48);
-      border: 1px solid #dccdbd;
-      border-radius: 10px;
-      padding: 2.25rem 2rem 2.35rem;
+      position: relative;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,0.18), rgba(0,0,0,0.82)),
+        #11100f;
+      border: 1px solid rgba(184,149,90,0.62);
+      border-radius: 7px;
+      padding: 2.25rem 2rem 0;
       text-align: center;
       cursor: pointer;
       transition: all 0.3s;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 0.85rem;
-      min-height: 360px;
-      box-shadow: 0 16px 42px rgba(64, 47, 29, 0.035);
+      justify-content: center;
+      gap: 0.75rem;
+      min-height: 380px;
+      box-shadow: 0 18px 48px rgba(0,0,0,0.35);
+      color: #fff8ed;
+      isolation: isolate;
+    }
+    .category-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      background-position: center;
+      background-size: cover;
+      opacity: 0.72;
+      transition: transform 0.45s, opacity 0.45s;
+    }
+    .category-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background:
+        radial-gradient(circle at 50% 32%, rgba(184,149,90,0.18), transparent 11rem),
+        linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.78) 68%, rgba(0,0,0,0.92));
+    }
+    .category-card-antique::before {
+      background-image: url('https://images.unsplash.com/photo-1585504198199-20277593b94f?w=900&h=640&fit=crop');
+    }
+    .category-card-paper::before {
+      background-image: url('https://images.unsplash.com/photo-1456324504439-367cee3b3c32?w=900&h=640&fit=crop');
     }
     .category-card:hover {
-      border-color: var(--color-accent);
-      box-shadow: 0 18px 38px rgba(84, 61, 38, 0.12);
+      border-color: #d4ac62;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.48);
       transform: translateY(-4px);
     }
+    .category-card:hover::before {
+      transform: scale(1.05);
+      opacity: 0.86;
+    }
     .category-icon {
-      color: var(--color-accent);
+      color: #d4ac62;
       width: 94px;
       height: 94px;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: radial-gradient(circle at 32% 22%, #33312d, #090909 68%);
+      background: rgba(3,3,3,0.7);
+      border: 1px solid rgba(212,172,98,0.78);
       border-radius: 50%;
       margin-bottom: 0.45rem;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.11), 0 14px 28px rgba(0,0,0,0.18);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 14px 28px rgba(0,0,0,0.28);
       font-size: 2.3rem;
     }
     .category-icon svg {
@@ -606,32 +725,94 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
     }
     .category-name {
       font-family: 'Playfair Display', serif;
-      font-size: 1.85rem;
+      font-size: clamp(2rem, 3vw, 2.65rem);
       font-weight: 700;
-      color: var(--color-primary);
+      color: #fff8ed;
       margin: 0;
+      text-shadow: 0 10px 30px rgba(0,0,0,0.62);
     }
     .category-desc {
-      color: #5b5046;
+      color: rgba(255,248,237,0.88);
       font-family: 'Playfair Display', serif;
-      font-size: 1.02rem;
+      font-size: 1.05rem;
       margin: 0;
       line-height: 1.55;
-      max-width: 270px;
-      min-height: 3.1rem;
+      max-width: 340px;
+      min-height: 3.2rem;
     }
     .category-divider {
       display: block;
       width: 92px;
       height: 1px;
       background: linear-gradient(90deg, transparent, rgba(184,149,90,0.72), transparent);
-      margin: 0.8rem 0 0.55rem;
+      margin: 0.2rem 0 0.55rem;
+    }
+    .category-examples-title {
+      color: #d4ac62;
+      font-family: 'Playfair Display', serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-top: 0.25rem;
+    }
+    .category-examples {
+      color: rgba(255,248,237,0.76);
+      font-family: 'Playfair Display', serif;
+      font-size: 0.88rem;
+      line-height: 1.45;
+      max-width: 420px;
     }
     .category-action {
-      font-size: 1rem;
+      width: calc(100% + 4rem);
+      display: block;
+      margin: 1.2rem -2rem 0;
+      padding: 1rem;
+      border-top: 1px solid rgba(184,149,90,0.34);
+      background: rgba(3,3,3,0.24);
+      font-family: 'Playfair Display', serif;
+      font-size: 1.08rem;
       font-weight: 700;
-      color: var(--color-accent);
-      margin-top: 0;
+      color: #d4ac62;
+    }
+    .category-intro {
+      color: #d4ac62;
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.05rem, 2vw, 1.35rem);
+      text-align: center;
+      margin: 0 0 1.7rem;
+    }
+    .category-help {
+      max-width: 1080px;
+      margin: 1.35rem auto 0;
+      padding: 1.2rem 1.35rem;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      border: 1px solid rgba(184,149,90,0.34);
+      border-radius: 7px;
+      background: linear-gradient(180deg, rgba(18,18,17,0.92), rgba(9,9,8,0.82));
+      color: rgba(247,239,227,0.78);
+    }
+    .category-help-icon {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border: 1px solid rgba(212,172,98,0.68);
+      border-radius: 50%;
+      color: #d4ac62;
+      font-family: Georgia, serif;
+    }
+    .category-help strong {
+      display: block;
+      color: #e7c37c;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.04rem;
+      margin-bottom: 0.2rem;
+    }
+    .category-help p {
+      margin: 0;
+      font-size: 0.94rem;
     }
     .form-container { max-width: 1100px; margin: 0 auto; }
     .antique-form {
@@ -1002,9 +1183,26 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
         max-width: 430px;
       }
       .category-card {
-        min-height: auto;
+        min-height: 330px;
         padding: 1.65rem 1.25rem 1.55rem;
         gap: 0.65rem;
+      }
+      .upload-type-content .category-card {
+        padding-bottom: 0;
+      }
+      .upload-type-content .category-action {
+        width: calc(100% + 2.5rem);
+        margin-left: -1.25rem;
+        margin-right: -1.25rem;
+      }
+      .page-header.upload-type-hero {
+        min-height: 250px;
+        padding: 3rem 1rem 1.9rem;
+      }
+      .page-header.upload-type-hero .breadcrumb {
+        position: static;
+        display: inline-block;
+        margin-bottom: 0.8rem;
       }
       .category-icon {
         width: 72px;
