@@ -19,7 +19,6 @@ import { AuthService } from '../../core/auth.service';
           <a routerLink="/coleccion" routerLinkActive="active" class="nav-link">Colección</a>
           @if (auth.isAdmin) {
             <a routerLink="/subir" routerLinkActive="active" class="nav-link">Subir Pieza</a>
-            <a routerLink="/catalogos" routerLinkActive="active" class="nav-link">Gestionar</a>
             <a routerLink="/usuarios" routerLinkActive="active" class="nav-link">Usuarios</a>
           }
         </div>
@@ -58,7 +57,6 @@ import { AuthService } from '../../core/auth.service';
           <a routerLink="/coleccion" class="nav-mobile-link" (click)="closeMenu()">Colección</a>
           @if (auth.isAdmin) {
             <a routerLink="/subir" class="nav-mobile-link" (click)="closeMenu()">Subir Pieza</a>
-            <a routerLink="/catalogos" class="nav-mobile-link" (click)="closeMenu()">Gestionar</a>
             <a routerLink="/usuarios" class="nav-mobile-link" (click)="closeMenu()">Usuarios</a>
           }
           @if (auth.isLoggedIn) {

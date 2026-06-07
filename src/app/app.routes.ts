@@ -44,11 +44,6 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/upload-antique/upload-antique.component').then(m => m.UploadAntiqueComponent)
       },
       {
-        path: 'catalogos',
-        canActivate: [adminGuard],
-        loadComponent: () => import('./pages/manage-catalogs/manage-catalogs.component').then(m => m.ManageCatalogsComponent)
-      },
-      {
         path: 'usuarios',
         canActivate: [adminGuard],
         loadComponent: () => import('./pages/manage-users/manage-users.component').then(m => m.ManageUsersComponent)

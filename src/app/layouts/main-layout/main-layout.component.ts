@@ -25,7 +25,6 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
           <a routerLink="/">Inicio</a>
           <a routerLink="/coleccion">Colección</a>
           <a routerLink="/subir">Subir Pieza</a>
-          <a routerLink="/catalogos">Gestionar</a>
         </nav>
 
         <p class="footer-note">Piezas únicas reunidas con pasión, conservadas para la familia.</p>

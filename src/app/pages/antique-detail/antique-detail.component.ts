@@ -159,10 +159,26 @@ import { Antique } from '../../models';
                     <span aria-hidden="true">✎</span>
                     Editar pieza
                   </a>
-                  <button class="btn-delete" (click)="confirmDelete()">
+                  <button class="btn-delete" (click)="showDeleteModal.set(true)">
                     <span aria-hidden="true">⌫</span>
                     Eliminar
                   </button>
+                </div>
+              }
+
+              @if (showDeleteModal()) {
+                <div class="modal-overlay" (click)="cancelDelete()">
+                  <div class="modal" (click)="$event.stopPropagation()">
+                    <h3 class="modal-title">Eliminar pieza</h3>
+                    <p class="modal-text">
+                      ¿Estás seguro de que deseas eliminar <strong>{{ antique()!.name }}</strong>?
+                      <br/>Esta acción no se puede deshacer.
+                    </p>
+                    <div class="modal-actions">
+                      <button class="btn-cancel" (click)="cancelDelete()">Cancelar</button>
+                      <button class="btn-delete-confirm" (click)="confirmDelete()">Eliminar</button>
+                    </div>
+                  </div>
                 </div>
               }
             </section>
@@ -693,6 +709,75 @@ import { Antique } from '../../models';
         justify-content: flex-start;
       }
     }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 1rem;
+    }
+    .modal {
+      background: #1c1b1a;
+      border: 1px solid rgba(184,149,90,0.35);
+      border-radius: 12px;
+      padding: 2rem;
+      max-width: 420px;
+      width: 100%;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+      color: #f0e8db;
+    }
+    .modal-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin: 0 0 0.75rem;
+      color: #f0e8db;
+    }
+    .modal-text {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin: 0 0 1.5rem;
+      color: rgba(240,232,219,0.8);
+    }
+    .modal-text strong {
+      color: #f0e8db;
+    }
+    .modal-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+    .btn-cancel {
+      flex: 1;
+      min-height: 48px;
+      border: 1px solid rgba(184,149,90,0.35);
+      border-radius: 8px;
+      background: transparent;
+      color: #f0e8db;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-cancel:hover {
+      background: rgba(184,149,90,0.1);
+    }
+    .btn-delete-confirm {
+      flex: 1;
+      min-height: 48px;
+      border: none;
+      border-radius: 8px;
+      background: #a0302b;
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-delete-confirm:hover {
+      background: #c43d36;
+    }
   `]
 })
 export class AntiqueDetailComponent implements OnInit {
@@ -701,6 +786,7 @@ export class AntiqueDetailComponent implements OnInit {
   selectedImage = signal('');
   images: string[] = [];
   currentIndex = 0;
+  showDeleteModal = signal(false);
 
   subcategoryLabels: Record<string, string> = {
     escultura: 'Escultura',
@@ -827,8 +913,12 @@ export class AntiqueDetailComponent implements OnInit {
     }
   }
 
+  cancelDelete() {
+    this.showDeleteModal.set(false);
+  }
+
   async confirmDelete() {
-    if (!confirm(`¿Eliminar "${this.antique()?.name}"? Esta acción no se puede deshacer.`)) return;
+    this.showDeleteModal.set(false);
     await this.antiquesService.delete(this.antique()!.id);
     this.router.navigate(['/coleccion']);
   }
