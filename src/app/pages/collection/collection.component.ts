@@ -12,57 +12,126 @@ import { Antique, Catalog } from '../../models';
   imports: [FormsModule, AntiqueCardComponent],
   template: `
     <div class="page-collection">
-      <div class="page-header">
-        <div class="page-header-inner">
-          <h1 class="page-title">Colección Completa</h1>
-          <div class="page-flourish" aria-hidden="true">⌘</div>
-          <p class="page-subtitle">{{ filtered().length }} pieza{{ filtered().length !== 1 ? 's' : '' }} en total</p>
+      <section class="collection-hero">
+        <div class="collection-hero-shade"></div>
+        <div class="collection-hero-inner">
+          <p class="hero-kicker">Colección completa</p>
+          <h1 class="hero-title">Piezas únicas. Historias eternas.</h1>
+          <div class="hero-flourish" aria-hidden="true">⌘</div>
+          <p class="hero-copy">
+            Explora nuestra colección privada de antigüedades cuidadosamente seleccionadas
+            por su valor histórico, artístico y cultural.
+          </p>
+
+          <div class="stats-row" aria-label="Resumen de la colección">
+            <div class="stat-card">
+              <span class="stat-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M21 8.5 12 3 3 8.5l9 5.5 9-5.5Z"/><path d="M3 8.5V16l9 5.5 9-5.5V8.5"/><path d="M12 14v7.5"/></svg>
+              </span>
+              <div><strong>{{ antiques().length }}</strong><span>Piezas catalogadas</span></div>
+            </div>
+            <div class="stat-card">
+              <span class="stat-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="m12 3 7 3v5c0 4.6-3 8.4-7 10-4-1.6-7-5.4-7-10V6l7-3Z"/><path d="m12 8 1.2 2.4 2.6.4-1.9 1.8.5 2.6-2.4-1.2-2.4 1.2.5-2.6-1.9-1.8 2.6-.4L12 8Z"/></svg>
+              </span>
+              <div><strong>{{ categoryCount() }}</strong><span>Categorías</span></div>
+            </div>
+            <div class="stat-card">
+              <span class="stat-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M7 3v4M17 3v4M4 9h16M5 5h14a1 1 0 0 1 1 1v14H4V6a1 1 0 0 1 1-1Z"/><path d="M8 13h.01M12 13h.01M16 13h.01M8 17h.01M12 17h.01"/></svg>
+              </span>
+              <div><strong>{{ eraSummary() }}</strong><span>Épocas representadas</span></div>
+            </div>
+            <div class="stat-card">
+              <span class="stat-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M15 9.2A3 3 0 0 0 12.5 8H11a2 2 0 0 0 0 4h2a2 2 0 0 1 0 4h-1.5A3 3 0 0 1 9 14.8"/></svg>
+              </span>
+              <div><strong>{{ totalValueLabel() }}</strong><span>Valor estimado total</span></div>
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
 
       <div class="page-content">
-        <div class="search-bar">
-          <span class="search-icon">&#128269;</span>
-          <input
-            type="text"
-            class="search-input"
-            placeholder="Buscar por nombre, material, época..."
-            [(ngModel)]="searchTerm"
-            (ngModelChange)="applyFilters()"
-          />
-          @if (searchTerm) {
-            <button class="search-clear" (click)="searchTerm=''; applyFilters()">&times;</button>
-          }
-        </div>
+        <div class="collection-panel">
+          <div class="toolbar">
+            <label class="search-bar">
+              <span class="search-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4 4"/></svg>
+              </span>
+              <input
+                type="text"
+                class="search-input"
+                placeholder="Buscar por nombre, material, época..."
+                [(ngModel)]="searchTerm"
+                (ngModelChange)="applyFilters()"
+              />
+              @if (searchTerm) {
+                <button class="search-clear" type="button" (click)="searchTerm=''; applyFilters()">&times;</button>
+              }
+            </label>
 
-        <div class="filter-chips">
-          <button class="chip" [class.chip-active]="selectedType" (click)="toggleFilter('type')">
-            <span class="chip-label">{{ selectedType ? typeLabel(selectedType) : 'Tipo' }}</span>
-            @if (selectedType) { <span class="chip-caret">&#9660;</span> }
-            @else { <span class="chip-plus">+</span> }
-          </button>
-          <button class="chip" [class.chip-active]="selectedSubcategory" (click)="toggleFilter('subcategory')">
-            <span class="chip-label">{{ selectedSubcategory ? subLabel(selectedSubcategory) : 'Subcategoría' }}</span>
-            @if (selectedSubcategory) { <span class="chip-caret">&#9660;</span> }
-            @else { <span class="chip-plus">+</span> }
-          </button>
-          <button class="chip" [class.chip-active]="selectedDetail" (click)="toggleFilter('detail')">
-            <span class="chip-label">{{ selectedDetail ? detLabel(selectedDetail) : 'Detalle' }}</span>
-            @if (selectedDetail) { <span class="chip-caret">&#9660;</span> }
-            @else { <span class="chip-plus">+</span> }
-          </button>
-          <button class="chip" [class.chip-active]="selectedCatalog" (click)="toggleFilter('catalog')">
-            <span class="chip-label">{{ selectedCatalog ? catalogLabel(selectedCatalog) : 'Catálogo' }}</span>
-            @if (selectedCatalog) { <span class="chip-caret">&#9660;</span> }
-            @else { <span class="chip-plus">+</span> }
-          </button>
-          <button class="chip" [class.chip-active]="selectedCondition" (click)="toggleFilter('condition')">
-            <span class="chip-label">{{ selectedCondition ? selectedCondition : 'Estado' }}</span>
-            @if (selectedCondition) { <span class="chip-caret">&#9660;</span> }
-            @else { <span class="chip-plus">+</span> }
-          </button>
-          @if (hasActiveFilters()) {
-            <button class="chip chip-clear" (click)="clearAll()">Limpiar</button>
+            <div class="filter-chips">
+              <button class="chip" [class.chip-active]="selectedType" (click)="toggleFilter('type')">
+                <span>{{ selectedType ? typeLabel(selectedType) : 'Tipo' }}</span>
+                <span class="chip-caret">⌄</span>
+              </button>
+              <button class="chip" [class.chip-active]="selectedSubcategory" (click)="toggleFilter('subcategory')">
+                <span>{{ selectedSubcategory ? subLabel(selectedSubcategory) : 'Categoría' }}</span>
+                <span class="chip-caret">⌄</span>
+              </button>
+              <button class="chip" [class.chip-active]="selectedDetail" (click)="toggleFilter('detail')">
+                <span>{{ selectedDetail ? detLabel(selectedDetail) : 'Material' }}</span>
+                <span class="chip-caret">⌄</span>
+              </button>
+              <button class="chip" [class.chip-active]="selectedCondition" (click)="toggleFilter('condition')">
+                <span>{{ selectedCondition ? selectedCondition : 'Estado' }}</span>
+                <span class="chip-caret">⌄</span>
+              </button>
+              <button class="chip chip-more" [class.chip-active]="selectedCatalog" (click)="toggleFilter('catalog')">
+                <span>{{ selectedCatalog ? catalogLabel(selectedCatalog) : 'Más filtros' }}</span>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10M8 5v4M16 15v4"/></svg>
+              </button>
+              @if (hasActiveFilters()) {
+                <button class="chip chip-clear" (click)="clearAll()">Limpiar</button>
+              }
+            </div>
+
+            <div class="toolbar-actions">
+              <select class="sort-select" [(ngModel)]="sortBy" (ngModelChange)="applyFilters()" aria-label="Ordenar colección">
+                <option value="recent">Ordenar por</option>
+                <option value="priceDesc">Precio mayor</option>
+                <option value="priceAsc">Precio menor</option>
+                <option value="name">Nombre</option>
+              </select>
+              <button class="view-btn active" type="button" aria-label="Vista de cuadrícula">
+                <svg viewBox="0 0 24 24"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></svg>
+              </button>
+              <button class="view-btn" type="button" aria-label="Vista de lista">
+                <svg viewBox="0 0 24 24"><path d="M5 7h14M5 12h14M5 17h14"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <p class="result-count">{{ filtered().length }} pieza{{ filtered().length !== 1 ? 's' : '' }} encontradas</p>
+
+          @if (loading()) {
+            <div class="antiques-grid">
+              @for (i of [1,2,3,4,5,6,7,8]; track i) {
+                <div class="skeleton-card"></div>
+              }
+            </div>
+          } @else if (filtered().length === 0) {
+            <div class="empty-state">
+              <span class="empty-icon">⌕</span>
+              <p>No se encontraron piezas con los filtros seleccionados.</p>
+            </div>
+          } @else {
+            <div class="antiques-grid">
+              @for (antique of filtered(); track antique.id) {
+                <app-antique-card [antique]="antique" />
+              }
+            </div>
           }
         </div>
 
@@ -80,13 +149,13 @@ import { Antique, Catalog } from '../../models';
                   <button class="filter-option" [class.selected]="selectedType==='papeleria'" (click)="selectType('papeleria')">Papelería</button>
                 }
                 @if (openFilter === 'subcategory') {
-                  <button class="filter-option" [class.selected]="!selectedSubcategory" (click)="selectSubcategory('')">Todas las subcategorías</button>
+                  <button class="filter-option" [class.selected]="!selectedSubcategory" (click)="selectSubcategory('')">Todas las categorías</button>
                   @for (sub of availableSubcategories; track sub) {
                     <button class="filter-option" [class.selected]="selectedSubcategory===sub" (click)="selectSubcategory(sub)">{{ subLabel(sub) }}</button>
                   }
                 }
                 @if (openFilter === 'detail') {
-                  <button class="filter-option" [class.selected]="!selectedDetail" (click)="selectDetail('')">Todos los detalles</button>
+                  <button class="filter-option" [class.selected]="!selectedDetail" (click)="selectDetail('')">Todos los materiales</button>
                   @for (det of availableDetails; track det) {
                     <button class="filter-option" [class.selected]="selectedDetail===det" (click)="selectDetail(det)">{{ detLabel(det) }}</button>
                   }
@@ -108,25 +177,6 @@ import { Antique, Catalog } from '../../models';
             </div>
           </div>
         }
-
-        @if (loading()) {
-          <div class="antiques-grid">
-            @for (i of [1,2,3,4,5,6]; track i) {
-              <div class="skeleton-card"></div>
-            }
-          </div>
-        } @else if (filtered().length === 0) {
-          <div class="empty-state">
-            <span class="empty-icon">&#128269;</span>
-            <p>No se encontraron piezas con los filtros seleccionados.</p>
-          </div>
-        } @else {
-          <div class="antiques-grid">
-            @for (antique of filtered(); track antique.id) {
-              <app-antique-card [antique]="antique" />
-            }
-          </div>
-        }
       </div>
     </div>
   `,
@@ -134,119 +184,351 @@ import { Antique, Catalog } from '../../models';
     .page-collection {
       min-height: 100vh;
       background:
-        radial-gradient(circle at 50% 0%, rgba(184, 149, 90, 0.09), transparent 36rem),
-        #fbfaf7;
+        radial-gradient(circle at 50% 0%, rgba(184, 149, 90, 0.14), transparent 28rem),
+        linear-gradient(180deg, #050505 0%, #0b0b0a 46%, #10100f 100%);
+      color: #f7efe3;
     }
-    .page-header {
-      background: rgba(255, 255, 255, 0.64);
-      border-bottom: 1px solid #ded3c4;
-      padding: 3.55rem 1.5rem 3rem;
+
+    .collection-hero {
+      position: relative;
+      min-height: 460px;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(0, 0, 0, 0.36), rgba(0, 0, 0, 0.78)),
+        url('/assets/login-bg-gallery.png') center 42% / cover no-repeat;
+      border-bottom: 1px solid rgba(184, 149, 90, 0.32);
     }
-    .page-header-inner { max-width: 1200px; margin: 0 auto; }
-    .page-title {
+
+    .collection-hero-shade {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 18% 30%, rgba(184, 149, 90, 0.16), transparent 18rem),
+        radial-gradient(circle at 84% 20%, rgba(184, 149, 90, 0.12), transparent 20rem),
+        linear-gradient(90deg, rgba(0,0,0,0.45), transparent 22%, transparent 72%, rgba(0,0,0,0.45));
+      pointer-events: none;
+    }
+
+    .collection-hero-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 4.2rem 1.5rem 1.55rem;
+      text-align: center;
+    }
+
+    .hero-kicker {
+      margin: 0 0 0.6rem;
+      color: #d4ac62;
       font-family: 'Playfair Display', serif;
-      font-size: clamp(2rem, 3.4vw, 2.75rem);
+      font-size: clamp(1rem, 1.8vw, 1.35rem);
       font-weight: 700;
-      color: var(--color-primary);
-      margin: 0;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
     }
-    .page-flourish {
+
+    .hero-title {
+      max-width: 920px;
+      margin: 0 auto;
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.4rem, 5vw, 4.05rem);
+      font-weight: 700;
+      color: #fff8ed;
+      text-shadow: 0 12px 34px rgba(0, 0, 0, 0.55);
+    }
+
+    .hero-flourish {
       display: flex;
       align-items: center;
-      gap: 0.8rem;
-      color: var(--color-accent);
+      justify-content: center;
+      gap: 0.85rem;
+      margin: 1rem auto 1.1rem;
+      color: #c89b4b;
       font-family: Georgia, serif;
-      font-size: 0.92rem;
-      margin: 1rem 0 1.05rem;
-      opacity: 0.78;
+      font-size: 1rem;
     }
-    .page-flourish::before,
-    .page-flourish::after {
+
+    .hero-flourish::before,
+    .hero-flourish::after {
       content: '';
-      width: 4.1rem;
+      width: 5.3rem;
       height: 1px;
-      background: linear-gradient(90deg, rgba(184, 149, 90, 0.78), transparent);
+      background: linear-gradient(90deg, transparent, rgba(200, 155, 75, 0.9));
     }
-    .page-flourish::before {
-      background: linear-gradient(90deg, transparent, rgba(184, 149, 90, 0.78));
+
+    .hero-flourish::after {
+      background: linear-gradient(90deg, rgba(200, 155, 75, 0.9), transparent);
     }
-    .page-subtitle { color: #5f5145; font-size: 1.02rem; margin: 0; }
-    .page-content { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+    .hero-copy {
+      max-width: 650px;
+      margin: 0 auto 1.95rem;
+      color: rgba(255, 248, 237, 0.78);
+      font-size: 1.02rem;
+      line-height: 1.75;
+    }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.9rem;
+      max-width: 930px;
+      margin: 0 auto;
+    }
+
+    .stat-card {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      min-height: 78px;
+      padding: 1rem 1.25rem;
+      text-align: left;
+      background: linear-gradient(135deg, rgba(21, 18, 14, 0.92), rgba(9, 9, 8, 0.78));
+      border: 1px solid rgba(200, 155, 75, 0.72);
+      box-shadow: 0 16px 42px rgba(0, 0, 0, 0.34);
+    }
+
+    .stat-icon {
+      display: grid;
+      place-items: center;
+      width: 2.25rem;
+      height: 2.25rem;
+      flex: 0 0 auto;
+      color: #d4ac62;
+    }
+
+    .stat-icon svg,
+    .search-icon svg,
+    .chip svg,
+    .view-btn svg {
+      width: 100%;
+      height: 100%;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .stat-card strong {
+      display: block;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.72rem;
+      line-height: 1;
+      color: #ffe0a0;
+    }
+
+    .stat-card div span {
+      display: block;
+      margin-top: 0.28rem;
+      color: rgba(255, 248, 237, 0.78);
+      font-size: 0.9rem;
+      line-height: 1.2;
+    }
+
+    .page-content {
+      max-width: 1320px;
+      margin: -0.1rem auto 0;
+      padding: 0 1.5rem 4rem;
+    }
+
+    .collection-panel {
+      background:
+        linear-gradient(180deg, rgba(16, 16, 15, 0.97), rgba(10, 10, 9, 0.98)),
+        radial-gradient(circle at 50% 0%, rgba(184, 149, 90, 0.12), transparent 22rem);
+      border: 1px solid rgba(184, 149, 90, 0.26);
+      box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.35);
+      padding: 1.35rem 1.45rem 1.55rem;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      width: 100%;
+    }
+
+    .search-bar,
+    .chip,
+    .sort-select,
+    .view-btn {
+      background: rgba(4, 4, 4, 0.72);
+      border: 1px solid rgba(184, 149, 90, 0.38);
+      color: #f4eadb;
+    }
 
     .search-bar {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      background: var(--color-surface);
-      border: 1px solid var(--color-border);
-      border-radius: 10px;
-      padding: 0 1rem;
-      margin-bottom: 0.75rem;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      gap: 0.7rem;
+      height: 3rem;
+      flex: 1 1 420px;
+      min-width: 280px;
+      max-width: 480px;
+      padding: 0 0.95rem;
     }
+
     .search-bar:focus-within {
-      border-color: var(--color-accent);
-      box-shadow: 0 0 0 3px rgba(184,149,90,0.12);
+      border-color: rgba(212, 172, 98, 0.95);
+      box-shadow: 0 0 0 3px rgba(184, 149, 90, 0.12);
     }
-    .search-icon { font-size: 1rem; color: var(--color-text-muted); flex-shrink: 0; }
+
+    .search-icon {
+      width: 1.12rem;
+      height: 1.12rem;
+      color: #d4ac62;
+      flex: 0 0 auto;
+    }
+
     .search-input {
       flex: 1;
-      border: none;
-      background: none;
-      padding: 0.875rem 0;
-      font-size: 0.9375rem;
-      color: var(--color-text);
-      outline: none;
+      min-width: 0;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: #fff8ed;
+      font-size: 0.94rem;
     }
+
+    .search-input::placeholder {
+      color: rgba(247, 239, 227, 0.42);
+    }
+
     .search-clear {
-      background: none;
-      border: none;
-      font-size: 1.25rem;
-      color: var(--color-text-muted);
+      border: 0;
+      background: transparent;
+      color: #d4ac62;
       cursor: pointer;
-      padding: 0 0.25rem;
+      font-size: 1.4rem;
       line-height: 1;
     }
-    .search-clear:hover { color: var(--color-text); }
 
     .filter-chips {
       display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-bottom: 1.5rem;
+      flex: 1 1 auto;
+      flex-wrap: nowrap;
+      gap: 0.55rem;
       align-items: center;
+      min-width: 0;
     }
+
     .chip {
       display: inline-flex;
       align-items: center;
-      gap: 0.375rem;
-      padding: 0.5rem 0.875rem;
-      border: 1px solid var(--color-border);
-      border-radius: 20px;
-      background: var(--color-surface);
-      color: var(--color-text-muted);
-      font-size: 0.8125rem;
-      font-weight: 500;
+      justify-content: center;
+      gap: 0.5rem;
+      min-height: 3rem;
+      padding: 0 0.95rem;
+      flex: 0 0 auto;
       cursor: pointer;
-      transition: all 0.2s;
+      font-size: 0.88rem;
+      transition: border-color 0.2s, background 0.2s, color 0.2s;
     }
-    .chip:hover { border-color: var(--color-accent); color: var(--color-primary); }
+
+    .chip:hover,
     .chip-active {
-      background: rgba(184,149,90,0.08);
-      border-color: var(--color-accent);
-      color: var(--color-accent);
-      font-weight: 600;
+      border-color: #d4ac62;
+      color: #d4ac62;
+      background: rgba(184, 149, 90, 0.1);
     }
-    .chip-label { white-space: nowrap; }
-    .chip-plus, .chip-caret { font-size: 0.625rem; line-height: 1; }
+
+    .chip-caret {
+      color: #b8955a;
+      font-size: 1rem;
+      transform: translateY(-1px);
+    }
+
+    .chip-more svg {
+      width: 1rem;
+      height: 1rem;
+      color: #d4ac62;
+    }
+
     .chip-clear {
-      color: var(--color-error);
-      border-color: rgba(220,80,60,0.25);
-      margin-left: 0.25rem;
+      color: #f0b7a9;
+      border-color: rgba(240, 183, 169, 0.35);
     }
-    .chip-clear:hover {
-      background: rgba(220,80,60,0.06);
-      border-color: var(--color-error);
+
+    .toolbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex: 0 0 auto;
+      margin-left: auto;
+    }
+
+    .sort-select {
+      height: 3rem;
+      min-width: 132px;
+      padding: 0 0.85rem;
+      outline: 0;
+      cursor: pointer;
+    }
+
+    .sort-select option {
+      background: #11100f;
+      color: #f7efe3;
+    }
+
+    .view-btn {
+      width: 3rem;
+      height: 3rem;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      color: rgba(247, 239, 227, 0.72);
+    }
+
+    .view-btn.active,
+    .view-btn:hover {
+      color: #d4ac62;
+      border-color: #d4ac62;
+      background: rgba(184, 149, 90, 0.12);
+    }
+
+    .view-btn svg {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+
+    .result-count {
+      margin: 1rem 0 0.85rem;
+      color: rgba(247, 239, 227, 0.56);
+      font-size: 0.9rem;
+    }
+
+    .antiques-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.95rem;
+    }
+
+    .skeleton-card {
+      height: 390px;
+      border: 1px solid rgba(184, 149, 90, 0.22);
+      background: linear-gradient(90deg, #111 25%, #1d1b18 50%, #111 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 4rem 1rem;
+      color: rgba(247, 239, 227, 0.62);
+    }
+
+    .empty-icon {
+      display: block;
+      color: #d4ac62;
+      font-family: 'Playfair Display', serif;
+      font-size: 3.5rem;
+      margin-bottom: 1rem;
     }
 
     .filter-panel {
@@ -257,132 +539,170 @@ import { Antique, Catalog } from '../../models';
       align-items: flex-start;
       justify-content: center;
       padding-top: 6rem;
-      background: rgba(0,0,0,0.3);
+      background: rgba(0, 0, 0, 0.58);
+      backdrop-filter: blur(4px);
     }
+
     .filter-panel-inner {
-      background: var(--color-surface);
-      border-radius: 14px;
-      box-shadow: 0 12px 48px rgba(0,0,0,0.15);
-      width: 380px;
+      width: 390px;
       max-width: 90vw;
-      max-height: 60vh;
+      max-height: 62vh;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
-      overflow: hidden;
-      animation: fadeSlideIn 0.15s ease-out;
+      background: #11100f;
+      border: 1px solid rgba(184, 149, 90, 0.42);
+      box-shadow: 0 18px 70px rgba(0, 0, 0, 0.58);
     }
-    @keyframes fadeSlideIn {
-      from { opacity: 0; transform: translateY(-8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+
     .filter-panel-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 1rem 1.25rem;
-      border-bottom: 1px solid var(--color-border);
-    }
-    .filter-panel-title { font-weight: 600; font-size: 0.9375rem; color: var(--color-primary); }
-    .filter-panel-close {
-      background: none;
-      border: none;
-      font-size: 1.375rem;
-      color: var(--color-text-muted);
-      cursor: pointer;
-      line-height: 1;
-      padding: 0;
-    }
-    .filter-panel-close:hover { color: var(--color-text); }
-    .filter-panel-body {
-      padding: 0.5rem;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-    .filter-option {
-      display: block;
-      width: 100%;
-      text-align: left;
-      background: none;
-      border: none;
-      padding: 0.625rem 0.875rem;
-      border-radius: 8px;
-      font-size: 0.9375rem;
-      color: var(--color-text);
-      cursor: pointer;
-      transition: background 0.15s;
-    }
-    .filter-option:hover { background: var(--color-bg-2); }
-    .filter-option.selected {
-      background: rgba(184,149,90,0.1);
-      color: var(--color-accent);
-      font-weight: 600;
+      border-bottom: 1px solid rgba(184, 149, 90, 0.24);
     }
 
-    .antiques-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 1.5rem;
+    .filter-panel-title {
+      color: #f8e4bd;
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
     }
-    .skeleton-card {
-      height: 340px;
-      background: linear-gradient(90deg, var(--color-bg-2) 25%, var(--color-border) 50%, var(--color-bg-2) 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.5s infinite;
-      border-radius: 12px;
+
+    .filter-panel-close {
+      border: 0;
+      background: transparent;
+      color: #d4ac62;
+      cursor: pointer;
+      font-size: 1.45rem;
+      line-height: 1;
     }
-    @keyframes shimmer {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
+
+    .filter-panel-body {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      padding: 0.6rem;
+      overflow-y: auto;
     }
-    .empty-state {
-      text-align: center;
-      padding: 4rem 1rem;
-      color: var(--color-text-muted);
+
+    .filter-option {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: rgba(247, 239, 227, 0.78);
+      text-align: left;
+      padding: 0.78rem 0.9rem;
+      cursor: pointer;
+      transition: background 0.16s, color 0.16s;
     }
-    .empty-icon { font-size: 3rem; display: block; margin-bottom: 1rem; }
-    @media (max-width: 768px) {
-      .page-header {
-        padding: 2.35rem 1rem 2.15rem;
+
+    .filter-option:hover,
+    .filter-option.selected {
+      background: rgba(184, 149, 90, 0.12);
+      color: #f8d48c;
+    }
+
+    @media (max-width: 1280px) {
+      .toolbar {
+        flex-wrap: wrap;
       }
-      .page-title {
-        font-size: clamp(2rem, 11vw, 2.55rem);
-      }
-      .page-flourish {
-        margin: 0.82rem 0 0.92rem;
-      }
-      .page-flourish::before,
-      .page-flourish::after {
-        width: 3.3rem;
-      }
-      .page-content {
-        padding: 1.5rem 1rem 3rem;
-      }
+
       .search-bar {
-        padding: 0 0.8rem;
+        max-width: none;
       }
+
+      .filter-chips {
+        order: 3;
+        flex-basis: 100%;
+      }
+
+      .toolbar-actions {
+        justify-content: flex-end;
+        margin-left: auto;
+      }
+
+      .antiques-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 900px) {
+      .collection-hero {
+        min-height: auto;
+      }
+
+      .collection-hero-inner {
+        padding: 3.2rem 1rem 1.25rem;
+      }
+
+      .stats-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .page-content {
+        padding: 0 1rem 3rem;
+      }
+
+      .collection-panel {
+        padding: 1rem;
+      }
+
+      .antiques-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 620px) {
+      .collection-hero {
+        background-position: center top;
+      }
+
+      .hero-title {
+        font-size: clamp(2.05rem, 12vw, 3rem);
+      }
+
+      .hero-copy {
+        font-size: 0.95rem;
+        margin-bottom: 1.35rem;
+      }
+
+      .stats-row,
+      .antiques-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stat-card {
+        min-height: 70px;
+      }
+
       .filter-chips {
         flex-wrap: nowrap;
         overflow-x: auto;
-        padding-bottom: 0.25rem;
+        padding-bottom: 0.2rem;
       }
+
       .chip {
         flex: 0 0 auto;
       }
-      .antiques-grid {
-        grid-template-columns: minmax(0, 1fr);
-        gap: 1rem;
+
+      .toolbar-actions {
+        justify-content: stretch;
       }
+
+      .sort-select {
+        flex: 1;
+      }
+
       .filter-panel {
         align-items: flex-end;
         padding: 0;
       }
+
       .filter-panel-inner {
         width: 100%;
         max-width: none;
-        max-height: 72vh;
-        border-radius: 16px 16px 0 0;
+        max-height: 74vh;
       }
     }
   `]
@@ -398,6 +718,7 @@ export class CollectionComponent implements OnInit {
   selectedDetail = '';
   selectedCatalog = '';
   selectedCondition = '';
+  sortBy = 'recent';
   openFilter: string | null = null;
 
   subcategoryLabels: Record<string, string> = {
@@ -492,10 +813,37 @@ export class CollectionComponent implements OnInit {
 
   filterTitle(): string {
     const map: Record<string, string> = {
-      type: 'Tipo', subcategory: 'Subcategoría', detail: 'Detalle',
+      type: 'Tipo', subcategory: 'Categoría', detail: 'Material',
       catalog: 'Catálogo', condition: 'Estado',
     };
     return map[this.openFilter ?? ''] ?? '';
+  }
+
+  categoryCount(): number {
+    return new Set(this.antiques().map(a => a.subcategory).filter(Boolean)).size;
+  }
+
+  totalValueLabel(): string {
+    const value = this.antiques().reduce((sum, antique) => sum + (antique.price || 0), 0);
+    return `${value.toLocaleString('es-ES')}€`;
+  }
+
+  eraSummary(): string {
+    const years = this.antiques()
+      .map(a => a.year_era.match(/\d{4}/)?.[0])
+      .filter(Boolean)
+      .map(Number);
+
+    if (!years.length) return 'XVI - XX';
+
+    const min = Math.min(...years);
+    const max = Math.max(...years);
+    return `${this.century(min)} - ${this.century(max)}`;
+  }
+
+  century(year: number): string {
+    const romans = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII', 'XIV', 'XV', 'XVI', 'XVII', 'XVIII', 'XIX', 'XX', 'XXI'];
+    return romans[Math.ceil(year / 100) - 1] ?? `${year}`;
   }
 
   toggleFilter(name: string) {
@@ -546,7 +894,7 @@ export class CollectionComponent implements OnInit {
   }
 
   applyFilters() {
-    let result = this.antiques();
+    let result = [...this.antiques()];
     if (this.searchTerm.trim()) {
       const term = this.searchTerm.toLowerCase();
       result = result.filter(a =>
@@ -561,6 +909,12 @@ export class CollectionComponent implements OnInit {
     if (this.selectedDetail) result = result.filter(a => a.detail === this.selectedDetail);
     if (this.selectedCatalog) result = result.filter(a => a.catalog_id === this.selectedCatalog);
     if (this.selectedCondition) result = result.filter(a => a.condition === this.selectedCondition);
+
+    if (this.sortBy === 'priceDesc') result.sort((a, b) => (b.price || 0) - (a.price || 0));
+    if (this.sortBy === 'priceAsc') result.sort((a, b) => (a.price || 0) - (b.price || 0));
+    if (this.sortBy === 'name') result.sort((a, b) => a.name.localeCompare(b.name));
+    if (this.sortBy === 'recent') result.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
     this.filtered.set(result);
   }
 }
