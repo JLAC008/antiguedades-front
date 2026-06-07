@@ -12,7 +12,14 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
   imports: [FormsModule, RouterLink],
   template: `
     <div class="page">
-      <div class="page-header" [class.upload-type-hero]="step() === 1 && !editMode">
+      <div
+        class="page-header"
+        [class.upload-type-hero]="step() === 1 && !editMode"
+        [class.upload-subcategory-hero]="step() === 2 && !editMode"
+        [class.upload-paper-hero]="step() === 2 && !editMode && category() === 'papeleria'"
+        [class.upload-detail-hero]="step() === 3 && !editMode"
+        [class.upload-form-hero]="(step() === 4 && !editMode) || editMode"
+      >
         <div class="page-header-inner">
           @if (step() === 1) {
             <a routerLink="/coleccion" class="breadcrumb">&larr; Volver</a>
@@ -48,7 +55,13 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
         </div>
       </div>
 
-      <div class="page-content" [class.upload-type-content]="step() === 1 && !editMode">
+      <div
+        class="page-content"
+        [class.upload-type-content]="step() === 1 && !editMode"
+        [class.upload-subcategory-content]="step() === 2 && !editMode"
+        [class.upload-detail-content]="step() === 3 && !editMode"
+        [class.upload-form-content]="(step() === 4 && !editMode) || editMode"
+      >
         @if (step() === 1 && !editMode) {
           <p class="category-intro">Selecciona el tipo de pieza que quieres a&ntilde;adir para continuar</p>
           <div class="category-selector">
@@ -96,25 +109,25 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
           <div class="subcategory-selector">
             @if (category() === 'antiguedad') {
               <div class="category-card" (click)="selectSubcategory('escultura')">
-                <div class="category-icon">&#9997;</div>
+                <div class="category-icon"><svg viewBox="0 0 24 24"><path d="M12 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"/><path d="M7 21v-2a5 5 0 0 1 10 0v2"/><path d="M9 14h6"/></svg></div>
                 <h2 class="category-name">Escultura</h2>
                 <p class="category-desc">Figuras, relieves y piezas tridimensionales</p>
                 <span class="category-action">Seleccionar &rarr;</span>
               </div>
               <div class="category-card" (click)="selectSubcategory('pintura')">
-                <div class="category-icon">&#127912;</div>
+                <div class="category-icon"><svg viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M7 20V8l5-4 5 4v12"/><path d="M9 12h6"/><path d="M10 16h4"/></svg></div>
                 <h2 class="category-name">Pintura</h2>
                 <p class="category-desc">Óleos, acuarelas, grabados y obras en lienzo</p>
                 <span class="category-action">Seleccionar &rarr;</span>
               </div>
               <div class="category-card" (click)="selectSubcategory('cristal')">
-                <div class="category-icon">&#128161;</div>
+                <div class="category-icon"><svg viewBox="0 0 24 24"><path d="M8 3h8l-2 10h-4L8 3Z"/><path d="M10 13v6"/><path d="M7 21h10"/><path d="M9 17h6"/></svg></div>
                 <h2 class="category-name">Cristal</h2>
                 <p class="category-desc">Vidrio, cristal tallado, lámparas y objetos de vidrio</p>
                 <span class="category-action">Seleccionar &rarr;</span>
               </div>
               <div class="category-card" (click)="selectSubcategory('ceramica')">
-                <div class="category-icon">&#127834;</div>
+                <div class="category-icon"><svg viewBox="0 0 24 24"><path d="M7 9h10l1 4H6l1-4Z"/><path d="M6 13h12l-2 7H8l-2-7Z"/><path d="M12 9V5a2 2 0 0 1 2-2"/></svg></div>
                 <h2 class="category-name">Cerámica</h2>
                 <p class="category-desc">Porcelana, loza, azulejos y piezas de barro</p>
                 <span class="category-action">Seleccionar &rarr;</span>
@@ -122,36 +135,51 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
             }
             @if (category() === 'papeleria') {
               <div class="category-card" (click)="selectSubcategory('filatelia')">
-                <div class="category-icon">&#9993;</div>
+                <div class="category-icon">
+                  <svg viewBox="0 0 24 24"><path d="M7 16h10M9 16V9a3 3 0 1 1 6 0v7"/><path d="M5 20h14v-4H5z"/><path d="M8 20v2M16 20v2"/></svg>
+                </div>
                 <h2 class="category-name">Filatelia</h2>
                 <p class="category-desc">Sellos, colecciones postales y material de correo</p>
                 <span class="category-action">Seleccionar &rarr;</span>
               </div>
               <div class="category-card" (click)="selectSubcategory('fotos')">
-                <div class="category-icon">&#128248;</div>
+                <div class="category-icon">
+                  <svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="1.5"/><path d="m7 15 3.2-3.2 2.5 2.5 1.8-1.8L17 15"/><circle cx="16" cy="9" r="1"/></svg>
+                </div>
                 <h2 class="category-name">Fotos</h2>
                 <p class="category-desc">Fotografías antiguas, albumes y positivos</p>
                 <span class="category-action">Seleccionar &rarr;</span>
               </div>
               <div class="category-card" (click)="selectSubcategory('revistas')">
-                <div class="category-icon">&#128214;</div>
+                <div class="category-icon">
+                  <svg viewBox="0 0 24 24"><path d="M5 5h6a4 4 0 0 1 4 4v10H9a4 4 0 0 0-4 0z"/><path d="M19 5h-4a4 4 0 0 0-4 4"/><path d="M19 5v14a4 4 0 0 0-4 0"/></svg>
+                </div>
                 <h2 class="category-name">Revistas / Periódicos</h2>
                 <p class="category-desc">Publicaciones periódicas, diarios y revistas históricas</p>
                 <span class="category-action">Seleccionar &rarr;</span>
               </div>
               <div class="category-card" (click)="selectSubcategory('documentos')">
-                <div class="category-icon">&#128203;</div>
+                <div class="category-icon">
+                  <svg viewBox="0 0 24 24"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v6h5M10 13h6M10 17h6"/></svg>
+                </div>
                 <h2 class="category-name">Documentos</h2>
                 <p class="category-desc">Escrituras, cartas, mapas y documentos históricos</p>
                 <span class="category-action">Seleccionar &rarr;</span>
               </div>
               <div class="category-card" (click)="selectSubcategory('libros')">
-                <div class="category-icon">&#128218;</div>
+                <div class="category-icon">
+                  <svg viewBox="0 0 24 24"><path d="M7 4h9a3 3 0 0 1 3 3v13H8a3 3 0 0 0-3 3V6a2 2 0 0 1 2-2Z"/><path d="M8 20V4"/><path d="M11 8h5M11 12h5"/></svg>
+                </div>
                 <h2 class="category-name">Libros</h2>
                 <p class="category-desc">Libros antiguos, primeras ediciones y volúmenes de colección</p>
                 <span class="category-action">Seleccionar &rarr;</span>
               </div>
             }
+          </div>
+          <div class="subcategory-quote" aria-hidden="true">
+            <span></span>
+            <p>Cada pieza cuenta una historia. Añade con cuidado y preserva el legado.</p>
+            <span></span>
           </div>
         }
 
@@ -159,11 +187,17 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
           <div class="subcategory-selector">
             @for (d of detailsForCurrent(); track d.key) {
               <div class="category-card" (click)="selectDetail(d.key)">
+                <div class="category-icon"><svg viewBox="0 0 24 24"><path d="M12 3l7 4v6c0 4.2-2.8 7.2-7 8-4.2-.8-7-3.8-7-8V7l7-4Z"/><path d="m9 12 2 2 4-5"/></svg></div>
                 <h2 class="category-name">{{ d.label }}</h2>
                 <p class="category-desc">{{ d.desc }}</p>
                 <span class="category-action">Seleccionar &rarr;</span>
               </div>
             }
+          </div>
+          <div class="subcategory-quote" aria-hidden="true">
+            <span></span>
+            <p>Define el detalle con precisión para catalogar mejor la pieza.</p>
+            <span></span>
           </div>
         }
 
@@ -606,10 +640,69 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
       max-width: 1280px;
       padding: 1.8rem 1.5rem 3.6rem;
     }
+    .page-header.upload-subcategory-hero {
+      position: relative;
+      overflow: hidden;
+      min-height: 270px;
+      padding: 3rem 1.5rem 2rem;
+      background:
+        linear-gradient(90deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.7) 36%, rgba(0,0,0,0.34) 68%, rgba(0,0,0,0.76) 100%),
+        url('/assets/login-bg-gallery.png') center 42% / cover no-repeat;
+      border-bottom: 1px solid rgba(184,149,90,0.28);
+      color: #fff8ed;
+    }
+    .page-header.upload-paper-hero {
+      background:
+        linear-gradient(90deg, rgba(0,0,0,0.94) 0%, rgba(0,0,0,0.72) 34%, rgba(0,0,0,0.28) 68%, rgba(0,0,0,0.72) 100%),
+        url('https://images.unsplash.com/photo-1456324504439-367cee3b3c32?w=1800&h=620&fit=crop') center 44% / cover no-repeat;
+    }
+    .page-header.upload-subcategory-hero::after {
+      content: '';
+      position: absolute;
+      inset: auto 0 0;
+      height: 55%;
+      background: linear-gradient(180deg, transparent, #090908);
+      pointer-events: none;
+    }
+    .page-header.upload-subcategory-hero .page-header-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 1060px;
+    }
+    .page-header.upload-subcategory-hero .breadcrumb {
+      color: #d4ac62;
+      margin-bottom: 1.5rem;
+    }
+    .page-header.upload-subcategory-hero .breadcrumb:hover {
+      color: #f2d292;
+    }
+    .page-header.upload-subcategory-hero .page-title {
+      color: #fff8ed;
+      font-size: clamp(2.8rem, 5vw, 4.2rem);
+      text-shadow: 0 16px 42px rgba(0,0,0,0.62);
+    }
+    .page-header.upload-subcategory-hero .page-subtitle {
+      color: rgba(255,248,237,0.86);
+      margin-top: 1.25rem;
+    }
+    .page-header.upload-subcategory-hero .page-flourish {
+      color: #d4ac62;
+      margin: 1.15rem 0 0;
+    }
+    .page-content.upload-subcategory-content {
+      max-width: 1060px;
+      padding: 0 1.5rem 3.2rem;
+    }
     .page:has(.upload-type-content) {
       background:
         radial-gradient(circle at 50% 0%, rgba(184,149,90,0.12), transparent 30rem),
         linear-gradient(180deg, #050505 0%, #0b0b0a 48%, #10100f 100%);
+      color: #f7efe3;
+    }
+    .page:has(.upload-subcategory-content) {
+      background:
+        radial-gradient(circle at 50% 0%, rgba(184,149,90,0.11), transparent 30rem),
+        linear-gradient(180deg, #090908 0%, #0b0b0a 48%, #10100f 100%);
       color: #f7efe3;
     }
     .form-error {
@@ -1151,6 +1244,363 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
       background: linear-gradient(90deg, transparent, rgba(184,149,90,0.72), transparent);
       transform: translateX(-50%);
     }
+    .upload-subcategory-content .subcategory-selector {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+      max-width: 820px;
+      margin-top: -0.35rem;
+    }
+    .upload-subcategory-content .subcategory-selector .category-card {
+      display: grid;
+      grid-template-columns: 112px minmax(0, 1fr);
+      grid-template-areas:
+        "icon title"
+        "icon desc"
+        "icon action";
+      column-gap: 1.35rem;
+      row-gap: 0.45rem;
+      align-items: center;
+      min-height: 150px;
+      padding: 1.45rem 1.7rem;
+      text-align: left;
+      border-radius: 6px;
+      background:
+        radial-gradient(circle at 20% 30%, rgba(184,149,90,0.1), transparent 12rem),
+        linear-gradient(135deg, rgba(22,22,21,0.96), rgba(10,10,9,0.92));
+      border: 1px solid rgba(184,149,90,0.34);
+      box-shadow: 0 18px 46px rgba(0,0,0,0.28);
+      color: #fff8ed;
+    }
+    .upload-subcategory-content .subcategory-selector .category-card::before,
+    .upload-subcategory-content .subcategory-selector .category-card::after {
+      content: none;
+    }
+    .upload-subcategory-content .subcategory-selector .category-card:nth-child(5) {
+      grid-column: 1 / -1;
+      justify-self: center;
+      width: min(430px, 100%);
+    }
+    .upload-subcategory-content .subcategory-selector .category-card:hover {
+      border-color: rgba(212,172,98,0.82);
+      transform: translateY(-3px);
+      box-shadow: 0 24px 58px rgba(0,0,0,0.42);
+    }
+    .upload-subcategory-content .subcategory-selector .category-icon {
+      grid-area: icon;
+      width: 76px;
+      height: 76px;
+      justify-self: center;
+      margin: 0;
+      background: rgba(4,4,4,0.56);
+      border: 1px solid rgba(212,172,98,0.78);
+      color: #d4ac62;
+      box-shadow: 0 0 0 1px rgba(212,172,98,0.12), 0 15px 30px rgba(0,0,0,0.28);
+    }
+    .upload-subcategory-content .subcategory-selector .category-icon svg {
+      width: 35px;
+      height: 35px;
+      stroke-width: 1.55;
+    }
+    .upload-subcategory-content .subcategory-selector .category-name {
+      grid-area: title;
+      color: #fff8ed;
+      font-size: 1.55rem;
+      line-height: 1.15;
+      margin: 0;
+      text-shadow: 0 10px 28px rgba(0,0,0,0.5);
+    }
+    .upload-subcategory-content .subcategory-selector .category-desc {
+      grid-area: desc;
+      color: rgba(255,248,237,0.82);
+      max-width: 280px;
+      min-height: auto;
+      font-size: 0.94rem;
+      line-height: 1.55;
+      margin: 0;
+    }
+    .upload-subcategory-content .subcategory-selector .category-action {
+      grid-area: action;
+      margin: 0.2rem 0 0;
+      padding: 0;
+      width: auto;
+      border: 0;
+      background: transparent;
+      color: #d4ac62;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.02rem;
+      font-weight: 700;
+    }
+    .upload-subcategory-content .subcategory-selector .category-action::before {
+      content: none;
+    }
+    .subcategory-quote {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+      margin: 2rem auto 0;
+      color: rgba(247,239,227,0.66);
+      font-family: 'Playfair Display', serif;
+      font-size: 0.95rem;
+      text-align: center;
+    }
+    .subcategory-quote span {
+      width: 72px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(212,172,98,0.78));
+    }
+    .subcategory-quote span:last-child {
+      background: linear-gradient(90deg, rgba(212,172,98,0.78), transparent);
+    }
+    .subcategory-quote p {
+      margin: 0;
+    }
+    .page-header.upload-detail-hero,
+    .page-header.upload-form-hero {
+      position: relative;
+      overflow: hidden;
+      min-height: 245px;
+      padding: 3rem 1.5rem 2rem;
+      background:
+        linear-gradient(90deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.72) 38%, rgba(0,0,0,0.38) 70%, rgba(0,0,0,0.72) 100%),
+        url('/assets/login-bg-gallery.png') center 44% / cover no-repeat;
+      border-bottom: 1px solid rgba(184,149,90,0.28);
+      color: #fff8ed;
+    }
+    .page-header.upload-detail-hero::after,
+    .page-header.upload-form-hero::after {
+      content: '';
+      position: absolute;
+      inset: auto 0 0;
+      height: 55%;
+      background: linear-gradient(180deg, transparent, #090908);
+      pointer-events: none;
+    }
+    .page-header.upload-detail-hero .page-header-inner,
+    .page-header.upload-form-hero .page-header-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 1060px;
+    }
+    .page-header.upload-detail-hero .breadcrumb,
+    .page-header.upload-form-hero .breadcrumb {
+      color: #d4ac62;
+    }
+    .page-header.upload-detail-hero .page-title,
+    .page-header.upload-form-hero .page-title {
+      color: #fff8ed;
+      font-size: clamp(2.35rem, 4.4vw, 4rem);
+      text-shadow: 0 16px 42px rgba(0,0,0,0.62);
+    }
+    .page-header.upload-detail-hero .page-subtitle,
+    .page-header.upload-form-hero .page-subtitle {
+      color: rgba(255,248,237,0.84);
+      margin-top: 1.05rem;
+    }
+    .page-header.upload-detail-hero .page-flourish,
+    .page-header.upload-form-hero .page-flourish {
+      color: #d4ac62;
+      margin: 1.05rem 0 0;
+    }
+    .page-content.upload-detail-content {
+      max-width: 1060px;
+      padding: 0 1.5rem 3.2rem;
+    }
+    .page-content.upload-form-content {
+      max-width: 1160px;
+      padding: 1.5rem 1.5rem 3.4rem;
+    }
+    .page:has(.upload-detail-content),
+    .page:has(.upload-form-content) {
+      background:
+        radial-gradient(circle at 50% 0%, rgba(184,149,90,0.11), transparent 30rem),
+        linear-gradient(180deg, #090908 0%, #0b0b0a 48%, #10100f 100%);
+      color: #f7efe3;
+    }
+    .upload-detail-content .subcategory-selector {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+      max-width: 900px;
+    }
+    .upload-detail-content .subcategory-selector .category-card {
+      display: grid;
+      grid-template-columns: 96px minmax(0, 1fr);
+      grid-template-areas:
+        "icon title"
+        "icon desc"
+        "icon action";
+      column-gap: 1.2rem;
+      row-gap: 0.45rem;
+      align-items: center;
+      min-height: 140px;
+      padding: 1.35rem 1.5rem;
+      text-align: left;
+      border-radius: 6px;
+      background:
+        radial-gradient(circle at 18% 35%, rgba(184,149,90,0.12), transparent 12rem),
+        linear-gradient(135deg, rgba(22,22,21,0.96), rgba(10,10,9,0.92));
+      border: 1px solid rgba(184,149,90,0.34);
+      color: #fff8ed;
+      box-shadow: 0 18px 46px rgba(0,0,0,0.28);
+    }
+    .upload-detail-content .subcategory-selector .category-card::before,
+    .upload-detail-content .subcategory-selector .category-card::after {
+      content: none;
+    }
+    .upload-detail-content .subcategory-selector .category-card:hover {
+      border-color: rgba(212,172,98,0.82);
+      transform: translateY(-3px);
+      box-shadow: 0 24px 58px rgba(0,0,0,0.42);
+    }
+    .upload-detail-content .subcategory-selector .category-icon {
+      grid-area: icon;
+      width: 70px;
+      height: 70px;
+      justify-self: center;
+      margin: 0;
+      background: rgba(4,4,4,0.56);
+      border: 1px solid rgba(212,172,98,0.78);
+      color: #d4ac62;
+    }
+    .upload-detail-content .subcategory-selector .category-icon svg {
+      width: 32px;
+      height: 32px;
+    }
+    .upload-detail-content .subcategory-selector .category-name {
+      grid-area: title;
+      color: #fff8ed;
+      font-size: 1.38rem;
+      line-height: 1.15;
+      margin: 0;
+    }
+    .upload-detail-content .subcategory-selector .category-desc {
+      grid-area: desc;
+      color: rgba(255,248,237,0.78);
+      max-width: 300px;
+      min-height: auto;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin: 0;
+    }
+    .upload-detail-content .subcategory-selector .category-action {
+      grid-area: action;
+      width: auto;
+      margin: 0.15rem 0 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: #d4ac62;
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+    }
+    .upload-detail-content .subcategory-selector .category-action::before {
+      content: none;
+    }
+    .upload-form-content .form-container {
+      max-width: 1160px;
+    }
+    .upload-form-content .form-step-nav {
+      border-bottom-color: rgba(184,149,90,0.28);
+      margin-bottom: 1.35rem;
+    }
+    .upload-form-content .form-step-item {
+      color: rgba(247,239,227,0.58);
+    }
+    .upload-form-content .form-step-item:hover,
+    .upload-form-content .form-step-item.active {
+      color: #f2d292;
+    }
+    .upload-form-content .form-step-item.active::after {
+      background: #d4ac62;
+    }
+    .upload-form-content .form-panel-main,
+    .upload-form-content .form-guidance,
+    .upload-form-content .form-actions {
+      background:
+        radial-gradient(circle at 0% 0%, rgba(184,149,90,0.08), transparent 16rem),
+        linear-gradient(180deg, rgba(18,18,17,0.94), rgba(9,9,8,0.9));
+      border: 1px solid rgba(184,149,90,0.34);
+      box-shadow: 0 18px 48px rgba(0,0,0,0.25);
+    }
+    .upload-form-content .form-section-title {
+      color: #d4ac62;
+      border-bottom-color: rgba(184,149,90,0.25);
+    }
+    .upload-form-content .form-label {
+      color: #e5c98d;
+    }
+    .upload-form-content .form-input,
+    .upload-form-content .form-select,
+    .upload-form-content .form-textarea {
+      border-color: rgba(184,149,90,0.36);
+      background: rgba(3,3,3,0.56);
+      color: #fff8ed;
+    }
+    .upload-form-content .form-input::placeholder,
+    .upload-form-content .form-textarea::placeholder {
+      color: rgba(247,239,227,0.38);
+    }
+    .upload-form-content .form-select option {
+      background: #11100f;
+      color: #f7efe3;
+    }
+    .upload-form-content .form-input:focus,
+    .upload-form-content .form-select:focus,
+    .upload-form-content .form-textarea:focus {
+      border-color: #d4ac62;
+      box-shadow: 0 0 0 3px rgba(184,149,90,0.12);
+    }
+    .upload-form-content .upload-zone {
+      border-color: rgba(184,149,90,0.45);
+      background: rgba(3,3,3,0.35);
+    }
+    .upload-form-content .upload-zone:hover {
+      border-color: #d4ac62;
+      background: rgba(184,149,90,0.08);
+    }
+    .upload-form-content .upload-text {
+      color: #fff8ed;
+    }
+    .upload-form-content .upload-hint,
+    .upload-form-content .upload-progress-text,
+    .upload-form-content .form-guidance,
+    .upload-form-content .review-note {
+      color: rgba(247,239,227,0.62);
+    }
+    .upload-form-content .guidance-kicker {
+      color: #f2d292;
+    }
+    .upload-form-content .guidance-figure {
+      color: rgba(212,172,98,0.42);
+    }
+    .upload-form-content .review-item {
+      background: rgba(3,3,3,0.42);
+      border-color: rgba(184,149,90,0.3);
+    }
+    .upload-form-content .review-item span {
+      color: #d4ac62;
+    }
+    .upload-form-content .review-item strong {
+      color: #fff8ed;
+    }
+    .upload-form-content .btn-cancel {
+      border-color: rgba(184,149,90,0.42);
+      color: #d8bf91;
+      background: rgba(255,255,255,0.02);
+    }
+    .upload-form-content .btn-cancel:hover {
+      border-color: #d4ac62;
+      color: #f2d292;
+      background: rgba(184,149,90,0.08);
+    }
+    .upload-form-content .btn-submit {
+      border: 1px solid rgba(212,172,98,0.9);
+      background: linear-gradient(180deg, #c69842, #a97725);
+      color: #fff8ed;
+    }
+    .upload-form-content .btn-submit:hover:not(:disabled) {
+      background: linear-gradient(180deg, #d3aa59, #ae7d2d);
+    }
     @media (max-width: 768px) {
       .page-header {
         padding: 2.35rem 1rem 2.15rem;
@@ -1181,6 +1631,36 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
         grid-template-columns: minmax(0, 1fr);
         gap: 1.2rem;
         max-width: 430px;
+      }
+      .upload-subcategory-content .subcategory-selector {
+        grid-template-columns: minmax(0, 1fr);
+        max-width: 430px;
+      }
+      .upload-subcategory-content .subcategory-selector .category-card,
+      .upload-subcategory-content .subcategory-selector .category-card:nth-child(5) {
+        width: 100%;
+        grid-column: auto;
+        grid-template-columns: 82px minmax(0, 1fr);
+        column-gap: 1rem;
+        min-height: 136px;
+        padding: 1.15rem;
+      }
+      .upload-subcategory-content .subcategory-selector .category-icon {
+        width: 64px;
+        height: 64px;
+      }
+      .upload-subcategory-content .subcategory-selector .category-name {
+        font-size: 1.35rem;
+      }
+      .upload-subcategory-content .subcategory-selector .category-desc {
+        font-size: 0.88rem;
+      }
+      .subcategory-quote {
+        gap: 0.55rem;
+        font-size: 0.86rem;
+      }
+      .subcategory-quote span {
+        width: 34px;
       }
       .category-card {
         min-height: 330px;
