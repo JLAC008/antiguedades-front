@@ -657,7 +657,7 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
     }
     .page-content.upload-subcategory-content {
       max-width: 1060px;
-      padding: 0 1.5rem 3.2rem;
+      padding: 2rem 1.5rem 3.2rem;
     }
     .page:has(.upload-type-content) {
       background:
@@ -1212,9 +1212,9 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
     }
     .upload-subcategory-content .subcategory-selector {
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 1rem;
+      gap: 1.25rem;
       max-width: 820px;
-      margin-top: -0.35rem;
+      margin-top: 0;
     }
     .upload-subcategory-content .subcategory-selector .category-card {
       display: flex;
@@ -1420,7 +1420,7 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
     }
     .page-content.upload-detail-content {
       max-width: 1060px;
-      padding: 0 1.5rem 3.2rem;
+      padding: 2rem 1.5rem 3.2rem;
     }
     .page-content.upload-form-content {
       max-width: 1160px;
@@ -1435,7 +1435,7 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
     }
     .upload-detail-content .subcategory-selector {
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 1rem;
+      gap: 1.25rem;
       max-width: 900px;
     }
     .upload-detail-content .subcategory-selector .category-card {
