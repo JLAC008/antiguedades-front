@@ -186,7 +186,7 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
         @if (step() === 3 && !editMode && hasDetail(form.subcategory)) {
           <div class="subcategory-selector">
             @for (d of detailsForCurrent(); track d.key) {
-              <div class="category-card" (click)="selectDetail(d.key)">
+              <div class="category-card" [attr.data-key]="d.key" (click)="selectDetail(d.key)">
                 <div class="category-icon"><svg viewBox="0 0 24 24"><path d="M12 3l7 4v6c0 4.2-2.8 7.2-7 8-4.2-.8-7-3.8-7-8V7l7-4Z"/><path d="m9 12 2 2 4-5"/></svg></div>
                 <h2 class="category-name">{{ d.label }}</h2>
                 <p class="category-desc">{{ d.desc }}</p>
@@ -1275,6 +1275,40 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
     .upload-subcategory-content .subcategory-selector .category-card::after {
       content: none;
     }
+    .upload-subcategory-content .subcategory-selector .category-card:nth-child(-n+4) {
+      background: none;
+    }
+    .upload-subcategory-content .subcategory-selector .category-card:nth-child(-n+4)::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      background-position: center;
+      background-size: cover;
+      opacity: 0.72;
+      transition: transform 0.45s, opacity 0.45s;
+    }
+    .upload-subcategory-content .subcategory-selector .category-card:nth-child(-n+4)::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background:
+        radial-gradient(circle at 50% 32%, rgba(184,149,90,0.18), transparent 11rem),
+        linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.78) 68%, rgba(0,0,0,0.92));
+    }
+    .upload-subcategory-content .subcategory-selector .category-card:nth-child(1)::before {
+      background-image: url('../../../assets/upload-escultura-card.png');
+    }
+    .upload-subcategory-content .subcategory-selector .category-card:nth-child(2)::before {
+      background-image: url('../../../assets/upload-pintura-card.jpg');
+    }
+    .upload-subcategory-content .subcategory-selector .category-card:nth-child(3)::before {
+      background-image: url('../../../assets/upload-cristal-card.jpg');
+    }
+    .upload-subcategory-content .subcategory-selector .category-card:nth-child(4)::before {
+      background-image: url('../../../assets/upload-ceramica-card.jpg');
+    }
     .upload-subcategory-content .subcategory-selector .category-card:nth-child(5) {
       grid-column: 1 / -1;
       justify-self: center;
@@ -1495,6 +1529,43 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
     }
     .upload-detail-content .subcategory-selector .category-action::before {
       content: none;
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="busto"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="belen"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="figura"] {
+      background: none;
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="busto"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="belen"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="figura"]::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      background-position: center;
+      background-size: cover;
+      opacity: 0.72;
+      transition: transform 0.45s, opacity 0.45s;
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="busto"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="belen"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="figura"]::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background:
+        radial-gradient(circle at 50% 32%, rgba(184,149,90,0.18), transparent 11rem),
+        linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.78) 68%, rgba(0,0,0,0.92));
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="busto"]::before {
+      background-image: url('../../../assets/upload-busto-card.png');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="belen"]::before {
+      background-image: url('../../../assets/upload-belen-card.png');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="figura"]::before {
+      background-image: url('../../../assets/upload-figura-card.png');
     }
     .upload-form-content .form-container {
       max-width: 1160px;
