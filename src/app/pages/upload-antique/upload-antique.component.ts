@@ -1501,7 +1501,22 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
     .upload-detail-content .subcategory-selector .category-card[data-key="entero-postal"],
     .upload-detail-content .subcategory-selector .category-card[data-key="sello"],
     .upload-detail-content .subcategory-selector .category-card[data-key="pre-filatelia"],
-    .upload-detail-content .subcategory-selector .category-card[data-key="censura"] {
+    .upload-detail-content .subcategory-selector .category-card[data-key="censura"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="familiar"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="boda"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="ninos"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="hombres"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="mujeres"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="militar"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="etnica"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="paisaje"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="retrato"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="blanco-negro"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="estudio"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="reportaje"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="arquitectura"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="naturaleza"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="post-mortem"] {
       background: none;
     }
     .upload-detail-content .subcategory-selector .category-card[data-key="busto"]::before,
@@ -1514,7 +1529,22 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
     .upload-detail-content .subcategory-selector .category-card[data-key="entero-postal"]::before,
     .upload-detail-content .subcategory-selector .category-card[data-key="sello"]::before,
     .upload-detail-content .subcategory-selector .category-card[data-key="pre-filatelia"]::before,
-    .upload-detail-content .subcategory-selector .category-card[data-key="censura"]::before {
+    .upload-detail-content .subcategory-selector .category-card[data-key="censura"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="familiar"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="boda"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="ninos"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="hombres"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="mujeres"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="militar"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="etnica"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="paisaje"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="retrato"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="blanco-negro"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="estudio"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="reportaje"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="arquitectura"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="naturaleza"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="post-mortem"]::before {
       content: '';
       position: absolute;
       inset: 0;
@@ -1534,7 +1564,22 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
     .upload-detail-content .subcategory-selector .category-card[data-key="entero-postal"]::after,
     .upload-detail-content .subcategory-selector .category-card[data-key="sello"]::after,
     .upload-detail-content .subcategory-selector .category-card[data-key="pre-filatelia"]::after,
-    .upload-detail-content .subcategory-selector .category-card[data-key="censura"]::after {
+    .upload-detail-content .subcategory-selector .category-card[data-key="censura"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="familiar"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="boda"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="ninos"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="hombres"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="mujeres"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="militar"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="etnica"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="paisaje"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="retrato"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="blanco-negro"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="estudio"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="reportaje"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="arquitectura"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="naturaleza"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="post-mortem"]::after {
       content: '';
       position: absolute;
       inset: 0;
@@ -1575,6 +1620,51 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
     }
     .upload-detail-content .subcategory-selector .category-card[data-key="censura"]::before {
       background-image: url('../../../assets/upload-censura-card.jpg');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="familiar"]::before {
+      background-image: url('../../../assets/upload-familiar-card.png');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="boda"]::before {
+      background-image: url('../../../assets/upload-boda-card.jpg');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="ninos"]::before {
+      background-image: url('../../../assets/upload-ninos-card.jpg');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="hombres"]::before {
+      background-image: url('../../../assets/upload-hombres-card.jpg');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="mujeres"]::before {
+      background-image: url('../../../assets/upload-mujeres-card.jpg');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="militar"]::before {
+      background-image: url('../../../assets/upload-militar-card.jpg');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="etnica"]::before {
+      background-image: url('../../../assets/upload-etnica-card.jpg');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="paisaje"]::before {
+      background-image: url('../../../assets/upload-paisaje-card.jpg');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="retrato"]::before {
+      background-image: url('../../../assets/upload-retrato-card.jpg');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="blanco-negro"]::before {
+      background-image: url('../../../assets/upload-blanco-negro-card.jpg');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="estudio"]::before {
+      background-image: url('../../../assets/upload-estudio-card.jpg');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="reportaje"]::before {
+      background-image: url('../../../assets/upload-reportaje-card.jpg');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="arquitectura"]::before {
+      background-image: url('../../../assets/upload-arquitectura-card.jpg');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="naturaleza"]::before {
+      background-image: url('../../../assets/upload-naturaleza-card.jpg');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="post-mortem"]::before {
+      background-image: url('../../../assets/upload-post-mortem-card.jpg');
     }
     .upload-form-content .form-container {
       max-width: 1160px;
