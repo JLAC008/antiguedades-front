@@ -1496,7 +1496,12 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
     .upload-detail-content .subcategory-selector .category-card[data-key="figura"],
     .upload-detail-content .subcategory-selector .category-card[data-key="acuarela"],
     .upload-detail-content .subcategory-selector .category-card[data-key="grabado"],
-    .upload-detail-content .subcategory-selector .category-card[data-key="oleo"] {
+    .upload-detail-content .subcategory-selector .category-card[data-key="oleo"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="hist-postal"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="entero-postal"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="sello"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="pre-filatelia"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="censura"] {
       background: none;
     }
     .upload-detail-content .subcategory-selector .category-card[data-key="busto"]::before,
@@ -1504,7 +1509,12 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
     .upload-detail-content .subcategory-selector .category-card[data-key="figura"]::before,
     .upload-detail-content .subcategory-selector .category-card[data-key="acuarela"]::before,
     .upload-detail-content .subcategory-selector .category-card[data-key="grabado"]::before,
-    .upload-detail-content .subcategory-selector .category-card[data-key="oleo"]::before {
+    .upload-detail-content .subcategory-selector .category-card[data-key="oleo"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="hist-postal"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="entero-postal"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="sello"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="pre-filatelia"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="censura"]::before {
       content: '';
       position: absolute;
       inset: 0;
@@ -1519,7 +1529,12 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
     .upload-detail-content .subcategory-selector .category-card[data-key="figura"]::after,
     .upload-detail-content .subcategory-selector .category-card[data-key="acuarela"]::after,
     .upload-detail-content .subcategory-selector .category-card[data-key="grabado"]::after,
-    .upload-detail-content .subcategory-selector .category-card[data-key="oleo"]::after {
+    .upload-detail-content .subcategory-selector .category-card[data-key="oleo"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="hist-postal"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="entero-postal"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="sello"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="pre-filatelia"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="censura"]::after {
       content: '';
       position: absolute;
       inset: 0;
@@ -1545,6 +1560,21 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
     }
     .upload-detail-content .subcategory-selector .category-card[data-key="oleo"]::before {
       background-image: url('../../../assets/upload-oleo-card.jpg');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="hist-postal"]::before {
+      background-image: url('../../../assets/upload-hist-postal-card.jpg');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="entero-postal"]::before {
+      background-image: url('../../../assets/upload-entero-postal-card.jpg');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="sello"]::before {
+      background-image: url('../../../assets/upload-sello-card.jpg');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="pre-filatelia"]::before {
+      background-image: url('../../../assets/upload-pre-filatelia-card.jpg');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="censura"]::before {
+      background-image: url('../../../assets/upload-censura-card.jpg');
     }
     .upload-form-content .form-container {
       max-width: 1160px;
