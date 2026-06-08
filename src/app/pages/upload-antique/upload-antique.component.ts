@@ -66,14 +66,6 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
           <p class="category-intro">Selecciona el tipo de pieza que quieres a&ntilde;adir para continuar</p>
           <div class="category-selector">
             <div class="category-card category-card-antique" (click)="selectCategory('antiguedad')">
-              <div class="category-icon category-icon-swords" aria-hidden="true">
-                <svg viewBox="0 0 24 24" role="img">
-                  <path d="m14.5 5 4.4-3.4 1.5 1.5-3.4 4.4"/>
-                  <path d="m9.5 5-4.4-3.4-1.5 1.5 3.4 4.4"/>
-                  <path d="m8 8 8 8M16 8l-8 8"/>
-                  <path d="m6.5 17.5-2 2M17.5 17.5l2 2M6.7 15.3l2 2M17.3 15.3l-2 2"/>
-                </svg>
-              </div>
               <h2 class="category-name">Antigüedades</h2>
               <span class="category-divider" aria-hidden="true"></span>
               <p class="category-desc">Muebles, relojes, porcelana, cerámica y piezas históricas</p>
@@ -82,12 +74,6 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
               <span class="category-action">Seleccionar &rarr;</span>
             </div>
             <div class="category-card category-card-paper" (click)="selectCategory('papeleria')">
-              <div class="category-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" role="img">
-                  <path d="M7 3h7l5 5v13H7Z"/>
-                  <path d="M14 3v6h5M10 13h6M10 17h6"/>
-                </svg>
-              </div>
               <h2 class="category-name">Papelería</h2>
               <span class="category-divider" aria-hidden="true"></span>
               <p class="category-desc">Documentos, sellos, mapas, grabados y material de archivo</p>
@@ -108,68 +94,49 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
         @if (step() === 2 && !editMode) {
           <div class="subcategory-selector">
             @if (category() === 'antiguedad') {
-              <div class="category-card" (click)="selectSubcategory('escultura')">
-                <div class="category-icon"><svg viewBox="0 0 24 24"><path d="M12 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"/><path d="M7 21v-2a5 5 0 0 1 10 0v2"/><path d="M9 14h6"/></svg></div>
+              <div class="category-card" [attr.data-key]="'escultura'" (click)="selectSubcategory('escultura')">
                 <h2 class="category-name">Escultura</h2>
                 <p class="category-desc">Figuras, relieves y piezas tridimensionales</p>
                 <span class="category-action">Seleccionar &rarr;</span>
               </div>
-              <div class="category-card" (click)="selectSubcategory('pintura')">
-                <div class="category-icon"><svg viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M7 20V8l5-4 5 4v12"/><path d="M9 12h6"/><path d="M10 16h4"/></svg></div>
+              <div class="category-card" [attr.data-key]="'pintura'" (click)="selectSubcategory('pintura')">
                 <h2 class="category-name">Pintura</h2>
                 <p class="category-desc">Óleos, acuarelas, grabados y obras en lienzo</p>
                 <span class="category-action">Seleccionar &rarr;</span>
               </div>
-              <div class="category-card" (click)="selectSubcategory('cristal')">
-                <div class="category-icon"><svg viewBox="0 0 24 24"><path d="M8 3h8l-2 10h-4L8 3Z"/><path d="M10 13v6"/><path d="M7 21h10"/><path d="M9 17h6"/></svg></div>
+              <div class="category-card" [attr.data-key]="'cristal'" (click)="selectSubcategory('cristal')">
                 <h2 class="category-name">Cristal</h2>
                 <p class="category-desc">Vidrio, cristal tallado, lámparas y objetos de vidrio</p>
                 <span class="category-action">Seleccionar &rarr;</span>
               </div>
-              <div class="category-card" (click)="selectSubcategory('ceramica')">
-                <div class="category-icon"><svg viewBox="0 0 24 24"><path d="M7 9h10l1 4H6l1-4Z"/><path d="M6 13h12l-2 7H8l-2-7Z"/><path d="M12 9V5a2 2 0 0 1 2-2"/></svg></div>
+              <div class="category-card" [attr.data-key]="'ceramica'" (click)="selectSubcategory('ceramica')">
                 <h2 class="category-name">Cerámica</h2>
                 <p class="category-desc">Porcelana, loza, azulejos y piezas de barro</p>
                 <span class="category-action">Seleccionar &rarr;</span>
               </div>
             }
             @if (category() === 'papeleria') {
-              <div class="category-card" (click)="selectSubcategory('filatelia')">
-                <div class="category-icon">
-                  <svg viewBox="0 0 24 24"><path d="M7 16h10M9 16V9a3 3 0 1 1 6 0v7"/><path d="M5 20h14v-4H5z"/><path d="M8 20v2M16 20v2"/></svg>
-                </div>
+              <div class="category-card" [attr.data-key]="'filatelia'" (click)="selectSubcategory('filatelia')">
                 <h2 class="category-name">Filatelia</h2>
                 <p class="category-desc">Sellos, colecciones postales y material de correo</p>
                 <span class="category-action">Seleccionar &rarr;</span>
               </div>
-              <div class="category-card" (click)="selectSubcategory('fotos')">
-                <div class="category-icon">
-                  <svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="1.5"/><path d="m7 15 3.2-3.2 2.5 2.5 1.8-1.8L17 15"/><circle cx="16" cy="9" r="1"/></svg>
-                </div>
+              <div class="category-card" [attr.data-key]="'fotos'" (click)="selectSubcategory('fotos')">
                 <h2 class="category-name">Fotos</h2>
                 <p class="category-desc">Fotografías antiguas, albumes y positivos</p>
                 <span class="category-action">Seleccionar &rarr;</span>
               </div>
-              <div class="category-card" (click)="selectSubcategory('revistas')">
-                <div class="category-icon">
-                  <svg viewBox="0 0 24 24"><path d="M5 5h6a4 4 0 0 1 4 4v10H9a4 4 0 0 0-4 0z"/><path d="M19 5h-4a4 4 0 0 0-4 4"/><path d="M19 5v14a4 4 0 0 0-4 0"/></svg>
-                </div>
+              <div class="category-card" [attr.data-key]="'revistas'" (click)="selectSubcategory('revistas')">
                 <h2 class="category-name">Revistas / Periódicos</h2>
                 <p class="category-desc">Publicaciones periódicas, diarios y revistas históricas</p>
                 <span class="category-action">Seleccionar &rarr;</span>
               </div>
-              <div class="category-card" (click)="selectSubcategory('documentos')">
-                <div class="category-icon">
-                  <svg viewBox="0 0 24 24"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v6h5M10 13h6M10 17h6"/></svg>
-                </div>
+              <div class="category-card" [attr.data-key]="'documentos'" (click)="selectSubcategory('documentos')">
                 <h2 class="category-name">Documentos</h2>
                 <p class="category-desc">Escrituras, cartas, mapas y documentos históricos</p>
                 <span class="category-action">Seleccionar &rarr;</span>
               </div>
-              <div class="category-card" (click)="selectSubcategory('libros')">
-                <div class="category-icon">
-                  <svg viewBox="0 0 24 24"><path d="M7 4h9a3 3 0 0 1 3 3v13H8a3 3 0 0 0-3 3V6a2 2 0 0 1 2-2Z"/><path d="M8 20V4"/><path d="M11 8h5M11 12h5"/></svg>
-                </div>
+              <div class="category-card" [attr.data-key]="'libros'" (click)="selectSubcategory('libros')">
                 <h2 class="category-name">Libros</h2>
                 <p class="category-desc">Libros antiguos, primeras ediciones y volúmenes de colección</p>
                 <span class="category-action">Seleccionar &rarr;</span>
@@ -187,7 +154,6 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
           <div class="subcategory-selector">
             @for (d of detailsForCurrent(); track d.key) {
               <div class="category-card" [attr.data-key]="d.key" (click)="selectDetail(d.key)">
-                <div class="category-icon"><svg viewBox="0 0 24 24"><path d="M12 3l7 4v6c0 4.2-2.8 7.2-7 8-4.2-.8-7-3.8-7-8V7l7-4Z"/><path d="m9 12 2 2 4-5"/></svg></div>
                 <h2 class="category-name">{{ d.label }}</h2>
                 <p class="category-desc">{{ d.desc }}</p>
                 <span class="category-action">Seleccionar &rarr;</span>
@@ -1251,15 +1217,11 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
       margin-top: -0.35rem;
     }
     .upload-subcategory-content .subcategory-selector .category-card {
-      display: grid;
-      grid-template-columns: 112px minmax(0, 1fr);
-      grid-template-areas:
-        "icon title"
-        "icon desc"
-        "icon action";
-      column-gap: 1.35rem;
-      row-gap: 0.45rem;
-      align-items: center;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 0.5rem;
       min-height: 150px;
       padding: 1.45rem 1.7rem;
       text-align: left;
@@ -1275,10 +1237,26 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
     .upload-subcategory-content .subcategory-selector .category-card::after {
       content: none;
     }
-    .upload-subcategory-content .subcategory-selector .category-card:nth-child(-n+4) {
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="escultura"],
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="pintura"],
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="cristal"],
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="ceramica"],
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="filatelia"],
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="fotos"],
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="revistas"],
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="documentos"],
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="libros"] {
       background: none;
     }
-    .upload-subcategory-content .subcategory-selector .category-card:nth-child(-n+4)::before {
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="escultura"]::before,
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="pintura"]::before,
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="cristal"]::before,
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="ceramica"]::before,
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="filatelia"]::before,
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="fotos"]::before,
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="revistas"]::before,
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="documentos"]::before,
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="libros"]::before {
       content: '';
       position: absolute;
       inset: 0;
@@ -1288,7 +1266,15 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
       opacity: 0.72;
       transition: transform 0.45s, opacity 0.45s;
     }
-    .upload-subcategory-content .subcategory-selector .category-card:nth-child(-n+4)::after {
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="escultura"]::after,
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="pintura"]::after,
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="cristal"]::after,
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="ceramica"]::after,
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="filatelia"]::after,
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="fotos"]::after,
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="revistas"]::after,
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="documentos"]::after,
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="libros"]::after {
       content: '';
       position: absolute;
       inset: 0;
@@ -1297,17 +1283,32 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
         radial-gradient(circle at 50% 32%, rgba(184,149,90,0.18), transparent 11rem),
         linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.78) 68%, rgba(0,0,0,0.92));
     }
-    .upload-subcategory-content .subcategory-selector .category-card:nth-child(1)::before {
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="escultura"]::before {
       background-image: url('../../../assets/upload-escultura-card.png');
     }
-    .upload-subcategory-content .subcategory-selector .category-card:nth-child(2)::before {
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="pintura"]::before {
       background-image: url('../../../assets/upload-pintura-card.jpg');
     }
-    .upload-subcategory-content .subcategory-selector .category-card:nth-child(3)::before {
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="cristal"]::before {
       background-image: url('../../../assets/upload-cristal-card.jpg');
     }
-    .upload-subcategory-content .subcategory-selector .category-card:nth-child(4)::before {
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="ceramica"]::before {
       background-image: url('../../../assets/upload-ceramica-card.jpg');
+    }
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="filatelia"]::before {
+      background-image: url('../../../assets/upload-filatelia-card.png');
+    }
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="fotos"]::before {
+      background-image: url('../../../assets/upload-fotos-card.png');
+    }
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="revistas"]::before {
+      background-image: url('../../../assets/upload-revistas-card.jpg');
+    }
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="documentos"]::before {
+      background-image: url('../../../assets/upload-documentos-card.jpg');
+    }
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="libros"]::before {
+      background-image: url('../../../assets/upload-libros-card.jpg');
     }
     .upload-subcategory-content .subcategory-selector .category-card:nth-child(5) {
       grid-column: 1 / -1;
@@ -1319,24 +1320,7 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
       transform: translateY(-3px);
       box-shadow: 0 24px 58px rgba(0,0,0,0.42);
     }
-    .upload-subcategory-content .subcategory-selector .category-icon {
-      grid-area: icon;
-      width: 76px;
-      height: 76px;
-      justify-self: center;
-      margin: 0;
-      background: rgba(4,4,4,0.56);
-      border: 1px solid rgba(212,172,98,0.78);
-      color: #d4ac62;
-      box-shadow: 0 0 0 1px rgba(212,172,98,0.12), 0 15px 30px rgba(0,0,0,0.28);
-    }
-    .upload-subcategory-content .subcategory-selector .category-icon svg {
-      width: 35px;
-      height: 35px;
-      stroke-width: 1.55;
-    }
     .upload-subcategory-content .subcategory-selector .category-name {
-      grid-area: title;
       color: #fff8ed;
       font-size: 1.55rem;
       line-height: 1.15;
@@ -1344,7 +1328,6 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
       text-shadow: 0 10px 28px rgba(0,0,0,0.5);
     }
     .upload-subcategory-content .subcategory-selector .category-desc {
-      grid-area: desc;
       color: rgba(255,248,237,0.82);
       max-width: 280px;
       min-height: auto;
@@ -1353,7 +1336,6 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
       margin: 0;
     }
     .upload-subcategory-content .subcategory-selector .category-action {
-      grid-area: action;
       margin: 0.2rem 0 0;
       padding: 0;
       width: auto;
@@ -1457,18 +1439,13 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
       max-width: 900px;
     }
     .upload-detail-content .subcategory-selector .category-card {
-      display: grid;
-      grid-template-columns: 96px minmax(0, 1fr);
-      grid-template-areas:
-        "icon title"
-        "icon desc"
-        "icon action";
-      column-gap: 1.2rem;
-      row-gap: 0.45rem;
-      align-items: center;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 0.45rem;
       min-height: 140px;
       padding: 1.35rem 1.5rem;
-      text-align: left;
       border-radius: 6px;
       background:
         radial-gradient(circle at 18% 35%, rgba(184,149,90,0.12), transparent 12rem),
@@ -1486,23 +1463,7 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
       transform: translateY(-3px);
       box-shadow: 0 24px 58px rgba(0,0,0,0.42);
     }
-    .upload-detail-content .subcategory-selector .category-icon {
-      grid-area: icon;
-      width: 70px;
-      height: 70px;
-      justify-self: center;
-      margin: 0;
-      background: rgba(4,4,4,0.56);
-      border: 1px solid rgba(212,172,98,0.78);
-      color: #d4ac62;
-    }
-    .upload-detail-content .subcategory-selector .category-icon svg {
-      width: 32px;
-      height: 32px;
-    }
     .upload-detail-content .subcategory-selector .category-name {
-      grid-area: title;
-      color: #fff8ed;
       font-size: 1.38rem;
       line-height: 1.15;
       margin: 0;
@@ -1532,12 +1493,18 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
     }
     .upload-detail-content .subcategory-selector .category-card[data-key="busto"],
     .upload-detail-content .subcategory-selector .category-card[data-key="belen"],
-    .upload-detail-content .subcategory-selector .category-card[data-key="figura"] {
+    .upload-detail-content .subcategory-selector .category-card[data-key="figura"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="acuarela"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="grabado"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="oleo"] {
       background: none;
     }
     .upload-detail-content .subcategory-selector .category-card[data-key="busto"]::before,
     .upload-detail-content .subcategory-selector .category-card[data-key="belen"]::before,
-    .upload-detail-content .subcategory-selector .category-card[data-key="figura"]::before {
+    .upload-detail-content .subcategory-selector .category-card[data-key="figura"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="acuarela"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="grabado"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="oleo"]::before {
       content: '';
       position: absolute;
       inset: 0;
@@ -1549,7 +1516,10 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
     }
     .upload-detail-content .subcategory-selector .category-card[data-key="busto"]::after,
     .upload-detail-content .subcategory-selector .category-card[data-key="belen"]::after,
-    .upload-detail-content .subcategory-selector .category-card[data-key="figura"]::after {
+    .upload-detail-content .subcategory-selector .category-card[data-key="figura"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="acuarela"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="grabado"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="oleo"]::after {
       content: '';
       position: absolute;
       inset: 0;
@@ -1566,6 +1536,15 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
     }
     .upload-detail-content .subcategory-selector .category-card[data-key="figura"]::before {
       background-image: url('../../../assets/upload-figura-card.png');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="acuarela"]::before {
+      background-image: url('../../../assets/upload-acuarela-card.jpg');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="grabado"]::before {
+      background-image: url('../../../assets/upload-grabado-card.png');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="oleo"]::before {
+      background-image: url('../../../assets/upload-oleo-card.jpg');
     }
     .upload-form-content .form-container {
       max-width: 1160px;
@@ -1708,7 +1687,7 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
         max-width: 430px;
       }
       .upload-subcategory-content .subcategory-selector .category-card,
-      .upload-subcategory-content .subcategory-selector .category-card:nth-child(5) {
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="libros"] {
         width: 100%;
         grid-column: auto;
         grid-template-columns: 82px minmax(0, 1fr);
