@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
+import { AuthService } from '../../core/auth.service';
 
 @Component({
   selector: 'app-main-layout',
@@ -24,7 +25,9 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
         <nav class="footer-links" aria-label="Enlaces secundarios">
           <a routerLink="/">Inicio</a>
           <a routerLink="/coleccion">Colección</a>
-          <a routerLink="/subir">Subir Pieza</a>
+          @if (auth.isAdmin) {
+            <a routerLink="/subir">Subir Pieza</a>
+          }
         </nav>
 
         <p class="footer-note">Piezas únicas reunidas con pasión, conservadas para la familia.</p>
@@ -150,4 +153,6 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
     }
   `]
 })
-export class MainLayoutComponent {}
+export class MainLayoutComponent {
+  auth = inject(AuthService);
+}

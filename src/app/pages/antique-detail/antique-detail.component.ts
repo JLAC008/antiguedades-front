@@ -68,7 +68,7 @@ import { Antique } from '../../models';
 
               <div class="title-rule" aria-hidden="true">⌘</div>
 
-              @if (antique()!.price > 0) {
+              @if (auth.isAdmin && antique()!.price > 0) {
                 <p class="antique-price">{{ antique()!.price | currency:'EUR':'symbol':'1.0-0' }}</p>
               }
 

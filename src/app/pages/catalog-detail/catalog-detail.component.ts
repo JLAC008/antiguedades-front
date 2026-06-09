@@ -4,6 +4,7 @@ import { CatalogsService } from '../../core/catalogs.service';
 import { AntiquesService } from '../../core/antiques.service';
 import { AntiqueCardComponent } from '../../components/antique-card/antique-card.component';
 import { Catalog, Antique } from '../../models';
+import { AuthService } from '../../core/auth.service';
 
 @Component({
   selector: 'app-catalog-detail',
@@ -35,7 +36,9 @@ import { Catalog, Antique } from '../../models';
           <div class="empty-state">
             <span class="empty-icon">&#128250;</span>
             <p>Este catálogo no tiene piezas todavía.</p>
-            <a routerLink="/subir" class="btn-primary">Añadir primera pieza</a>
+            @if (auth.isAdmin) {
+              <a routerLink="/subir" class="btn-primary">Añadir primera pieza</a>
+            }
           </div>
         } @else {
           <div class="antiques-grid">
@@ -169,7 +172,8 @@ export class CatalogDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private catalogsService: CatalogsService,
-    private antiquesService: AntiquesService
+    private antiquesService: AntiquesService,
+    public auth: AuthService
   ) {}
 
   async ngOnInit() {

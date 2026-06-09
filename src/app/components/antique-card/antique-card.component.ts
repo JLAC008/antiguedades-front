@@ -1,7 +1,8 @@
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CurrencyPipe } from '@angular/common';
 import { Antique } from '../../models';
+import { AuthService } from '../../core/auth.service';
 
 @Component({
   selector: 'app-antique-card',
@@ -30,7 +31,7 @@ import { Antique } from '../../models';
           </span>
           {{ categoryLabel() }}
         </p>
-        @if (antique.price > 0) {
+        @if (auth.isAdmin && antique.price > 0) {
           <p class="antique-card-price">{{ antique.price | currency:'EUR':'symbol':'1.0-0' }}</p>
         }
         @if (antique.description) {
@@ -255,6 +256,7 @@ import { Antique } from '../../models';
 })
 export class AntiqueCardComponent {
   @Input() antique!: Antique;
+  auth = inject(AuthService);
 
   categoryLabel(): string {
     const labels: Record<string, string> = {

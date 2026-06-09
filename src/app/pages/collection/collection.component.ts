@@ -5,6 +5,7 @@ import { AntiquesService } from '../../core/antiques.service';
 import { CatalogsService } from '../../core/catalogs.service';
 import { AntiqueCardComponent } from '../../components/antique-card/antique-card.component';
 import { Antique, Catalog } from '../../models';
+import { AuthService } from '../../core/auth.service';
 
 @Component({
   selector: 'app-collection',
@@ -42,12 +43,14 @@ import { Antique, Catalog } from '../../models';
               </span>
               <div><strong>{{ eraSummary() }}</strong><span>Épocas representadas</span></div>
             </div>
-            <div class="stat-card">
-              <span class="stat-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M15 9.2A3 3 0 0 0 12.5 8H11a2 2 0 0 0 0 4h2a2 2 0 0 1 0 4h-1.5A3 3 0 0 1 9 14.8"/></svg>
-              </span>
-              <div><strong>{{ totalValueLabel() }}</strong><span>Valor estimado total</span></div>
-            </div>
+            @if (auth.isAdmin) {
+              <div class="stat-card">
+                <span class="stat-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M15 9.2A3 3 0 0 0 12.5 8H11a2 2 0 0 0 0 4h2a2 2 0 0 1 0 4h-1.5A3 3 0 0 1 9 14.8"/></svg>
+                </span>
+                <div><strong>{{ totalValueLabel() }}</strong><span>Valor estimado total</span></div>
+              </div>
+            }
           </div>
         </div>
       </section>
@@ -100,8 +103,10 @@ import { Antique, Catalog } from '../../models';
             <div class="toolbar-actions">
               <select class="sort-select" [(ngModel)]="sortBy" (ngModelChange)="applyFilters()" aria-label="Ordenar colección">
                 <option value="recent">Ordenar por</option>
-                <option value="priceDesc">Precio mayor</option>
-                <option value="priceAsc">Precio menor</option>
+                @if (auth.isAdmin) {
+                  <option value="priceDesc">Precio mayor</option>
+                  <option value="priceAsc">Precio menor</option>
+                }
                 <option value="name">Nombre</option>
               </select>
               <button class="view-btn active" type="button" aria-label="Vista de cuadrícula">
@@ -767,7 +772,8 @@ export class CollectionComponent implements OnInit {
   constructor(
     private antiquesService: AntiquesService,
     private catalogsService: CatalogsService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    public auth: AuthService
   ) {}
 
   async ngOnInit() {

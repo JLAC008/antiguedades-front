@@ -285,6 +285,6 @@ export class NavbarComponent {
 
   async signOut() {
     await this.auth.signOut();
-    this.router.navigate(['/login']);
+    this.router.navigate(['/']);
   }
 }

@@ -1,6 +1,7 @@
 .angular
 dist
 node_modules
+angular-serve*.log
 .env
 skills-lock.json
 .agents/skills/frontend-design/LICENSE.txt
