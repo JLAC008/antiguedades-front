@@ -12,13 +12,21 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
   imports: [FormsModule, RouterLink],
   template: `
     <div class="page">
-      <div class="page-header">
+      <div
+        class="page-header"
+        [class.upload-type-hero]="step() === 1 && !editMode"
+        [class.upload-subcategory-hero]="step() === 2 && !editMode"
+        [class.upload-paper-hero]="step() === 2 && !editMode && category() === 'papeleria'"
+        [class.upload-detail-hero]="step() === 3 && !editMode"
+        [class.upload-form-hero]="(step() === 4 && !editMode) || editMode"
+      >
         <div class="page-header-inner">
           @if (step() === 1) {
-            <a routerLink="/coleccion" class="breadcrumb">&larr; Cancelar</a>
-            <h1 class="page-title">Nueva pieza</h1>
-            <div class="page-flourish" aria-hidden="true">⌘</div>
-            <p class="page-subtitle">Selecciona el tipo de pieza que quieres añadir</p>
+            <a routerLink="/coleccion" class="breadcrumb">&larr; Volver</a>
+            <div class="hero-mark" aria-hidden="true">&loz;</div>
+            <h1 class="page-title">A&ntilde;adir nueva pieza</h1>
+            <p class="page-subtitle">Incorpora una nueva pieza a tu colecci&oacute;n privada</p>
+            <div class="page-flourish" aria-hidden="true">&loz;</div>
           }
           @if (step() === 2) {
             <button class="breadcrumb" (click)="step.set(1)">&larr; Volver</button>
@@ -47,34 +55,38 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
         </div>
       </div>
 
-      <div class="page-content">
+      <div
+        class="page-content"
+        [class.upload-type-content]="step() === 1 && !editMode"
+        [class.upload-subcategory-content]="step() === 2 && !editMode"
+        [class.upload-detail-content]="step() === 3 && !editMode"
+        [class.upload-form-content]="(step() === 4 && !editMode) || editMode"
+      >
         @if (step() === 1 && !editMode) {
+          <p class="category-intro">Selecciona el tipo de pieza que quieres a&ntilde;adir para continuar</p>
           <div class="category-selector">
-            <div class="category-card" (click)="selectCategory('antiguedad')">
-              <div class="category-icon category-icon-swords" aria-hidden="true">
-                <svg viewBox="0 0 24 24" role="img">
-                  <path d="m14.5 5 4.4-3.4 1.5 1.5-3.4 4.4"/>
-                  <path d="m9.5 5-4.4-3.4-1.5 1.5 3.4 4.4"/>
-                  <path d="m8 8 8 8M16 8l-8 8"/>
-                  <path d="m6.5 17.5-2 2M17.5 17.5l2 2M6.7 15.3l2 2M17.3 15.3l-2 2"/>
-                </svg>
-              </div>
+            <div class="category-card category-card-antique" (click)="selectCategory('antiguedad')">
               <h2 class="category-name">Antigüedades</h2>
-              <p class="category-desc">Muebles, relojes, porcelana, cerámica y piezas históricas</p>
               <span class="category-divider" aria-hidden="true"></span>
+              <p class="category-desc">Muebles, relojes, porcelana, cerámica y piezas históricas</p>
+              <span class="category-examples-title">Ejemplos:</span>
+              <span class="category-examples">Muebles · Relojes · Esculturas · Porcelana · Cerámica · Arte</span>
               <span class="category-action">Seleccionar &rarr;</span>
             </div>
-            <div class="category-card" (click)="selectCategory('papeleria')">
-              <div class="category-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" role="img">
-                  <path d="M7 3h7l5 5v13H7Z"/>
-                  <path d="M14 3v6h5M10 13h6M10 17h6"/>
-                </svg>
-              </div>
+            <div class="category-card category-card-paper" (click)="selectCategory('papeleria')">
               <h2 class="category-name">Papelería</h2>
-              <p class="category-desc">Documentos, sellos, mapas, grabados y material de archivo</p>
               <span class="category-divider" aria-hidden="true"></span>
+              <p class="category-desc">Documentos, sellos, mapas, grabados y material de archivo</p>
+              <span class="category-examples-title">Ejemplos:</span>
+              <span class="category-examples">Documentos · Sellos · Mapas · Grabados · Libros · Archivos</span>
               <span class="category-action">Seleccionar &rarr;</span>
+            </div>
+          </div>
+          <div class="category-help">
+            <span class="category-help-icon" aria-hidden="true">i</span>
+            <div>
+              <strong>¿No estás seguro de qué categoría elegir?</strong>
+              <p>Puedes cambiar la categoría más adelante desde la edición de la pieza.</p>
             </div>
           </div>
         }
@@ -82,75 +94,76 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
         @if (step() === 2 && !editMode) {
           <div class="subcategory-selector">
             @if (category() === 'antiguedad') {
-              <div class="category-card" (click)="selectSubcategory('escultura')">
-                <div class="category-icon">&#9997;</div>
+              <div class="category-card" [attr.data-key]="'escultura'" (click)="selectSubcategory('escultura')">
                 <h2 class="category-name">Escultura</h2>
                 <p class="category-desc">Figuras, relieves y piezas tridimensionales</p>
                 <span class="category-action">Seleccionar &rarr;</span>
               </div>
-              <div class="category-card" (click)="selectSubcategory('pintura')">
-                <div class="category-icon">&#127912;</div>
+              <div class="category-card" [attr.data-key]="'pintura'" (click)="selectSubcategory('pintura')">
                 <h2 class="category-name">Pintura</h2>
                 <p class="category-desc">Óleos, acuarelas, grabados y obras en lienzo</p>
                 <span class="category-action">Seleccionar &rarr;</span>
               </div>
-              <div class="category-card" (click)="selectSubcategory('cristal')">
-                <div class="category-icon">&#128161;</div>
+              <div class="category-card" [attr.data-key]="'cristal'" (click)="selectSubcategory('cristal')">
                 <h2 class="category-name">Cristal</h2>
                 <p class="category-desc">Vidrio, cristal tallado, lámparas y objetos de vidrio</p>
                 <span class="category-action">Seleccionar &rarr;</span>
               </div>
-              <div class="category-card" (click)="selectSubcategory('ceramica')">
-                <div class="category-icon">&#127834;</div>
+              <div class="category-card" [attr.data-key]="'ceramica'" (click)="selectSubcategory('ceramica')">
                 <h2 class="category-name">Cerámica</h2>
                 <p class="category-desc">Porcelana, loza, azulejos y piezas de barro</p>
                 <span class="category-action">Seleccionar &rarr;</span>
               </div>
             }
             @if (category() === 'papeleria') {
-              <div class="category-card" (click)="selectSubcategory('filatelia')">
-                <div class="category-icon">&#9993;</div>
+              <div class="category-card" [attr.data-key]="'filatelia'" (click)="selectSubcategory('filatelia')">
                 <h2 class="category-name">Filatelia</h2>
                 <p class="category-desc">Sellos, colecciones postales y material de correo</p>
                 <span class="category-action">Seleccionar &rarr;</span>
               </div>
-              <div class="category-card" (click)="selectSubcategory('fotos')">
-                <div class="category-icon">&#128248;</div>
+              <div class="category-card" [attr.data-key]="'fotos'" (click)="selectSubcategory('fotos')">
                 <h2 class="category-name">Fotos</h2>
                 <p class="category-desc">Fotografías antiguas, albumes y positivos</p>
                 <span class="category-action">Seleccionar &rarr;</span>
               </div>
-              <div class="category-card" (click)="selectSubcategory('revistas')">
-                <div class="category-icon">&#128214;</div>
+              <div class="category-card" [attr.data-key]="'revistas'" (click)="selectSubcategory('revistas')">
                 <h2 class="category-name">Revistas / Periódicos</h2>
                 <p class="category-desc">Publicaciones periódicas, diarios y revistas históricas</p>
                 <span class="category-action">Seleccionar &rarr;</span>
               </div>
-              <div class="category-card" (click)="selectSubcategory('documentos')">
-                <div class="category-icon">&#128203;</div>
+              <div class="category-card" [attr.data-key]="'documentos'" (click)="selectSubcategory('documentos')">
                 <h2 class="category-name">Documentos</h2>
                 <p class="category-desc">Escrituras, cartas, mapas y documentos históricos</p>
                 <span class="category-action">Seleccionar &rarr;</span>
               </div>
-              <div class="category-card" (click)="selectSubcategory('libros')">
-                <div class="category-icon">&#128218;</div>
+              <div class="category-card" [attr.data-key]="'libros'" (click)="selectSubcategory('libros')">
                 <h2 class="category-name">Libros</h2>
                 <p class="category-desc">Libros antiguos, primeras ediciones y volúmenes de colección</p>
                 <span class="category-action">Seleccionar &rarr;</span>
               </div>
             }
           </div>
+          <div class="subcategory-quote" aria-hidden="true">
+            <span></span>
+            <p>Cada pieza cuenta una historia. Añade con cuidado y preserva el legado.</p>
+            <span></span>
+          </div>
         }
 
         @if (step() === 3 && !editMode && hasDetail(form.subcategory)) {
           <div class="subcategory-selector">
             @for (d of detailsForCurrent(); track d.key) {
-              <div class="category-card" (click)="selectDetail(d.key)">
+              <div class="category-card" [attr.data-key]="d.key" (click)="selectDetail(d.key)">
                 <h2 class="category-name">{{ d.label }}</h2>
                 <p class="category-desc">{{ d.desc }}</p>
                 <span class="category-action">Seleccionar &rarr;</span>
               </div>
             }
+          </div>
+          <div class="subcategory-quote" aria-hidden="true">
+            <span></span>
+            <p>Define el detalle con precisión para catalogar mejor la pieza.</p>
+            <span></span>
           </div>
         }
 
@@ -474,6 +487,65 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
       border-bottom: 1px solid #ded3c4;
       padding: 3.55rem 1.5rem 3rem;
     }
+    .page-header.upload-type-hero {
+      position: relative;
+      overflow: hidden;
+      min-height: 260px;
+      padding: 3.75rem 1.5rem 2.15rem;
+      text-align: center;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,0.28), rgba(0,0,0,0.78)),
+        url('/assets/login-bg-gallery.png') center 42% / cover no-repeat;
+      border-bottom: 1px solid rgba(184,149,90,0.32);
+      color: #fff8ed;
+    }
+    .page-header.upload-type-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(0,0,0,0.62), transparent 26%, transparent 72%, rgba(0,0,0,0.55)),
+        radial-gradient(circle at 15% 45%, rgba(184,149,90,0.14), transparent 18rem);
+      pointer-events: none;
+    }
+    .page-header.upload-type-hero .page-header-inner {
+      position: relative;
+      z-index: 1;
+    }
+    .page-header.upload-type-hero .breadcrumb {
+      position: absolute;
+      left: 0;
+      top: 3.15rem;
+      color: #d4ac62;
+      margin: 0;
+    }
+    .page-header.upload-type-hero .breadcrumb:hover {
+      color: #f2d292;
+    }
+    .page-header.upload-type-hero .page-title {
+      color: #fff8ed;
+      font-size: clamp(2.8rem, 5vw, 4.9rem);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      text-shadow: 0 16px 42px rgba(0,0,0,0.62);
+    }
+    .page-header.upload-type-hero .page-subtitle {
+      color: #d4ac62;
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.1rem, 2vw, 1.45rem);
+      margin-top: 0.65rem;
+    }
+    .page-header.upload-type-hero .page-flourish {
+      justify-content: center;
+      color: #d4ac62;
+      margin: 1.25rem auto 0;
+    }
+    .hero-mark {
+      color: #d4ac62;
+      font-family: Georgia, serif;
+      font-size: 1rem;
+      margin-bottom: 0.85rem;
+    }
     .page-header-inner {
       max-width: 1120px;
       margin: 0 auto;
@@ -530,6 +602,75 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
       margin: 0 auto;
       padding: 4rem 1.5rem 5rem;
     }
+    .page-content.upload-type-content {
+      max-width: 1280px;
+      padding: 1.8rem 1.5rem 3.6rem;
+    }
+    .page-header.upload-subcategory-hero {
+      position: relative;
+      overflow: hidden;
+      min-height: 270px;
+      padding: 3rem 1.5rem 2rem;
+      background:
+        linear-gradient(90deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.7) 36%, rgba(0,0,0,0.34) 68%, rgba(0,0,0,0.76) 100%),
+        url('/assets/login-bg-gallery.png') center 42% / cover no-repeat;
+      border-bottom: 1px solid rgba(184,149,90,0.28);
+      color: #fff8ed;
+    }
+    .page-header.upload-paper-hero {
+      background:
+        linear-gradient(90deg, rgba(0,0,0,0.94) 0%, rgba(0,0,0,0.72) 34%, rgba(0,0,0,0.28) 68%, rgba(0,0,0,0.72) 100%),
+        url('https://images.unsplash.com/photo-1456324504439-367cee3b3c32?w=1800&h=620&fit=crop') center 44% / cover no-repeat;
+    }
+    .page-header.upload-subcategory-hero::after {
+      content: '';
+      position: absolute;
+      inset: auto 0 0;
+      height: 55%;
+      background: linear-gradient(180deg, transparent, #090908);
+      pointer-events: none;
+    }
+    .page-header.upload-subcategory-hero .page-header-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 1060px;
+    }
+    .page-header.upload-subcategory-hero .breadcrumb {
+      color: #d4ac62;
+      margin-bottom: 1.5rem;
+    }
+    .page-header.upload-subcategory-hero .breadcrumb:hover {
+      color: #f2d292;
+    }
+    .page-header.upload-subcategory-hero .page-title {
+      color: #fff8ed;
+      font-size: clamp(2.8rem, 5vw, 4.2rem);
+      text-shadow: 0 16px 42px rgba(0,0,0,0.62);
+    }
+    .page-header.upload-subcategory-hero .page-subtitle {
+      color: rgba(255,248,237,0.86);
+      margin-top: 1.25rem;
+    }
+    .page-header.upload-subcategory-hero .page-flourish {
+      color: #d4ac62;
+      margin: 1.15rem 0 0;
+    }
+    .page-content.upload-subcategory-content {
+      max-width: 1060px;
+      padding: 2rem 1.5rem 3.2rem;
+    }
+    .page:has(.upload-type-content) {
+      background:
+        radial-gradient(circle at 50% 0%, rgba(184,149,90,0.12), transparent 30rem),
+        linear-gradient(180deg, #050505 0%, #0b0b0a 48%, #10100f 100%);
+      color: #f7efe3;
+    }
+    .page:has(.upload-subcategory-content) {
+      background:
+        radial-gradient(circle at 50% 0%, rgba(184,149,90,0.11), transparent 30rem),
+        linear-gradient(180deg, #090908 0%, #0b0b0a 48%, #10100f 100%);
+      color: #f7efe3;
+    }
     .form-error {
       background: #FEF2F2;
       border: 1px solid #FECACA;
@@ -552,42 +693,79 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
     .category-selector {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 2.45rem;
-      max-width: 790px;
+      gap: 1.4rem;
+      max-width: 1080px;
       margin: 0 auto;
       padding-top: 0.25rem;
     }
     .category-card {
-      background: rgba(255, 255, 255, 0.48);
-      border: 1px solid #dccdbd;
-      border-radius: 10px;
-      padding: 2.25rem 2rem 2.35rem;
+      position: relative;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,0.18), rgba(0,0,0,0.82)),
+        #11100f;
+      border: 1px solid rgba(184,149,90,0.62);
+      border-radius: 7px;
+      padding: 2.25rem 2rem 0;
       text-align: center;
       cursor: pointer;
       transition: all 0.3s;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 0.85rem;
-      min-height: 360px;
-      box-shadow: 0 16px 42px rgba(64, 47, 29, 0.035);
+      justify-content: center;
+      gap: 0.75rem;
+      min-height: 380px;
+      box-shadow: 0 18px 48px rgba(0,0,0,0.35);
+      color: #fff8ed;
+      isolation: isolate;
+    }
+    .category-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      background-position: center;
+      background-size: cover;
+      opacity: 0.72;
+      transition: transform 0.45s, opacity 0.45s;
+    }
+    .category-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background:
+        radial-gradient(circle at 50% 32%, rgba(184,149,90,0.18), transparent 11rem),
+        linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.78) 68%, rgba(0,0,0,0.92));
+    }
+    .category-card-antique::before {
+      background-image: url('https://images.unsplash.com/photo-1585504198199-20277593b94f?w=900&h=640&fit=crop');
+    }
+    .category-card-paper::before {
+      background-image: url('https://images.unsplash.com/photo-1456324504439-367cee3b3c32?w=900&h=640&fit=crop');
     }
     .category-card:hover {
-      border-color: var(--color-accent);
-      box-shadow: 0 18px 38px rgba(84, 61, 38, 0.12);
+      border-color: #d4ac62;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.48);
       transform: translateY(-4px);
     }
+    .category-card:hover::before {
+      transform: scale(1.05);
+      opacity: 0.86;
+    }
     .category-icon {
-      color: var(--color-accent);
+      color: #d4ac62;
       width: 94px;
       height: 94px;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: radial-gradient(circle at 32% 22%, #33312d, #090909 68%);
+      background: rgba(3,3,3,0.7);
+      border: 1px solid rgba(212,172,98,0.78);
       border-radius: 50%;
       margin-bottom: 0.45rem;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.11), 0 14px 28px rgba(0,0,0,0.18);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 14px 28px rgba(0,0,0,0.28);
       font-size: 2.3rem;
     }
     .category-icon svg {
@@ -606,32 +784,94 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
     }
     .category-name {
       font-family: 'Playfair Display', serif;
-      font-size: 1.85rem;
+      font-size: clamp(2rem, 3vw, 2.65rem);
       font-weight: 700;
-      color: var(--color-primary);
+      color: #fff8ed;
       margin: 0;
+      text-shadow: 0 10px 30px rgba(0,0,0,0.62);
     }
     .category-desc {
-      color: #5b5046;
+      color: rgba(255,248,237,0.88);
       font-family: 'Playfair Display', serif;
-      font-size: 1.02rem;
+      font-size: 1.05rem;
       margin: 0;
       line-height: 1.55;
-      max-width: 270px;
-      min-height: 3.1rem;
+      max-width: 340px;
+      min-height: 3.2rem;
     }
     .category-divider {
       display: block;
       width: 92px;
       height: 1px;
       background: linear-gradient(90deg, transparent, rgba(184,149,90,0.72), transparent);
-      margin: 0.8rem 0 0.55rem;
+      margin: 0.2rem 0 0.55rem;
+    }
+    .category-examples-title {
+      color: #d4ac62;
+      font-family: 'Playfair Display', serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-top: 0.25rem;
+    }
+    .category-examples {
+      color: rgba(255,248,237,0.76);
+      font-family: 'Playfair Display', serif;
+      font-size: 0.88rem;
+      line-height: 1.45;
+      max-width: 420px;
     }
     .category-action {
-      font-size: 1rem;
+      width: calc(100% + 4rem);
+      display: block;
+      margin: 1.2rem -2rem 0;
+      padding: 1rem;
+      border-top: 1px solid rgba(184,149,90,0.34);
+      background: rgba(3,3,3,0.24);
+      font-family: 'Playfair Display', serif;
+      font-size: 1.08rem;
       font-weight: 700;
-      color: var(--color-accent);
-      margin-top: 0;
+      color: #d4ac62;
+    }
+    .category-intro {
+      color: #d4ac62;
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.05rem, 2vw, 1.35rem);
+      text-align: center;
+      margin: 0 0 1.7rem;
+    }
+    .category-help {
+      max-width: 1080px;
+      margin: 1.35rem auto 0;
+      padding: 1.2rem 1.35rem;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      border: 1px solid rgba(184,149,90,0.34);
+      border-radius: 7px;
+      background: linear-gradient(180deg, rgba(18,18,17,0.92), rgba(9,9,8,0.82));
+      color: rgba(247,239,227,0.78);
+    }
+    .category-help-icon {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border: 1px solid rgba(212,172,98,0.68);
+      border-radius: 50%;
+      color: #d4ac62;
+      font-family: Georgia, serif;
+    }
+    .category-help strong {
+      display: block;
+      color: #e7c37c;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.04rem;
+      margin-bottom: 0.2rem;
+    }
+    .category-help p {
+      margin: 0;
+      font-size: 0.94rem;
     }
     .form-container { max-width: 1100px; margin: 0 auto; }
     .antique-form {
@@ -970,6 +1210,567 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
       background: linear-gradient(90deg, transparent, rgba(184,149,90,0.72), transparent);
       transform: translateX(-50%);
     }
+    .upload-subcategory-content .subcategory-selector {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.25rem;
+      max-width: 820px;
+      margin-top: 0;
+    }
+    .upload-subcategory-content .subcategory-selector .category-card {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 0.5rem;
+      min-height: 150px;
+      padding: 1.45rem 1.7rem;
+      text-align: left;
+      border-radius: 6px;
+      background:
+        radial-gradient(circle at 20% 30%, rgba(184,149,90,0.1), transparent 12rem),
+        linear-gradient(135deg, rgba(22,22,21,0.96), rgba(10,10,9,0.92));
+      border: 1px solid rgba(184,149,90,0.34);
+      box-shadow: 0 18px 46px rgba(0,0,0,0.28);
+      color: #fff8ed;
+    }
+    .upload-subcategory-content .subcategory-selector .category-card::before,
+    .upload-subcategory-content .subcategory-selector .category-card::after {
+      content: none;
+    }
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="escultura"],
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="pintura"],
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="cristal"],
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="ceramica"],
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="filatelia"],
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="fotos"],
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="revistas"],
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="documentos"],
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="libros"] {
+      background: none;
+    }
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="escultura"]::before,
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="pintura"]::before,
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="cristal"]::before,
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="ceramica"]::before,
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="filatelia"]::before,
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="fotos"]::before,
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="revistas"]::before,
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="documentos"]::before,
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="libros"]::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      background-position: center;
+      background-size: cover;
+      opacity: 0.72;
+      transition: transform 0.45s, opacity 0.45s;
+    }
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="escultura"]::after,
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="pintura"]::after,
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="cristal"]::after,
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="ceramica"]::after,
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="filatelia"]::after,
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="fotos"]::after,
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="revistas"]::after,
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="documentos"]::after,
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="libros"]::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background:
+        radial-gradient(circle at 50% 32%, rgba(184,149,90,0.18), transparent 11rem),
+        linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.78) 68%, rgba(0,0,0,0.92));
+    }
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="escultura"]::before {
+      background-image: url('../../../assets/upload-escultura-card.png');
+    }
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="pintura"]::before {
+      background-image: url('../../../assets/upload-pintura-card.jpg');
+    }
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="cristal"]::before {
+      background-image: url('../../../assets/upload-cristal-card.jpg');
+    }
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="ceramica"]::before {
+      background-image: url('../../../assets/upload-ceramica-card.jpg');
+    }
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="filatelia"]::before {
+      background-image: url('../../../assets/upload-filatelia-card.png');
+    }
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="fotos"]::before {
+      background-image: url('../../../assets/upload-fotos-card.png');
+    }
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="revistas"]::before {
+      background-image: url('../../../assets/upload-revistas-card.jpg');
+    }
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="documentos"]::before {
+      background-image: url('../../../assets/upload-documentos-card.jpg');
+    }
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="libros"]::before {
+      background-image: url('../../../assets/upload-libros-card.jpg');
+    }
+    .upload-subcategory-content .subcategory-selector .category-card:nth-child(5) {
+      grid-column: 1 / -1;
+      justify-self: center;
+      width: min(430px, 100%);
+    }
+    .upload-subcategory-content .subcategory-selector .category-card:hover {
+      border-color: rgba(212,172,98,0.82);
+      transform: translateY(-3px);
+      box-shadow: 0 24px 58px rgba(0,0,0,0.42);
+    }
+    .upload-subcategory-content .subcategory-selector .category-name {
+      color: #fff8ed;
+      font-size: 1.55rem;
+      line-height: 1.15;
+      margin: 0;
+      text-shadow: 0 10px 28px rgba(0,0,0,0.5);
+    }
+    .upload-subcategory-content .subcategory-selector .category-desc {
+      color: rgba(255,248,237,0.82);
+      max-width: 280px;
+      min-height: auto;
+      font-size: 0.94rem;
+      line-height: 1.55;
+      margin: 0;
+    }
+    .upload-subcategory-content .subcategory-selector .category-action {
+      margin: 0.2rem 0 0;
+      padding: 0;
+      width: auto;
+      border: 0;
+      background: transparent;
+      color: #d4ac62;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.02rem;
+      font-weight: 700;
+    }
+    .upload-subcategory-content .subcategory-selector .category-action::before {
+      content: none;
+    }
+    .subcategory-quote {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+      margin: 2rem auto 0;
+      color: rgba(247,239,227,0.66);
+      font-family: 'Playfair Display', serif;
+      font-size: 0.95rem;
+      text-align: center;
+    }
+    .subcategory-quote span {
+      width: 72px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(212,172,98,0.78));
+    }
+    .subcategory-quote span:last-child {
+      background: linear-gradient(90deg, rgba(212,172,98,0.78), transparent);
+    }
+    .subcategory-quote p {
+      margin: 0;
+    }
+    .page-header.upload-detail-hero,
+    .page-header.upload-form-hero {
+      position: relative;
+      overflow: hidden;
+      min-height: 245px;
+      padding: 3rem 1.5rem 2rem;
+      background:
+        linear-gradient(90deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.72) 38%, rgba(0,0,0,0.38) 70%, rgba(0,0,0,0.72) 100%),
+        url('/assets/login-bg-gallery.png') center 44% / cover no-repeat;
+      border-bottom: 1px solid rgba(184,149,90,0.28);
+      color: #fff8ed;
+    }
+    .page-header.upload-detail-hero::after,
+    .page-header.upload-form-hero::after {
+      content: '';
+      position: absolute;
+      inset: auto 0 0;
+      height: 55%;
+      background: linear-gradient(180deg, transparent, #090908);
+      pointer-events: none;
+    }
+    .page-header.upload-detail-hero .page-header-inner,
+    .page-header.upload-form-hero .page-header-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 1060px;
+    }
+    .page-header.upload-detail-hero .breadcrumb,
+    .page-header.upload-form-hero .breadcrumb {
+      color: #d4ac62;
+    }
+    .page-header.upload-detail-hero .page-title,
+    .page-header.upload-form-hero .page-title {
+      color: #fff8ed;
+      font-size: clamp(2.35rem, 4.4vw, 4rem);
+      text-shadow: 0 16px 42px rgba(0,0,0,0.62);
+    }
+    .page-header.upload-detail-hero .page-subtitle,
+    .page-header.upload-form-hero .page-subtitle {
+      color: rgba(255,248,237,0.84);
+      margin-top: 1.05rem;
+    }
+    .page-header.upload-detail-hero .page-flourish,
+    .page-header.upload-form-hero .page-flourish {
+      color: #d4ac62;
+      margin: 1.05rem 0 0;
+    }
+    .page-content.upload-detail-content {
+      max-width: 1060px;
+      padding: 2rem 1.5rem 3.2rem;
+    }
+    .page-content.upload-form-content {
+      max-width: 1160px;
+      padding: 1.5rem 1.5rem 3.4rem;
+    }
+    .page:has(.upload-detail-content),
+    .page:has(.upload-form-content) {
+      background:
+        radial-gradient(circle at 50% 0%, rgba(184,149,90,0.11), transparent 30rem),
+        linear-gradient(180deg, #090908 0%, #0b0b0a 48%, #10100f 100%);
+      color: #f7efe3;
+    }
+    .upload-detail-content .subcategory-selector {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.25rem;
+      max-width: 900px;
+    }
+    .upload-detail-content .subcategory-selector .category-card {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 0.45rem;
+      min-height: 140px;
+      padding: 1.35rem 1.5rem;
+      border-radius: 6px;
+      background:
+        radial-gradient(circle at 18% 35%, rgba(184,149,90,0.12), transparent 12rem),
+        linear-gradient(135deg, rgba(22,22,21,0.96), rgba(10,10,9,0.92));
+      border: 1px solid rgba(184,149,90,0.34);
+      color: #fff8ed;
+      box-shadow: 0 18px 46px rgba(0,0,0,0.28);
+    }
+    .upload-detail-content .subcategory-selector .category-card::before,
+    .upload-detail-content .subcategory-selector .category-card::after {
+      content: none;
+    }
+    .upload-detail-content .subcategory-selector .category-card:hover {
+      border-color: rgba(212,172,98,0.82);
+      transform: translateY(-3px);
+      box-shadow: 0 24px 58px rgba(0,0,0,0.42);
+    }
+    .upload-detail-content .subcategory-selector .category-name {
+      font-size: 1.38rem;
+      line-height: 1.15;
+      margin: 0;
+    }
+    .upload-detail-content .subcategory-selector .category-desc {
+      grid-area: desc;
+      color: rgba(255,248,237,0.78);
+      max-width: 300px;
+      min-height: auto;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin: 0;
+    }
+    .upload-detail-content .subcategory-selector .category-action {
+      grid-area: action;
+      width: auto;
+      margin: 0.15rem 0 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: #d4ac62;
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+    }
+    .upload-detail-content .subcategory-selector .category-action::before {
+      content: none;
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="busto"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="belen"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="figura"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="acuarela"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="grabado"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="oleo"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="hist-postal"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="entero-postal"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="sello"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="pre-filatelia"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="censura"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="familiar"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="boda"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="ninos"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="hombres"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="mujeres"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="militar"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="etnica"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="paisaje"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="retrato"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="blanco-negro"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="estudio"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="reportaje"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="arquitectura"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="naturaleza"],
+    .upload-detail-content .subcategory-selector .category-card[data-key="post-mortem"] {
+      background: none;
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="busto"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="belen"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="figura"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="acuarela"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="grabado"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="oleo"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="hist-postal"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="entero-postal"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="sello"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="pre-filatelia"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="censura"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="familiar"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="boda"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="ninos"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="hombres"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="mujeres"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="militar"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="etnica"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="paisaje"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="retrato"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="blanco-negro"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="estudio"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="reportaje"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="arquitectura"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="naturaleza"]::before,
+    .upload-detail-content .subcategory-selector .category-card[data-key="post-mortem"]::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      background-position: center;
+      background-size: cover;
+      opacity: 0.72;
+      transition: transform 0.45s, opacity 0.45s;
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="busto"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="belen"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="figura"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="acuarela"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="grabado"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="oleo"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="hist-postal"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="entero-postal"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="sello"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="pre-filatelia"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="censura"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="familiar"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="boda"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="ninos"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="hombres"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="mujeres"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="militar"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="etnica"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="paisaje"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="retrato"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="blanco-negro"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="estudio"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="reportaje"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="arquitectura"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="naturaleza"]::after,
+    .upload-detail-content .subcategory-selector .category-card[data-key="post-mortem"]::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background:
+        radial-gradient(circle at 50% 32%, rgba(184,149,90,0.18), transparent 11rem),
+        linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.78) 68%, rgba(0,0,0,0.92));
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="busto"]::before {
+      background-image: url('../../../assets/upload-busto-card.png');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="belen"]::before {
+      background-image: url('../../../assets/upload-belen-card.png');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="figura"]::before {
+      background-image: url('../../../assets/upload-figura-card.png');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="acuarela"]::before {
+      background-image: url('../../../assets/upload-acuarela-card.jpg');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="grabado"]::before {
+      background-image: url('../../../assets/upload-grabado-card.png');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="oleo"]::before {
+      background-image: url('../../../assets/upload-oleo-card.jpg');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="hist-postal"]::before {
+      background-image: url('../../../assets/upload-hist-postal-card.jpg');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="entero-postal"]::before {
+      background-image: url('../../../assets/upload-entero-postal-card.jpg');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="sello"]::before {
+      background-image: url('../../../assets/upload-sello-card.jpg');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="pre-filatelia"]::before {
+      background-image: url('../../../assets/upload-pre-filatelia-card.jpg');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="censura"]::before {
+      background-image: url('../../../assets/upload-censura-card.jpg');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="familiar"]::before {
+      background-image: url('../../../assets/upload-familiar-card.png');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="boda"]::before {
+      background-image: url('../../../assets/upload-boda-card.jpg');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="ninos"]::before {
+      background-image: url('../../../assets/upload-ninos-card.jpg');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="hombres"]::before {
+      background-image: url('../../../assets/upload-hombres-card.jpg');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="mujeres"]::before {
+      background-image: url('../../../assets/upload-mujeres-card.jpg');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="militar"]::before {
+      background-image: url('../../../assets/upload-militar-card.jpg');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="etnica"]::before {
+      background-image: url('../../../assets/upload-etnica-card.jpg');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="paisaje"]::before {
+      background-image: url('../../../assets/upload-paisaje-card.jpg');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="retrato"]::before {
+      background-image: url('../../../assets/upload-retrato-card.jpg');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="blanco-negro"]::before {
+      background-image: url('../../../assets/upload-blanco-negro-card.jpg');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="estudio"]::before {
+      background-image: url('../../../assets/upload-estudio-card.jpg');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="reportaje"]::before {
+      background-image: url('../../../assets/upload-reportaje-card.jpg');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="arquitectura"]::before {
+      background-image: url('../../../assets/upload-arquitectura-card.jpg');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="naturaleza"]::before {
+      background-image: url('../../../assets/upload-naturaleza-card.jpg');
+    }
+    .upload-detail-content .subcategory-selector .category-card[data-key="post-mortem"]::before {
+      background-image: url('../../../assets/upload-post-mortem-card.jpg');
+    }
+    .upload-form-content .form-container {
+      max-width: 1160px;
+    }
+    .upload-form-content .form-step-nav {
+      border-bottom-color: rgba(184,149,90,0.28);
+      margin-bottom: 1.35rem;
+    }
+    .upload-form-content .form-step-item {
+      color: rgba(247,239,227,0.58);
+    }
+    .upload-form-content .form-step-item:hover,
+    .upload-form-content .form-step-item.active {
+      color: #f2d292;
+    }
+    .upload-form-content .form-step-item.active::after {
+      background: #d4ac62;
+    }
+    .upload-form-content .form-panel-main,
+    .upload-form-content .form-guidance,
+    .upload-form-content .form-actions {
+      background:
+        radial-gradient(circle at 0% 0%, rgba(184,149,90,0.08), transparent 16rem),
+        linear-gradient(180deg, rgba(18,18,17,0.94), rgba(9,9,8,0.9));
+      border: 1px solid rgba(184,149,90,0.34);
+      box-shadow: 0 18px 48px rgba(0,0,0,0.25);
+    }
+    .upload-form-content .form-section-title {
+      color: #d4ac62;
+      border-bottom-color: rgba(184,149,90,0.25);
+    }
+    .upload-form-content .form-label {
+      color: #e5c98d;
+    }
+    .upload-form-content .form-input,
+    .upload-form-content .form-select,
+    .upload-form-content .form-textarea {
+      border-color: rgba(184,149,90,0.36);
+      background: rgba(3,3,3,0.56);
+      color: #fff8ed;
+    }
+    .upload-form-content .form-input::placeholder,
+    .upload-form-content .form-textarea::placeholder {
+      color: rgba(247,239,227,0.38);
+    }
+    .upload-form-content .form-select option {
+      background: #11100f;
+      color: #f7efe3;
+    }
+    .upload-form-content .form-input:focus,
+    .upload-form-content .form-select:focus,
+    .upload-form-content .form-textarea:focus {
+      border-color: #d4ac62;
+      box-shadow: 0 0 0 3px rgba(184,149,90,0.12);
+    }
+    .upload-form-content .upload-zone {
+      border-color: rgba(184,149,90,0.45);
+      background: rgba(3,3,3,0.35);
+    }
+    .upload-form-content .upload-zone:hover {
+      border-color: #d4ac62;
+      background: rgba(184,149,90,0.08);
+    }
+    .upload-form-content .upload-text {
+      color: #fff8ed;
+    }
+    .upload-form-content .upload-hint,
+    .upload-form-content .upload-progress-text,
+    .upload-form-content .form-guidance,
+    .upload-form-content .review-note {
+      color: rgba(247,239,227,0.62);
+    }
+    .upload-form-content .guidance-kicker {
+      color: #f2d292;
+    }
+    .upload-form-content .guidance-figure {
+      color: rgba(212,172,98,0.42);
+    }
+    .upload-form-content .review-item {
+      background: rgba(3,3,3,0.42);
+      border-color: rgba(184,149,90,0.3);
+    }
+    .upload-form-content .review-item span {
+      color: #d4ac62;
+    }
+    .upload-form-content .review-item strong {
+      color: #fff8ed;
+    }
+    .upload-form-content .btn-cancel {
+      border-color: rgba(184,149,90,0.42);
+      color: #d8bf91;
+      background: rgba(255,255,255,0.02);
+    }
+    .upload-form-content .btn-cancel:hover {
+      border-color: #d4ac62;
+      color: #f2d292;
+      background: rgba(184,149,90,0.08);
+    }
+    .upload-form-content .btn-submit {
+      border: 1px solid rgba(212,172,98,0.9);
+      background: linear-gradient(180deg, #c69842, #a97725);
+      color: #fff8ed;
+    }
+    .upload-form-content .btn-submit:hover:not(:disabled) {
+      background: linear-gradient(180deg, #d3aa59, #ae7d2d);
+    }
     @media (max-width: 768px) {
       .page-header {
         padding: 2.35rem 1rem 2.15rem;
@@ -1001,10 +1802,57 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
         gap: 1.2rem;
         max-width: 430px;
       }
+      .upload-subcategory-content .subcategory-selector {
+        grid-template-columns: minmax(0, 1fr);
+        max-width: 430px;
+      }
+      .upload-subcategory-content .subcategory-selector .category-card,
+    .upload-subcategory-content .subcategory-selector .category-card[data-key="libros"] {
+        width: 100%;
+        grid-column: auto;
+        grid-template-columns: 82px minmax(0, 1fr);
+        column-gap: 1rem;
+        min-height: 136px;
+        padding: 1.15rem;
+      }
+      .upload-subcategory-content .subcategory-selector .category-icon {
+        width: 64px;
+        height: 64px;
+      }
+      .upload-subcategory-content .subcategory-selector .category-name {
+        font-size: 1.35rem;
+      }
+      .upload-subcategory-content .subcategory-selector .category-desc {
+        font-size: 0.88rem;
+      }
+      .subcategory-quote {
+        gap: 0.55rem;
+        font-size: 0.86rem;
+      }
+      .subcategory-quote span {
+        width: 34px;
+      }
       .category-card {
-        min-height: auto;
+        min-height: 330px;
         padding: 1.65rem 1.25rem 1.55rem;
         gap: 0.65rem;
+      }
+      .upload-type-content .category-card {
+        padding-bottom: 0;
+      }
+      .upload-type-content .category-action {
+        width: calc(100% + 2.5rem);
+        margin-left: -1.25rem;
+        margin-right: -1.25rem;
+      }
+      .page-header.upload-type-hero {
+        min-height: 250px;
+        padding: 3rem 1rem 1.9rem;
+      }
+      .page-header.upload-type-hero .breadcrumb {
+        position: static;
+        display: inline-block;
+        margin-bottom: 0.8rem;
       }
       .category-icon {
         width: 72px;
@@ -1399,8 +2247,11 @@ export class UploadAntiqueComponent implements OnInit {
         catalog_id: this.form.catalog_id || null,
         year_era: this.form.year_era,
         condition: this.form.condition,
-        material: this.form.type === 'papeleria' ? this.form.paper_type : this.form.material,
-        dimensions: this.form.type === 'papeleria' ? `${this.form.paper_format} ${this.form.paper_weight ? '- ' + this.form.paper_weight + 'g' : ''}`.trim() : this.form.dimensions,
+        paper_type: this.form.type === 'papeleria' ? this.form.paper_type : undefined,
+        paper_format: this.form.type === 'papeleria' ? this.form.paper_format : undefined,
+        paper_weight: this.form.type === 'papeleria' ? this.form.paper_weight : undefined,
+        material: this.form.type === 'antiguedad' ? this.form.material : this.form.paper_type,
+        dimensions: this.form.type === 'antiguedad' ? this.form.dimensions : `${this.form.paper_format} ${this.form.paper_weight ? '- ' + this.form.paper_weight + 'g' : ''}`.trim(),
         price: this.form.price,
         description: this.form.description,
         images: this.existingImages()

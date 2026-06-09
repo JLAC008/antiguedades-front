@@ -26,6 +26,9 @@ export interface Antique {
   condition: string;
   material: string;
   dimensions: string;
+  paper_type?: string;
+  paper_format?: string;
+  paper_weight?: number;
   images: string[];
   created_by: string;
   created_at: string;
@@ -35,3 +38,14 @@ export interface Antique {
 export type AntiqueCondition = 'Excelente' | 'Bueno' | 'Regular' | 'Para restaurar';
 
 export const CONDITIONS: AntiqueCondition[] = ['Excelente', 'Bueno', 'Regular', 'Para restaurar'];
+
+export type UserRole = 'admin' | 'user';
+
+export interface AppUser {
+  id: string;
+  email: string;
+  password: string;
+  role: UserRole;
+  name: string;
+  createdAt: string;
+}
