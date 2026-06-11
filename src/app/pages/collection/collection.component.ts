@@ -13,6 +13,12 @@ import { AuthService } from '../../core/auth.service';
   template: `
     <div class="page-collection">
       <section class="collection-hero">
+        <img
+          class="collection-hero-image"
+          src="assets/home-hero-study-v2.png"
+          alt=""
+          fetchpriority="high"
+        />
         <div class="collection-hero-shade"></div>
         <div class="collection-hero-inner">
           <p class="hero-kicker">Archivo de piezas seleccionadas</p>
@@ -240,16 +246,27 @@ import { AuthService } from '../../core/auth.service';
       position: relative;
       min-height: 460px;
       overflow: hidden;
-      background:
-        linear-gradient(180deg, rgba(0, 0, 0, 0.36), rgba(0, 0, 0, 0.78)),
-        url('/assets/login-bg-gallery.png') center 42% / cover no-repeat;
+      background: #080807;
       border-bottom: 1px solid rgba(184, 149, 90, 0.32);
+    }
+
+    .collection-hero-image {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      object-position: center 53%;
+      z-index: 0;
     }
 
     .collection-hero-shade {
       position: absolute;
       inset: 0;
+      z-index: 1;
       background:
+        linear-gradient(180deg, rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.66)),
         radial-gradient(circle at 18% 30%, rgba(184, 149, 90, 0.16), transparent 18rem),
         radial-gradient(circle at 84% 20%, rgba(184, 149, 90, 0.12), transparent 20rem),
         linear-gradient(90deg, rgba(0,0,0,0.45), transparent 22%, transparent 72%, rgba(0,0,0,0.45));
@@ -258,7 +275,7 @@ import { AuthService } from '../../core/auth.service';
 
     .collection-hero-inner {
       position: relative;
-      z-index: 1;
+      z-index: 2;
       max-width: 1280px;
       margin: 0 auto;
       padding: 4.2rem 1.5rem 1.55rem;
@@ -829,8 +846,8 @@ import { AuthService } from '../../core/auth.service';
     }
 
     @media (max-width: 620px) {
-      .collection-hero {
-        background-position: center top;
+      .collection-hero-image {
+        object-position: 48% center;
       }
 
       .hero-title {
@@ -894,14 +911,13 @@ import { AuthService } from '../../core/auth.service';
 
     .collection-hero {
       min-height: 310px;
-      background:
-        linear-gradient(90deg, rgba(0, 0, 0, 0.12), rgba(5, 5, 4, 0.8) 35%, rgba(5, 5, 4, 0.8) 65%, rgba(0, 0, 0, 0.12)),
-        linear-gradient(180deg, rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.68)),
-        url('/assets/login-bg-gallery.png') center 43% / cover no-repeat;
+      background: #080807;
     }
 
     .collection-hero-shade {
-      background: linear-gradient(180deg, transparent, rgba(4, 4, 3, 0.5));
+      background:
+        linear-gradient(90deg, rgba(0, 0, 0, 0.08), rgba(5, 5, 4, 0.72) 35%, rgba(5, 5, 4, 0.72) 65%, rgba(0, 0, 0, 0.08)),
+        linear-gradient(180deg, rgba(0, 0, 0, 0.08), rgba(4, 4, 3, 0.62));
     }
 
     .collection-hero-inner {
