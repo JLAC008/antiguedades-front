@@ -28,7 +28,7 @@ import { AppUser, UserRole } from '../../models';
             </article>
             <article class="stat-card">
               <span class="stat-icon" aria-hidden="true">○</span>
-              <div><strong>{{ collectorCount() }}</strong><span>Coleccionistas</span></div>
+              <div><strong>{{ collectorCount() }}</strong><span>Usuarios</span></div>
             </article>
             <article class="stat-card">
               <span class="stat-icon" aria-hidden="true">▦</span>
@@ -82,7 +82,7 @@ import { AppUser, UserRole } from '../../models';
             <div class="form-group">
               <label class="form-label">Rol</label>
               <select class="form-input form-select" [(ngModel)]="formRole" name="role">
-                <option value="user">Coleccionista</option>
+                <option value="user">Usuario</option>
                 <option value="admin">Administrador</option>
               </select>
             </div>
@@ -115,7 +115,7 @@ import { AppUser, UserRole } from '../../models';
                 <select class="role-filter" [(ngModel)]="roleFilter">
                   <option value="">Todos los roles</option>
                   <option value="admin">Administradores</option>
-                  <option value="user">Coleccionistas</option>
+                  <option value="user">Usuarios</option>
                 </select>
               </div>
             </div>
@@ -138,7 +138,7 @@ import { AppUser, UserRole } from '../../models';
                       <span class="avatar">{{ initials(user.name) }}</span>
                       <div>
                         <strong>{{ user.name }}</strong>
-                        <span>{{ user.role === 'admin' ? 'Administrador' : 'Coleccionista' }}</span>
+                        <span>{{ user.role === 'admin' ? 'Administrador' : 'Usuario' }}</span>
                         <div class="user-pw-row">
                           <span class="user-pw" [class.blurred]="!revealed.has(user.id)">{{ user.password }}</span>
                           <button class="btn-eye" (click)="togglePw(user.id)" [attr.aria-label]="revealed.has(user.id) ? 'Ocultar contraseña' : 'Mostrar contraseña'">
@@ -152,7 +152,7 @@ import { AppUser, UserRole } from '../../models';
                       </div>
                     </div>
                     <span class="email-cell">{{ user.email }}</span>
-                    <span><span class="role-pill">{{ user.role === 'admin' ? 'Administrador' : 'Coleccionista' }}</span></span>
+                    <span><span class="role-pill">{{ user.role === 'admin' ? 'Administrador' : 'Usuario' }}</span></span>
                     <span class="date-cell">{{ user.createdAt | date:'d MMM y' }}</span>
                     <span class="row-actions">
                       <button class="icon-btn edit" (click)="editUser(user)" aria-label="Editar usuario">
