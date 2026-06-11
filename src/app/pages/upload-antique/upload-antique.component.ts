@@ -277,7 +277,7 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
                     @if (existingImages().length > 0) {
                       <div class="images-preview">
                         @for (img of existingImages(); track img; let i = $index) {
-                          <div class="image-preview-item">
+                          <div class="image-preview-item" [class.main-image]="i === 0" (dblclick)="setMainImage(i)" title="Doble clic para establecer como principal">
                             <img [src]="img" alt="Imagen" />
                             <button type="button" class="image-remove" (click)="removeImage(i)">&times;</button>
                             @if (i === 0) {
@@ -387,7 +387,7 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
                     @if (existingImages().length > 0) {
                       <div class="images-preview">
                         @for (img of existingImages(); track img; let i = $index) {
-                          <div class="image-preview-item">
+                          <div class="image-preview-item" [class.main-image]="i === 0" (dblclick)="setMainImage(i)" title="Doble clic para establecer como principal">
                             <img [src]="img" alt="Imagen" />
                             <button type="button" class="image-remove" (click)="removeImage(i)">&times;</button>
                             @if (i === 0) {
@@ -401,7 +401,7 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
                 </div>
               }
 
-                  <div class="review-panel">
+              <div class="review-panel">
                     <div class="form-section-title">Revisión</div>
                     <div class="review-grid">
                       <div class="review-item">
@@ -1069,6 +1069,10 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
       border: 1px solid var(--color-border);
     }
     .image-preview-item img { width: 100%; height: 100%; object-fit: cover; }
+    .image-preview-item.main-image {
+      border-color: var(--color-accent);
+      box-shadow: 0 0 0 2px var(--color-accent), 0 0 16px rgba(200, 155, 75, 0.34);
+    }
     .image-remove {
       position: absolute;
       top: 4px;
@@ -2225,6 +2229,14 @@ export class UploadAntiqueComponent implements OnInit {
   removeImage(index: number) {
     const imgs = [...this.existingImages()];
     imgs.splice(index, 1);
+    this.existingImages.set(imgs);
+  }
+
+  setMainImage(index: number) {
+    if (index === 0) return;
+    const imgs = [...this.existingImages()];
+    const [img] = imgs.splice(index, 1);
+    imgs.unshift(img);
     this.existingImages.set(imgs);
   }
 
