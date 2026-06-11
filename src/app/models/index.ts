@@ -20,6 +20,14 @@ export interface Antique {
   country: string;
   region: string;
   element: string;
+  title?: string;
+  author?: string;
+  editor?: string;
+  imprenta?: string;
+  edition?: string;
+  signature?: string;
+  theme?: string;
+  century?: string;
   description: string;
   price: number;
   year_era: string;

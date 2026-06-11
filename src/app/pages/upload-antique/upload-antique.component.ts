@@ -2,9 +2,7 @@ import { Component, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { AntiquesService } from '../../core/antiques.service';
-import { CatalogsService } from '../../core/catalogs.service';
-import { AuthService } from '../../core/auth.service';
-import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
+import { Antique, AntiqueType } from '../../models';
 
 @Component({
   selector: 'app-upload-antique',
@@ -39,10 +37,10 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
 
             <form (ngSubmit)="onSubmit()" class="antique-form" [class.form-step-1]="formStep() === 1" [class.form-step-2]="formStep() === 2" [class.form-step-3]="formStep() === 3" [class.form-step-4]="formStep() === 4">
               <div class="form-step-nav" aria-label="Secciones del formulario">
-                <button type="button" class="form-step-item" [class.active]="formStep() === 1" (click)="formStep.set(1)">1. Información básica</button>
-                <button type="button" class="form-step-item" [class.active]="formStep() === 2" (click)="formStep.set(2)">2. Detalles</button>
-                <button type="button" class="form-step-item" [class.active]="formStep() === 3" (click)="formStep.set(3)">3. Fotografías</button>
-                <button type="button" class="form-step-item" [class.active]="formStep() === 4" (click)="formStep.set(4)">4. Revisión</button>
+                <button type="button" class="form-step-item" [class.active]="formStep() === 1" (click)="goToStep(1)">1. Información básica</button>
+                <button type="button" class="form-step-item" [class.active]="formStep() === 2" [disabled]="!canAccessStep(2)" (click)="goToStep(2)">2. Detalles</button>
+                <button type="button" class="form-step-item" [class.active]="formStep() === 3" [disabled]="!canAccessStep(3)" (click)="goToStep(3)">3. Fotografías</button>
+                <button type="button" class="form-step-item" [class.active]="formStep() === 4" [disabled]="!canAccessStep(4)" (click)="goToStep(4)">4. Revisión</button>
               </div>
 
               <div class="form-option-c-layout">
@@ -50,14 +48,14 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
               <div class="form-classification">
                 <div class="form-row form-row-3">
                   <div class="form-group">
-                    <label class="form-label">Tipo</label>
+                    <label class="form-label">Tipo <span class="required">*</span></label>
                     <select class="form-select" [(ngModel)]="form.type" name="edit-type" (change)="onTypeChange()">
                       <option value="antiguedad">Antigüedades</option>
                       <option value="papeleria">Papelería</option>
                     </select>
                   </div>
                   <div class="form-group">
-                    <label class="form-label">Subcategoría</label>
+                    <label class="form-label">Subcategoría <span class="required">*</span></label>
                     <select class="form-select" [(ngModel)]="form.subcategory" name="edit-sub" (change)="onSubcategoryChange()">
                       <option value="">Seleccionar...</option>
                       @for (sub of subcategoriesForType; track sub.key) {
@@ -67,7 +65,7 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
                   </div>
                   @if (hasDetail(form.subcategory)) {
                     <div class="form-group">
-                      <label class="form-label">Detalle</label>
+                      <label class="form-label">Detalle <span class="required">*</span></label>
                       <select class="form-select" [(ngModel)]="form.detail" name="edit-det">
                         <option value="">Seleccionar...</option>
                         @for (d of detailsForCurrent(); track d.key) {
@@ -86,15 +84,6 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
                       <label class="form-label">Nombre <span class="required">*</span></label>
                       <input type="text" class="form-input" [(ngModel)]="form.name" name="name" placeholder="Ej. Reloj de péndulo del siglo XIX" required />
                     </div>
-                    <div class="form-group">
-                      <label class="form-label">Catálogo</label>
-                      <select class="form-select" [(ngModel)]="form.catalog_id" name="catalog_id">
-                        <option value="">Sin catálogo</option>
-                        @for (cat of catalogs(); track cat.id) {
-                          <option [value]="cat.id">{{ cat.name }}</option>
-                        }
-                      </select>
-                    </div>
                     <div class="form-row form-row-3">
                       <div class="form-group">
                         <label class="form-label">País</label>
@@ -109,48 +98,40 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
                         <input type="text" class="form-input" [(ngModel)]="form.element" name="element" placeholder="Ej. Madera, Bronce..." />
                       </div>
                     </div>
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label class="form-label">Tema</label>
+                        <input type="text" class="form-input" [(ngModel)]="form.theme" name="theme" placeholder="Ej. Religión, historia, retrato..." />
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label">Firma / marca</label>
+                        <input type="text" class="form-input" [(ngModel)]="form.signature" name="signature" placeholder="Autor, fabricante, sello o inscripción" />
+                      </div>
+                    </div>
                     <div id="form-details" class="form-section-anchor"></div>
                     <div class="form-section-title form-details-title">Detalles de la pieza</div>
                     <div class="form-row">
                       <div class="form-group">
-                        <label class="form-label">Época / Año</label>
-                        <input type="text" class="form-input" [(ngModel)]="form.year_era" name="year_era" placeholder="Ej. Siglo XIX, 1850s" />
+                        <label class="form-label">Época / Año <span class="required">*</span></label>
+                        <input type="text" class="form-input" [(ngModel)]="form.year_era" name="year_era" placeholder="Ej. Siglo XIX, 1850s" required />
                       </div>
                       <div class="form-group">
-                        <label class="form-label">Estado</label>
-                        <select class="form-select" [(ngModel)]="form.condition" name="condition">
-                          @for (cond of conditions; track cond) {
-                            <option [value]="cond">{{ cond }}</option>
-                          }
-                        </select>
-                      </div>
-                    </div>
-                    <div class="form-row">
-                      <div class="form-group">
-                        <label class="form-label">Material</label>
-                        <input type="text" class="form-input" [(ngModel)]="form.material" name="material" placeholder="Ej. Roble, Bronce, Porcelana" />
-                      </div>
-                      <div class="form-group">
-                        <label class="form-label">Precio (€)</label>
-                        <input type="number" class="form-input" [(ngModel)]="form.price" name="price" placeholder="0" min="0" step="1" />
+                        <label class="form-label">Siglo</label>
+                        <input type="text" class="form-input" [(ngModel)]="form.century" name="century" placeholder="Ej. XVIII, XIX, XX" />
                       </div>
                     </div>
                     <div class="form-group">
-                      <label class="form-label">Dimensiones</label>
-                      <input type="text" class="form-input" [(ngModel)]="form.dimensions" name="dimensions" placeholder="Ej. 45 x 30 x 20 cm" />
-                    </div>
-                    <div class="form-group">
-                      <label class="form-label">Descripción</label>
-                      <textarea class="form-textarea" [(ngModel)]="form.description" name="description" rows="5" placeholder="Describe la pieza, su historia, características destacadas..."></textarea>
+                      <label class="form-label">Valor (€) <span class="required">*</span></label>
+                      <input type="number" class="form-input" [(ngModel)]="form.price" name="price" placeholder="0" min="0.01" step="0.01" required />
                     </div>
                   </div>
 
                   <div class="form-col">
                     <div id="form-photos" class="form-section-title">Fotografías</div>
                     <div class="form-group">
-                      <label class="form-label">Añadir imágenes</label>
-                      <label class="upload-zone">
-                        <input type="file" accept="image/*" multiple (change)="onFilesSelected($event)" hidden />
+                      <label class="form-label">Añadir imágenes <span class="required">*</span></label>
+                      <label class="upload-zone" tabindex="-1">
+                        <input type="file" accept="image/*" multiple name="images" (change)="onFilesSelected($event)" hidden />
                         <div class="upload-zone-inner">
                           <span class="upload-icon">&#128247;</span>
                           <p class="upload-text">Arrastra imágenes o haz clic para seleccionar</p>
@@ -192,75 +173,71 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
                       <input type="text" class="form-input" [(ngModel)]="form.name" name="name" placeholder="Ej. Mapa del siglo XVIII, Carta antigua..." required />
                     </div>
                     <div class="form-group">
-                      <label class="form-label">Catálogo</label>
-                      <select class="form-select" [(ngModel)]="form.catalog_id" name="catalog_id">
-                        <option value="">Sin catálogo</option>
-                        @for (cat of catalogs(); track cat.id) {
-                          <option [value]="cat.id">{{ cat.name }}</option>
-                        }
-                      </select>
+                      <label class="form-label">Título</label>
+                      <input type="text" class="form-input" [(ngModel)]="form.title" name="title" placeholder="Título original de la obra o documento" />
+                    </div>
+                    <div class="form-row form-row-3">
+                      <div class="form-group">
+                        <label class="form-label">Autor</label>
+                        <input type="text" class="form-input" [(ngModel)]="form.author" name="author" placeholder="Autor o creador" />
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label">Editor</label>
+                        <input type="text" class="form-input" [(ngModel)]="form.editor" name="editor" placeholder="Persona o entidad editorial" />
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label">Edición</label>
+                        <input type="text" class="form-input" [(ngModel)]="form.edition" name="edition" placeholder="Ej. 1.ª edición" />
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Imprenta</label>
+                      <input type="text" class="form-input" [(ngModel)]="form.imprenta" name="imprenta" placeholder="Taller o establecimiento impresor" />
+                    </div>
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label class="form-label">País</label>
+                        <input type="text" class="form-input" [(ngModel)]="form.country" name="paper_country" placeholder="Ej. España, Francia..." />
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label">Región</label>
+                        <input type="text" class="form-input" [(ngModel)]="form.region" name="paper_region" placeholder="Ej. Madrid, Cataluña..." />
+                      </div>
+                    </div>
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label class="form-label">Tema</label>
+                        <input type="text" class="form-input" [(ngModel)]="form.theme" name="paper_theme" placeholder="Ej. Historia, religión, militar, novela..." />
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label">Firma / autógrafo</label>
+                        <input type="text" class="form-input" [(ngModel)]="form.signature" name="paper_signature" placeholder="Firma, dedicatoria o marca" />
+                      </div>
                     </div>
                     <div id="form-details" class="form-section-anchor"></div>
                     <div class="form-section-title form-details-title">Detalles del documento</div>
                     <div class="form-row">
                       <div class="form-group">
-                        <label class="form-label">Tipo de papel</label>
-                        <select class="form-select" [(ngModel)]="form.paper_type" name="paper_type">
-                          <option value="">Seleccionar...</option>
-                          <option value="verjurado">Verjurado</option>
-                          <option value="vitela">Vitela</option>
-                          <option value="algodon">Algodón</option>
-                          <option value="offset">Offset</option>
-                          <option value="reciclado">Reciclado</option>
-                          <option value="otro">Otro</option>
-                        </select>
+                        <label class="form-label">Año / Período <span class="required">*</span></label>
+                        <input type="text" class="form-input" [(ngModel)]="form.year_era" name="year_era" placeholder="Ej. 1780, década de 1930..." required />
                       </div>
                       <div class="form-group">
-                        <label class="form-label">Estado</label>
-                        <select class="form-select" [(ngModel)]="form.condition" name="condition">
-                          @for (cond of conditions; track cond) {
-                            <option [value]="cond">{{ cond }}</option>
-                          }
-                        </select>
-                      </div>
-                    </div>
-                    <div class="form-row">
-                      <div class="form-group">
-                        <label class="form-label">Formato</label>
-                        <select class="form-select" [(ngModel)]="form.paper_format" name="paper_format">
-                          <option value="">Seleccionar...</option>
-                          <option value="a4">A4</option>
-                          <option value="a5">A5</option>
-                          <option value="a3">A3</option>
-                          <option value="carta">Carta</option>
-                          <option value="otro">Otro</option>
-                        </select>
-                      </div>
-                      <div class="form-group">
-                        <label class="form-label">Gramaje (g/m²)</label>
-                        <input type="number" class="form-input" [(ngModel)]="form.paper_weight" name="paper_weight" placeholder="Ej. 120" min="0" step="1" />
+                        <label class="form-label">Siglo</label>
+                        <input type="text" class="form-input" [(ngModel)]="form.century" name="paper_century" placeholder="Ej. XVIII, XIX, XX" />
                       </div>
                     </div>
                     <div class="form-group">
-                      <label class="form-label">Año / Época</label>
-                      <input type="text" class="form-input" [(ngModel)]="form.year_era" name="year_era" placeholder="Ej. 1780, Siglo XIX..." />
-                    </div>
-                    <div class="form-group">
-                      <label class="form-label">Descripción</label>
-                      <textarea class="form-textarea" [(ngModel)]="form.description" name="description" rows="5" placeholder="Describe el documento, su estado, procedencia..."></textarea>
-                    </div>
-                    <div class="form-group">
-                      <label class="form-label">Precio (€)</label>
-                      <input type="number" class="form-input" [(ngModel)]="form.price" name="price" placeholder="0" min="0" step="1" />
+                      <label class="form-label">Valor (€) <span class="required">*</span></label>
+                      <input type="number" class="form-input" [(ngModel)]="form.price" name="price" placeholder="0" min="0.01" step="0.01" required />
                     </div>
                   </div>
 
                   <div class="form-col">
                     <div id="form-photos" class="form-section-title">Fotografías</div>
                     <div class="form-group">
-                      <label class="form-label">Añadir imágenes</label>
-                      <label class="upload-zone">
-                        <input type="file" accept="image/*" multiple (change)="onFilesSelected($event)" hidden />
+                      <label class="form-label">Añadir imágenes <span class="required">*</span></label>
+                      <label class="upload-zone" tabindex="-1">
+                        <input type="file" accept="image/*" multiple name="images" (change)="onFilesSelected($event)" hidden />
                         <div class="upload-zone-inner">
                           <span class="upload-icon">&#128247;</span>
                           <p class="upload-text">Arrastra imágenes o haz clic para seleccionar</p>
@@ -324,14 +301,62 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
                           </div>
                         }
                         <div class="rv-cell">
-                          <span class="rv-label">Estado</span>
-                          <strong class="rv-value">{{ form.condition }}</strong>
-                        </div>
-                        <div class="rv-cell">
-                          <span class="rv-label">Precio</span>
+                          <span class="rv-label">Valor</span>
                           <strong class="rv-value">{{ form.price || 0 }} €</strong>
                         </div>
                       </div>
+                      @if (form.title || form.author || form.editor || form.imprenta || form.edition || form.century || form.theme || form.signature) {
+                        <div class="rv-row">
+                          @if (form.title) {
+                            <div class="rv-cell">
+                              <span class="rv-label">Título</span>
+                              <strong class="rv-value">{{ form.title }}</strong>
+                            </div>
+                          }
+                          @if (form.author) {
+                            <div class="rv-cell">
+                              <span class="rv-label">Autor</span>
+                              <strong class="rv-value">{{ form.author }}</strong>
+                            </div>
+                          }
+                          @if (form.editor) {
+                            <div class="rv-cell">
+                              <span class="rv-label">Editor</span>
+                              <strong class="rv-value">{{ form.editor }}</strong>
+                            </div>
+                          }
+                          @if (form.imprenta) {
+                            <div class="rv-cell">
+                              <span class="rv-label">Imprenta</span>
+                              <strong class="rv-value">{{ form.imprenta }}</strong>
+                            </div>
+                          }
+                          @if (form.edition) {
+                            <div class="rv-cell">
+                              <span class="rv-label">Edición</span>
+                              <strong class="rv-value">{{ form.edition }}</strong>
+                            </div>
+                          }
+                          @if (form.century) {
+                            <div class="rv-cell">
+                              <span class="rv-label">Siglo</span>
+                              <strong class="rv-value">{{ form.century }}</strong>
+                            </div>
+                          }
+                          @if (form.theme) {
+                            <div class="rv-cell">
+                              <span class="rv-label">Tema</span>
+                              <strong class="rv-value">{{ form.theme }}</strong>
+                            </div>
+                          }
+                          @if (form.signature) {
+                            <div class="rv-cell">
+                              <span class="rv-label">Firma / marca</span>
+                              <strong class="rv-value">{{ form.signature }}</strong>
+                            </div>
+                          }
+                        </div>
+                      }
                       @if (form.type === 'antiguedad') {
                         <div class="rv-row">
                           @if (form.country) {
@@ -352,48 +377,22 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
                               <strong class="rv-value">{{ form.element }}</strong>
                             </div>
                           }
-                          @if (form.material) {
-                            <div class="rv-cell">
-                              <span class="rv-label">Material</span>
-                              <strong class="rv-value">{{ form.material }}</strong>
-                            </div>
-                          }
-                          @if (form.dimensions) {
-                            <div class="rv-cell">
-                              <span class="rv-label">Dimensiones</span>
-                              <strong class="rv-value">{{ form.dimensions }}</strong>
-                            </div>
-                          }
                         </div>
                       }
                       @if (form.type === 'papeleria') {
                         <div class="rv-row">
-                          @if (form.paper_type) {
+                          @if (form.country) {
                             <div class="rv-cell">
-                              <span class="rv-label">Tipo de papel</span>
-                              <strong class="rv-value">{{ form.paper_type }}</strong>
+                              <span class="rv-label">País</span>
+                              <strong class="rv-value">{{ form.country }}</strong>
                             </div>
                           }
-                          @if (form.paper_format) {
+                          @if (form.region) {
                             <div class="rv-cell">
-                              <span class="rv-label">Formato</span>
-                              <strong class="rv-value">{{ form.paper_format }}</strong>
+                              <span class="rv-label">Región</span>
+                              <strong class="rv-value">{{ form.region }}</strong>
                             </div>
                           }
-                          @if (form.paper_weight) {
-                            <div class="rv-cell">
-                              <span class="rv-label">Gramaje</span>
-                              <strong class="rv-value">{{ form.paper_weight }} g/m²</strong>
-                            </div>
-                          }
-                        </div>
-                      }
-                      @if (form.description) {
-                        <div class="rv-row rv-desc-row">
-                          <div class="rv-cell rv-desc-cell">
-                            <span class="rv-label">Descripción</span>
-                            <strong class="rv-value">{{ form.description }}</strong>
-                          </div>
                         </div>
                       }
                       @if (existingImages().length > 0) {
@@ -568,6 +567,14 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
     }
     .form-step-item:hover {
       color: var(--color-primary);
+    }
+    .form-step-item:disabled {
+      color: #b7aea4;
+      cursor: not-allowed;
+      opacity: 0.62;
+    }
+    .form-step-item:disabled:hover {
+      color: #b7aea4;
     }
     .form-step-item:focus-visible {
       outline: 2px solid rgba(184,149,90,0.45);
@@ -1122,7 +1129,6 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
   `]
 })
 export class UploadAntiqueComponent implements OnInit {
-  catalogs = signal<Catalog[]>([]);
   existingImages = signal<string[]>([]);
   saving = signal(false);
   uploadingImages = signal(false);
@@ -1131,9 +1137,7 @@ export class UploadAntiqueComponent implements OnInit {
   success = signal('');
   editMode = false;
   editId = '';
-  conditions = CONDITIONS;
-
-  category = signal<AntiqueType | null>(null);
+  category = signal<AntiqueType>('antiguedad');
   formStep = signal(1);
 
   subcategories = [
@@ -1141,6 +1145,7 @@ export class UploadAntiqueComponent implements OnInit {
     { key: 'pintura', label: 'Pintura', icon: '&#127912;' },
     { key: 'cristal', label: 'Cristal', icon: '&#128161;' },
     { key: 'ceramica', label: 'Cerámica', icon: '&#127834;' },
+    { key: 'varios', label: 'Varios', icon: '&#10022;' },
   ];
 
   esculturaDetails = [
@@ -1209,28 +1214,26 @@ export class UploadAntiqueComponent implements OnInit {
 
   form: {
     name: string;
-    catalog_id: string;
     type: AntiqueType;
     subcategory: string;
     detail: string;
     country: string;
     region: string;
     element: string;
+    title: string;
+    author: string;
+    editor: string;
+    imprenta: string;
+    edition: string;
+    signature: string;
+    theme: string;
+    century: string;
     year_era: string;
-    condition: string;
-    material: string;
     price: number;
-    dimensions: string;
-    description: string;
-    paper_type: string;
-    paper_format: string;
-    paper_weight: number;
   };
 
   constructor(
     private antiquesService: AntiquesService,
-    private catalogsService: CatalogsService,
-    private auth: AuthService,
     private router: Router,
     private route: ActivatedRoute
   ) {
@@ -1253,22 +1256,22 @@ export class UploadAntiqueComponent implements OnInit {
   defaultForm() {
     return {
       name: '',
-      catalog_id: '',
       type: 'antiguedad' as AntiqueType,
       subcategory: '',
       detail: '',
       country: '',
       region: '',
       element: '',
+      title: '',
+      author: '',
+      editor: '',
+      imprenta: '',
+      edition: '',
+      signature: '',
+      theme: '',
+      century: '',
       year_era: '',
-      condition: 'Bueno',
-      material: '',
       price: 0,
-      dimensions: '',
-      description: '',
-      paper_type: '',
-      paper_format: '',
-      paper_weight: 0,
     };
   }
 
@@ -1299,6 +1302,7 @@ export class UploadAntiqueComponent implements OnInit {
       { key: 'revistas', label: 'Revistas / Periódicos' },
       { key: 'documentos', label: 'Documentos' },
       { key: 'libros', label: 'Libros' },
+      { key: 'varios', label: 'Varios' },
     ];
   }
 
@@ -1331,16 +1335,106 @@ export class UploadAntiqueComponent implements OnInit {
     }
   }
 
+  isBasicComplete(): boolean {
+    return !!(
+      this.form.type &&
+      this.form.subcategory &&
+      this.form.name.trim() &&
+      (!this.hasDetail(this.form.subcategory) || this.form.detail)
+    );
+  }
+
+  isDetailsComplete(): boolean {
+    return !!(this.form.year_era.trim() && Number(this.form.price) > 0);
+  }
+
+  isPhotosComplete(): boolean {
+    return this.existingImages().length > 0;
+  }
+
+  canAccessStep(step: number): boolean {
+    if (step <= 1) return true;
+    if (!this.isBasicComplete()) return false;
+    if (step <= 2) return true;
+    if (!this.isDetailsComplete()) return false;
+    if (step <= 3) return true;
+    return this.isPhotosComplete();
+  }
+
+  goToStep(step: number) {
+    if (step <= this.formStep()) {
+      this.error.set('');
+      this.formStep.set(step);
+      return;
+    }
+
+    if (!this.validateBeforeStep(step)) return;
+    this.error.set('');
+    this.formStep.set(step);
+  }
+
   nextFormStep() {
-    this.formStep.set(Math.min(this.formStep() + 1, 4));
+    this.goToStep(Math.min(this.formStep() + 1, 4));
   }
 
   previousFormStep() {
+    this.error.set('');
     this.formStep.set(Math.max(this.formStep() - 1, 1));
   }
 
+  private validateBeforeStep(targetStep: number): boolean {
+    if (targetStep >= 2 && !this.validateBasicInformation()) return false;
+    if (targetStep >= 3 && !this.validateDetails()) return false;
+    if (targetStep >= 4 && !this.validatePhotos()) return false;
+    return true;
+  }
+
+  private validateBasicInformation(): boolean {
+    if (!this.form.type) {
+      return this.failValidation('Selecciona el tipo de pieza.', 'edit-type', 1);
+    }
+    if (!this.form.subcategory) {
+      return this.failValidation('Selecciona una categoría antes de continuar.', 'edit-sub', 1);
+    }
+    if (this.hasDetail(this.form.subcategory) && !this.form.detail) {
+      return this.failValidation('Selecciona el detalle de la categoría.', 'edit-det', 1);
+    }
+    if (!this.form.name.trim()) {
+      return this.failValidation('El nombre es obligatorio.', 'name', 1);
+    }
+    return true;
+  }
+
+  private validateDetails(): boolean {
+    if (!this.form.year_era.trim()) {
+      return this.failValidation('Indica el año o período de la pieza.', 'year_era', 2);
+    }
+    if (!Number.isFinite(Number(this.form.price)) || Number(this.form.price) <= 0) {
+      return this.failValidation('El valor debe ser superior a 0 €.', 'price', 2);
+    }
+    return true;
+  }
+
+  private validatePhotos(): boolean {
+    if (this.existingImages().length === 0) {
+      return this.failValidation('Añade al menos una fotografía antes de continuar.', 'images', 3);
+    }
+    return true;
+  }
+
+  private failValidation(message: string, fieldName: string, step: number): false {
+    this.error.set(message);
+    this.formStep.set(step);
+    setTimeout(() => {
+      const field = document.querySelector<HTMLElement>(`[name="${fieldName}"]`);
+      const target = fieldName === 'images' ? field?.closest<HTMLElement>('.upload-zone') : field;
+      target?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      target?.focus();
+    });
+    return false;
+  }
+
   async ngOnInit() {
-    this.catalogs.set(await this.catalogsService.getAll());
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.editMode = true;
@@ -1350,22 +1444,22 @@ export class UploadAntiqueComponent implements OnInit {
         this.category.set(antique.type);
         this.form = {
           name: antique.name,
-          catalog_id: antique.catalog_id ?? '',
           type: antique.type,
           subcategory: antique.subcategory ?? '',
           detail: antique.detail ?? '',
           country: antique.country ?? '',
           region: antique.region ?? '',
           element: antique.element ?? '',
+          title: antique.title ?? '',
+          author: antique.author ?? '',
+          editor: antique.editor ?? '',
+          imprenta: antique.imprenta ?? '',
+          edition: antique.edition ?? '',
+          signature: antique.signature ?? '',
+          theme: antique.theme ?? '',
+          century: antique.century ?? '',
           year_era: antique.year_era,
-          condition: antique.condition,
-          material: antique.material,
           price: antique.price,
-          dimensions: antique.dimensions,
-          description: antique.description,
-          paper_type: antique.type === 'papeleria' ? antique.material : '',
-          paper_format: antique.type === 'papeleria' && antique.dimensions ? antique.dimensions.split(' - ')[0].trim() : '',
-          paper_weight: antique.type === 'papeleria' && antique.dimensions?.includes('-') ? parseInt(antique.dimensions.split('- ')[1]?.replace('g', '')) || 0 : 0,
         };
         this.existingImages.set([...antique.images]);
       }
@@ -1407,10 +1501,7 @@ export class UploadAntiqueComponent implements OnInit {
   }
 
   async onSubmit() {
-    if (!this.form.name.trim()) {
-      this.error.set('El nombre es obligatorio.');
-      return;
-    }
+    if (!this.validateBeforeStep(4)) return;
     this.saving.set(true);
     this.error.set('');
     try {
@@ -1422,16 +1513,16 @@ export class UploadAntiqueComponent implements OnInit {
         country: this.form.country,
         region: this.form.region,
         element: this.form.element,
-        catalog_id: this.form.catalog_id || null,
+        title: this.form.title,
+        author: this.form.author,
+        editor: this.form.editor,
+        imprenta: this.form.imprenta,
+        edition: this.form.edition,
+        signature: this.form.signature,
+        theme: this.form.theme,
+        century: this.form.century,
         year_era: this.form.year_era,
-        condition: this.form.condition,
-        paper_type: this.form.type === 'papeleria' ? this.form.paper_type : undefined,
-        paper_format: this.form.type === 'papeleria' ? this.form.paper_format : undefined,
-        paper_weight: this.form.type === 'papeleria' ? this.form.paper_weight : undefined,
-        material: this.form.type === 'antiguedad' ? this.form.material : this.form.paper_type,
-        dimensions: this.form.type === 'antiguedad' ? this.form.dimensions : `${this.form.paper_format} ${this.form.paper_weight ? '- ' + this.form.paper_weight + 'g' : ''}`.trim(),
         price: this.form.price,
-        description: this.form.description,
         images: this.existingImages()
       };
       if (this.editMode) {

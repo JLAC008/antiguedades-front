@@ -2,9 +2,8 @@ import { Component, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { AntiquesService } from '../../core/antiques.service';
-import { CatalogsService } from '../../core/catalogs.service';
 import { AntiqueCardComponent } from '../../components/antique-card/antique-card.component';
-import { Antique, Catalog } from '../../models';
+import { Antique } from '../../models';
 import { AuthService } from '../../core/auth.service';
 
 @Component({
@@ -16,47 +15,30 @@ import { AuthService } from '../../core/auth.service';
       <section class="collection-hero">
         <div class="collection-hero-shade"></div>
         <div class="collection-hero-inner">
-          <p class="hero-kicker">Colección completa</p>
-          <h1 class="hero-title">Piezas únicas. Historias eternas.</h1>
-          <div class="hero-flourish" aria-hidden="true">⌘</div>
+          <p class="hero-kicker">Archivo de piezas seleccionadas</p>
+          <h1 class="hero-title">Colección privada <span>de antigüedades</span></h1>
+          <div class="hero-flourish" aria-hidden="true">&#10087;</div>
           <p class="hero-copy">
-            Explora nuestra colección privada de antigüedades cuidadosamente seleccionadas
-            por su valor histórico, artístico y cultural.
+            Cada pieza seleccionada cuenta una historia de una época que merece ser recordada.
           </p>
 
-          <div class="stats-row" aria-label="Resumen de la colección">
-            <div class="stat-card">
-              <span class="stat-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24"><path d="M21 8.5 12 3 3 8.5l9 5.5 9-5.5Z"/><path d="M3 8.5V16l9 5.5 9-5.5V8.5"/><path d="M12 14v7.5"/></svg>
-              </span>
-              <div><strong>{{ antiques().length }}</strong><span>Piezas catalogadas</span></div>
-            </div>
-            <div class="stat-card">
-              <span class="stat-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24"><path d="m12 3 7 3v5c0 4.6-3 8.4-7 10-4-1.6-7-5.4-7-10V6l7-3Z"/><path d="m12 8 1.2 2.4 2.6.4-1.9 1.8.5 2.6-2.4-1.2-2.4 1.2.5-2.6-1.9-1.8 2.6-.4L12 8Z"/></svg>
-              </span>
-              <div><strong>{{ categoryCount() }}</strong><span>Categorías</span></div>
-            </div>
-            <div class="stat-card">
-              <span class="stat-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24"><path d="M7 3v4M17 3v4M4 9h16M5 5h14a1 1 0 0 1 1 1v14H4V6a1 1 0 0 1 1-1Z"/><path d="M8 13h.01M12 13h.01M16 13h.01M8 17h.01M12 17h.01"/></svg>
-              </span>
-              <div><strong>{{ eraSummary() }}</strong><span>Épocas representadas</span></div>
-            </div>
-            @if (auth.isAdmin) {
-              <div class="stat-card">
-                <span class="stat-icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M15 9.2A3 3 0 0 0 12.5 8H11a2 2 0 0 0 0 4h2a2 2 0 0 1 0 4h-1.5A3 3 0 0 1 9 14.8"/></svg>
-                </span>
-                <div><strong>{{ totalValueLabel() }}</strong><span>Valor estimado total</span></div>
-              </div>
-            }
-          </div>
         </div>
       </section>
 
       <div class="page-content">
         <div class="collection-panel">
+          <div class="filter-heading">
+            <span>Explorar el archivo</span>
+            <div class="collection-summary">
+              <p>{{ filtered().length }} pieza{{ filtered().length !== 1 ? 's' : '' }} documentadas</p>
+              @if (auth.isLoggedIn) {
+                <p class="collection-value">
+                  <span>Valor estimado</span>
+                  <strong>{{ totalValueLabel() }}</strong>
+                </p>
+              }
+            </div>
+          </div>
           <div class="toolbar">
             <label class="search-bar">
               <span class="search-icon" aria-hidden="true">
@@ -65,7 +47,7 @@ import { AuthService } from '../../core/auth.service';
               <input
                 type="text"
                 class="search-input"
-                placeholder="Buscar por nombre, material, época..."
+                placeholder="Buscar en la colección..."
                 [(ngModel)]="searchTerm"
                 (ngModelChange)="applyFilters()"
               />
@@ -84,41 +66,38 @@ import { AuthService } from '../../core/auth.service';
                 <span class="chip-caret">⌄</span>
               </button>
               <button class="chip" [class.chip-active]="selectedDetail" (click)="toggleFilter('detail')">
-                <span>{{ selectedDetail ? detLabel(selectedDetail) : 'Material' }}</span>
+                <span>{{ selectedDetail ? detLabel(selectedDetail) : 'Detalle' }}</span>
                 <span class="chip-caret">⌄</span>
               </button>
-              <button class="chip" [class.chip-active]="selectedCondition" (click)="toggleFilter('condition')">
-                <span>{{ selectedCondition ? selectedCondition : 'Estado' }}</span>
-                <span class="chip-caret">⌄</span>
-              </button>
-              <button class="chip chip-more" [class.chip-active]="selectedCatalog" (click)="toggleFilter('catalog')">
-                <span>{{ selectedCatalog ? catalogLabel(selectedCatalog) : 'Más filtros' }}</span>
+              <button class="chip chip-more" [class.chip-active]="hasAdvancedFilters()" (click)="openAdvancedFilters()">
+                <span>Filtros</span>
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10M8 5v4M16 15v4"/></svg>
               </button>
-              @if (hasActiveFilters()) {
-                <button class="chip chip-clear" (click)="clearAll()">Limpiar</button>
-              }
             </div>
 
             <div class="toolbar-actions">
               <select class="sort-select" [(ngModel)]="sortBy" (ngModelChange)="applyFilters()" aria-label="Ordenar colección">
                 <option value="recent">Ordenar por</option>
-                @if (auth.isAdmin) {
-                  <option value="priceDesc">Precio mayor</option>
-                  <option value="priceAsc">Precio menor</option>
+                @if (auth.isLoggedIn) {
+                  <option value="priceDesc">Valor mayor</option>
+                  <option value="priceAsc">Valor menor</option>
                 }
                 <option value="name">Nombre</option>
               </select>
-              <button class="view-btn active" type="button" aria-label="Vista de cuadrícula">
-                <svg viewBox="0 0 24 24"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></svg>
-              </button>
-              <button class="view-btn" type="button" aria-label="Vista de lista">
-                <svg viewBox="0 0 24 24"><path d="M5 7h14M5 12h14M5 17h14"/></svg>
-              </button>
             </div>
           </div>
 
-          <p class="result-count">{{ filtered().length }} pieza{{ filtered().length !== 1 ? 's' : '' }} encontradas</p>
+          @if (activeFilterTags().length > 0) {
+            <div class="active-filters" aria-label="Filtros activos">
+              @for (filter of activeFilterTags(); track filter.key) {
+                <button type="button" class="active-filter" (click)="removeFilter(filter.key)">
+                  <span>{{ filter.label }}</span>
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              }
+              <button type="button" class="clear-filters" (click)="clearAll()">Limpiar filtros</button>
+            </div>
+          }
 
           @if (loading()) {
             <div class="antiques-grid">
@@ -141,11 +120,11 @@ import { AuthService } from '../../core/auth.service';
         </div>
 
         @if (openFilter) {
-          <div class="filter-panel" (click)="openFilter=null">
-            <div class="filter-panel-inner" (click)="$event.stopPropagation()">
+          <div class="filter-panel" [class.advanced-panel]="openFilter === 'advanced'" (click)="closeFilterPanel()">
+            <div class="filter-panel-inner" [class.filter-panel-wide]="openFilter === 'advanced'" (click)="$event.stopPropagation()">
               <div class="filter-panel-header">
                 <span class="filter-panel-title">{{ filterTitle() }}</span>
-                <button class="filter-panel-close" (click)="openFilter=null">&times;</button>
+                <button class="filter-panel-close" (click)="closeFilterPanel()">&times;</button>
               </div>
               <div class="filter-panel-body">
                 @if (openFilter === 'type') {
@@ -160,23 +139,86 @@ import { AuthService } from '../../core/auth.service';
                   }
                 }
                 @if (openFilter === 'detail') {
-                  <button class="filter-option" [class.selected]="!selectedDetail" (click)="selectDetail('')">Todos los materiales</button>
+                  <button class="filter-option" [class.selected]="!selectedDetail" (click)="selectDetail('')">Todos los detalles</button>
                   @for (det of availableDetails; track det) {
                     <button class="filter-option" [class.selected]="selectedDetail===det" (click)="selectDetail(det)">{{ detLabel(det) }}</button>
                   }
                 }
-                @if (openFilter === 'catalog') {
-                  <button class="filter-option" [class.selected]="!selectedCatalog" (click)="selectCatalog('')">Todos los catálogos</button>
-                  @for (cat of catalogs(); track cat.id) {
-                    <button class="filter-option" [class.selected]="selectedCatalog===cat.id" (click)="selectCatalog(cat.id)">{{ cat.name }}</button>
-                  }
-                }
-                @if (openFilter === 'condition') {
-                  <button class="filter-option" [class.selected]="!selectedCondition" (click)="selectCondition('')">Todos los estados</button>
-                  <button class="filter-option" [class.selected]="selectedCondition==='Excelente'" (click)="selectCondition('Excelente')">Excelente</button>
-                  <button class="filter-option" [class.selected]="selectedCondition==='Bueno'" (click)="selectCondition('Bueno')">Bueno</button>
-                  <button class="filter-option" [class.selected]="selectedCondition==='Regular'" (click)="selectCondition('Regular')">Regular</button>
-                  <button class="filter-option" [class.selected]="selectedCondition==='Para restaurar'" (click)="selectCondition('Para restaurar')">Para restaurar</button>
+                @if (openFilter === 'advanced') {
+                  <div class="advanced-filters">
+                    <label class="advanced-field">
+                      <span>Año / período</span>
+                      <input type="text" [(ngModel)]="advancedDraft.yearEra" placeholder="Ej. 1930, Victoriano..." />
+                    </label>
+                    @if (showsCenturyFilter()) {
+                      <label class="advanced-field">
+                        <span>Siglo</span>
+                        <input type="text" [(ngModel)]="advancedDraft.century" placeholder="Ej. XVIII, XIX, XX" />
+                      </label>
+                    }
+                    <label class="advanced-field">
+                      <span>País</span>
+                      <input type="text" [(ngModel)]="advancedDraft.country" placeholder="Ej. España" />
+                    </label>
+                    <label class="advanced-field">
+                      <span>Región</span>
+                      <input type="text" [(ngModel)]="advancedDraft.region" placeholder="Ej. Cataluña" />
+                    </label>
+                    @if (showsElementFilter()) {
+                      <label class="advanced-field">
+                        <span>Elemento</span>
+                        <input type="text" [(ngModel)]="advancedDraft.element" placeholder="Ej. Bronce, madera..." />
+                      </label>
+                    }
+                    @if (showsThemeFilter()) {
+                      <label class="advanced-field">
+                        <span>Tema</span>
+                        <input type="text" [(ngModel)]="advancedDraft.theme" placeholder="Ej. Historia, militar..." />
+                      </label>
+                    }
+                    @if (showsSignatureFilter()) {
+                      <label class="advanced-field">
+                        <span>Firma / marca</span>
+                        <input type="text" [(ngModel)]="advancedDraft.signature" placeholder="Firma, sello o fabricante" />
+                      </label>
+                    }
+                    @if (showsDocumentFilters()) {
+                      <label class="advanced-field">
+                        <span>Título</span>
+                        <input type="text" [(ngModel)]="advancedDraft.title" placeholder="Título de la obra" />
+                      </label>
+                      <label class="advanced-field">
+                        <span>Autor</span>
+                        <input type="text" [(ngModel)]="advancedDraft.author" placeholder="Autor o creador" />
+                      </label>
+                      <label class="advanced-field">
+                        <span>Editor</span>
+                        <input type="text" [(ngModel)]="advancedDraft.editor" placeholder="Persona o entidad editorial" />
+                      </label>
+                      <label class="advanced-field">
+                        <span>Imprenta</span>
+                        <input type="text" [(ngModel)]="advancedDraft.imprenta" placeholder="Taller o establecimiento impresor" />
+                      </label>
+                      <label class="advanced-field">
+                        <span>Edición</span>
+                        <input type="text" [(ngModel)]="advancedDraft.edition" placeholder="Ej. 1.ª edición" />
+                      </label>
+                    }
+                    @if (auth.isLoggedIn) {
+                      <label class="advanced-field">
+                        <span>Valor mínimo (€)</span>
+                        <input type="number" [(ngModel)]="advancedDraft.minValue" min="0" placeholder="0" />
+                      </label>
+                      <label class="advanced-field">
+                        <span>Valor máximo (€)</span>
+                        <input type="number" [(ngModel)]="advancedDraft.maxValue" min="0" placeholder="Sin límite" />
+                      </label>
+                    }
+                  </div>
+                  <div class="advanced-actions">
+                    <button type="button" class="advanced-clear" (click)="clearAdvancedDraft()">Limpiar avanzados</button>
+                    <button type="button" class="advanced-apply" (click)="applyAdvancedFilters()">Aplicar filtros</button>
+                  </div>
                 }
               </div>
             </div>
@@ -509,6 +551,47 @@ import { AuthService } from '../../core/auth.service';
       gap: 0.95rem;
     }
 
+    .active-filters {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.45rem;
+      margin-top: 0.85rem;
+    }
+
+    .active-filter,
+    .clear-filters {
+      min-height: 2rem;
+      border: 1px solid rgba(184, 149, 90, 0.34);
+      border-radius: 2px;
+      cursor: pointer;
+      font-size: 0.72rem;
+    }
+
+    .active-filter {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0 0.65rem;
+      background: rgba(184, 149, 90, 0.1);
+      color: #ead4ab;
+    }
+
+    .active-filter span:last-child {
+      color: #d4ac62;
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    .clear-filters {
+      padding: 0 0.55rem;
+      background: transparent;
+      color: rgba(247, 239, 227, 0.58);
+      border-color: transparent;
+      text-decoration: underline;
+      text-underline-offset: 0.2rem;
+    }
+
     .skeleton-card {
       height: 390px;
       border: 1px solid rgba(184, 149, 90, 0.22);
@@ -560,6 +643,27 @@ import { AuthService } from '../../core/auth.service';
       box-shadow: 0 18px 70px rgba(0, 0, 0, 0.58);
     }
 
+    .filter-panel-inner.filter-panel-wide {
+      width: 720px;
+      max-height: 78vh;
+    }
+
+    .filter-panel.advanced-panel {
+      align-items: stretch;
+      justify-content: flex-end;
+      padding: 0;
+    }
+
+    .filter-panel.advanced-panel .filter-panel-inner {
+      width: min(560px, 92vw);
+      max-width: none;
+      height: 100%;
+      max-height: none;
+      border-top: 0;
+      border-right: 0;
+      border-bottom: 0;
+    }
+
     .filter-panel-header {
       display: flex;
       align-items: center;
@@ -606,6 +710,72 @@ import { AuthService } from '../../core/auth.service';
     .filter-option.selected {
       background: rgba(184, 149, 90, 0.12);
       color: #f8d48c;
+    }
+
+    .advanced-filters {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.75rem;
+      padding: 0.45rem;
+    }
+
+    .advanced-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .advanced-field span {
+      color: rgba(247, 239, 227, 0.58);
+      font-size: 0.68rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .advanced-field input,
+    .advanced-field select {
+      width: 100%;
+      min-width: 0;
+      height: 2.65rem;
+      padding: 0 0.7rem;
+      border: 1px solid rgba(184, 149, 90, 0.3);
+      border-radius: 2px;
+      outline: 0;
+      background: #090909;
+      color: #f7efe3;
+    }
+
+    .advanced-field input:focus,
+    .advanced-field select:focus {
+      border-color: #d4ac62;
+    }
+
+    .advanced-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.65rem;
+      padding: 0.75rem 0.45rem 0.35rem;
+    }
+
+    .advanced-clear,
+    .advanced-apply {
+      min-height: 2.55rem;
+      padding: 0 0.9rem;
+      border: 1px solid rgba(184, 149, 90, 0.38);
+      border-radius: 2px;
+      cursor: pointer;
+    }
+
+    .advanced-clear {
+      background: transparent;
+      color: rgba(247, 239, 227, 0.68);
+    }
+
+    .advanced-apply {
+      background: #a77b3c;
+      color: #090909;
+      font-weight: 700;
     }
 
     @media (max-width: 1280px) {
@@ -709,20 +879,299 @@ import { AuthService } from '../../core/auth.service';
         max-width: none;
         max-height: 74vh;
       }
+
+      .advanced-filters {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Collection style: private cabinet, based on prototype 2. */
+    .page-collection {
+      background:
+        radial-gradient(circle at 50% 14rem, rgba(164, 117, 48, 0.08), transparent 32rem),
+        #090a09;
+    }
+
+    .collection-hero {
+      min-height: 310px;
+      background:
+        linear-gradient(90deg, rgba(0, 0, 0, 0.12), rgba(5, 5, 4, 0.8) 35%, rgba(5, 5, 4, 0.8) 65%, rgba(0, 0, 0, 0.12)),
+        linear-gradient(180deg, rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.68)),
+        url('/assets/login-bg-gallery.png') center 43% / cover no-repeat;
+    }
+
+    .collection-hero-shade {
+      background: linear-gradient(180deg, transparent, rgba(4, 4, 3, 0.5));
+    }
+
+    .collection-hero-inner {
+      padding: 2.65rem 1.5rem 2.35rem;
+    }
+
+    .hero-kicker {
+      margin-bottom: 0.8rem;
+      color: rgba(225, 198, 145, 0.7);
+      font-family: inherit;
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+    }
+
+    .hero-title {
+      max-width: 620px;
+      font-size: clamp(2.25rem, 4vw, 3.55rem);
+      font-weight: 400;
+      line-height: 1.06;
+    }
+
+    .hero-title span {
+      display: block;
+      color: #c9974e;
+      font-style: italic;
+    }
+
+    .hero-flourish {
+      margin: 0.8rem auto 0.7rem;
+    }
+
+    .hero-flourish::before,
+    .hero-flourish::after {
+      width: 3.4rem;
+    }
+
+    .hero-copy {
+      max-width: 470px;
+      margin: 0 auto;
+      font-family: 'Playfair Display', serif;
+      font-size: 0.96rem;
+      line-height: 1.6;
+    }
+
+    .page-content {
+      max-width: 1440px;
+      margin-top: 0;
+      padding: 0 1.75rem 4rem;
+    }
+
+    .collection-panel {
+      padding: 1.25rem 1.25rem 1.7rem;
+      background: linear-gradient(180deg, rgba(14, 15, 14, 0.98), rgba(8, 9, 8, 0.98));
+      border-top: 0;
+      border-color: rgba(184, 149, 90, 0.2);
+      box-shadow: none;
+    }
+
+    .filter-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .filter-heading span {
+      color: #c89b57;
+      font-family: 'Playfair Display', serif;
+      font-size: 0.98rem;
+    }
+
+    .filter-heading p {
+      color: rgba(247, 239, 227, 0.42);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .collection-summary {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .collection-value {
+      display: flex;
+      align-items: baseline;
+      gap: 0.45rem;
+      padding-left: 1rem;
+      border-left: 1px solid rgba(184, 149, 90, 0.3);
+    }
+
+    .collection-value span {
+      color: rgba(247, 239, 227, 0.42);
+    }
+
+    .collection-value strong {
+      color: #d7bd8a;
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 600;
+      letter-spacing: 0;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: minmax(220px, 1.15fr) minmax(0, 3fr) auto;
+      gap: 0;
+      align-items: stretch;
+      border-top: 1px solid rgba(184, 149, 90, 0.28);
+      border-bottom: 1px solid rgba(184, 149, 90, 0.28);
+    }
+
+    .search-bar {
+      height: 4rem;
+      min-width: 0;
+      max-width: none;
+      padding: 0 0.95rem;
+      border-top: 0;
+      border-bottom: 0;
+      border-left: 0;
+    }
+
+    .filter-chips {
+      gap: 0;
+    }
+
+    .chip {
+      min-height: 4rem;
+      padding: 0 0.8rem;
+      flex: 1 1 0;
+      border-top: 0;
+      border-bottom: 0;
+      border-right: 0;
+      border-radius: 0;
+      font-family: inherit;
+      font-size: 0.78rem;
+    }
+
+    .toolbar-actions {
+      gap: 0;
+      border-left: 1px solid rgba(184, 149, 90, 0.38);
+    }
+
+    .sort-select {
+      height: 4rem;
+      border-top: 0;
+      border-right: 0;
+      border-bottom: 0;
+      border-radius: 0;
+    }
+
+    .antiques-grid {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 0.7rem;
+      margin-top: 1.1rem;
+    }
+
+    @media (max-width: 1280px) {
+      .toolbar {
+        grid-template-columns: 1fr auto;
+      }
+
+      .filter-chips {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        border-top: 1px solid rgba(184, 149, 90, 0.28);
+      }
+
+      .antiques-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 900px) {
+      .antiques-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 620px) {
+      .collection-hero-inner {
+        padding-top: 2.2rem;
+      }
+
+      .filter-heading {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.15rem;
+      }
+
+      .collection-summary {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.25rem;
+      }
+
+      .collection-value {
+        padding-left: 0;
+        border-left: 0;
+      }
+
+      .filter-panel {
+        align-items: stretch;
+        padding: 0;
+      }
+
+      .filter-panel-inner,
+      .filter-panel-inner.filter-panel-wide {
+        width: 100%;
+        max-width: none;
+        height: 100%;
+        max-height: none;
+        border: 0;
+      }
+
+      .filter-panel-header {
+        flex: 0 0 auto;
+      }
+
+      .filter-panel-body {
+        flex: 1;
+      }
+
+      .advanced-actions {
+        position: sticky;
+        bottom: -0.6rem;
+        padding: 0.9rem 0.45rem;
+        background: #11100f;
+        border-top: 1px solid rgba(184, 149, 90, 0.24);
+      }
+
+      .antiques-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 430px) {
+      .antiques-grid {
+        grid-template-columns: 1fr;
+      }
     }
   `]
 })
 export class CollectionComponent implements OnInit {
   antiques = signal<Antique[]>([]);
   filtered = signal<Antique[]>([]);
-  catalogs = signal<Catalog[]>([]);
   loading = signal(true);
   searchTerm = '';
   selectedType = '';
   selectedSubcategory = '';
   selectedDetail = '';
-  selectedCatalog = '';
-  selectedCondition = '';
+  filterYearEra = '';
+  filterCentury = '';
+  filterCountry = '';
+  filterRegion = '';
+  filterElement = '';
+  filterTheme = '';
+  filterSignature = '';
+  filterItemTitle = '';
+  filterAuthor = '';
+  filterEditor = '';
+  filterImprenta = '';
+  filterEdition = '';
+  minValue: number | null = null;
+  maxValue: number | null = null;
+  advancedDraft = this.emptyAdvancedDraft();
   sortBy = 'recent';
   openFilter: string | null = null;
 
@@ -736,6 +1185,7 @@ export class CollectionComponent implements OnInit {
     revistas: 'Revistas / Periódicos',
     documentos: 'Documentos',
     libros: 'Libros',
+    varios: 'Varios',
   };
 
   detailLabels: Record<string, string> = {
@@ -771,19 +1221,14 @@ export class CollectionComponent implements OnInit {
 
   constructor(
     private antiquesService: AntiquesService,
-    private catalogsService: CatalogsService,
     private route: ActivatedRoute,
     public auth: AuthService
   ) {}
 
   async ngOnInit() {
     try {
-      const [antiques, catalogs] = await Promise.all([
-        this.antiquesService.getAll(),
-        this.catalogsService.getAll()
-      ]);
+      const antiques = await this.antiquesService.getAll();
       this.antiques.set(antiques);
-      this.catalogs.set(catalogs);
       this.route.queryParams.subscribe(params => {
         if (params['tipo']) {
           this.selectedType = params['tipo'];
@@ -798,7 +1243,16 @@ export class CollectionComponent implements OnInit {
   }
 
   hasActiveFilters(): boolean {
-    return !!(this.selectedType || this.selectedSubcategory || this.selectedDetail || this.selectedCatalog || this.selectedCondition);
+    return !!(this.selectedType || this.selectedSubcategory || this.selectedDetail || this.hasAdvancedFilters());
+  }
+
+  hasAdvancedFilters(): boolean {
+    return !!(
+      this.filterYearEra || this.filterCentury || this.filterCountry ||
+      this.filterRegion || this.filterElement || this.filterTheme || this.filterSignature ||
+      this.filterItemTitle || this.filterAuthor || this.filterEditor || this.filterImprenta || this.filterEdition ||
+      (this.auth.isLoggedIn && (this.minValue !== null || this.maxValue !== null))
+    );
   }
 
   typeLabel(t: string): string {
@@ -813,14 +1267,10 @@ export class CollectionComponent implements OnInit {
     return this.detailLabels[key] ?? key;
   }
 
-  catalogLabel(id: string): string {
-    return this.catalogs().find(c => c.id === id)?.name ?? id;
-  }
-
   filterTitle(): string {
     const map: Record<string, string> = {
-      type: 'Tipo', subcategory: 'Categoría', detail: 'Material',
-      catalog: 'Catálogo', condition: 'Estado',
+      type: 'Tipo', subcategory: 'Categoría', detail: 'Detalle',
+      advanced: 'Filtros',
     };
     return map[this.openFilter ?? ''] ?? '';
   }
@@ -856,10 +1306,35 @@ export class CollectionComponent implements OnInit {
     this.openFilter = this.openFilter === name ? null : name;
   }
 
+  openAdvancedFilters() {
+    this.advancedDraft = {
+      yearEra: this.filterYearEra,
+      century: this.filterCentury,
+      country: this.filterCountry,
+      region: this.filterRegion,
+      element: this.filterElement,
+      theme: this.filterTheme,
+      signature: this.filterSignature,
+      title: this.filterItemTitle,
+      author: this.filterAuthor,
+      editor: this.filterEditor,
+      imprenta: this.filterImprenta,
+      edition: this.filterEdition,
+      minValue: this.minValue,
+      maxValue: this.maxValue,
+    };
+    this.openFilter = 'advanced';
+  }
+
+  closeFilterPanel() {
+    this.openFilter = null;
+  }
+
   selectType(val: string) {
     this.selectedType = val;
     this.selectedSubcategory = '';
     this.selectedDetail = '';
+    this.resetAdvancedValues();
     this.openFilter = null;
     this.applyFilters();
   }
@@ -867,6 +1342,7 @@ export class CollectionComponent implements OnInit {
   selectSubcategory(val: string) {
     this.selectedSubcategory = val;
     this.selectedDetail = '';
+    this.resetAdvancedValues();
     this.openFilter = null;
     this.applyFilters();
   }
@@ -877,26 +1353,157 @@ export class CollectionComponent implements OnInit {
     this.applyFilters();
   }
 
-  selectCatalog(val: string) {
-    this.selectedCatalog = val;
-    this.openFilter = null;
-    this.applyFilters();
-  }
-
-  selectCondition(val: string) {
-    this.selectedCondition = val;
-    this.openFilter = null;
-    this.applyFilters();
-  }
-
   clearAll() {
     this.selectedType = '';
     this.selectedSubcategory = '';
     this.selectedDetail = '';
-    this.selectedCatalog = '';
-    this.selectedCondition = '';
+    this.resetAdvancedValues();
     this.openFilter = null;
     this.applyFilters();
+  }
+
+  clearAdvancedDraft() {
+    this.advancedDraft = this.emptyAdvancedDraft();
+  }
+
+  applyAdvancedFilters() {
+    this.filterYearEra = this.advancedDraft.yearEra.trim();
+    this.filterCentury = this.advancedDraft.century.trim();
+    this.filterCountry = this.advancedDraft.country.trim();
+    this.filterRegion = this.advancedDraft.region.trim();
+    this.filterElement = this.advancedDraft.element.trim();
+    this.filterTheme = this.advancedDraft.theme.trim();
+    this.filterSignature = this.advancedDraft.signature.trim();
+    this.filterItemTitle = this.advancedDraft.title.trim();
+    this.filterAuthor = this.advancedDraft.author.trim();
+    this.filterEditor = this.advancedDraft.editor.trim();
+    this.filterImprenta = this.advancedDraft.imprenta.trim();
+    this.filterEdition = this.advancedDraft.edition.trim();
+    this.minValue = this.auth.isLoggedIn ? this.advancedDraft.minValue : null;
+    this.maxValue = this.auth.isLoggedIn ? this.advancedDraft.maxValue : null;
+    this.openFilter = null;
+    this.applyFilters();
+  }
+
+  private resetAdvancedValues() {
+    this.filterYearEra = '';
+    this.filterCentury = '';
+    this.filterCountry = '';
+    this.filterRegion = '';
+    this.filterElement = '';
+    this.filterTheme = '';
+    this.filterSignature = '';
+    this.filterItemTitle = '';
+    this.filterAuthor = '';
+    this.filterEditor = '';
+    this.filterImprenta = '';
+    this.filterEdition = '';
+    this.minValue = null;
+    this.maxValue = null;
+    this.advancedDraft = this.emptyAdvancedDraft();
+  }
+
+  private emptyAdvancedDraft() {
+    return {
+      yearEra: '',
+      century: '',
+      country: '',
+      region: '',
+      element: '',
+      theme: '',
+      signature: '',
+      title: '',
+      author: '',
+      editor: '',
+      imprenta: '',
+      edition: '',
+      minValue: null as number | null,
+      maxValue: null as number | null,
+    };
+  }
+
+  showsDocumentFilters(): boolean {
+    return ['libros', 'documentos', 'varios'].includes(this.selectedSubcategory);
+  }
+
+  showsCenturyFilter(): boolean {
+    return ['pintura', 'escultura', 'fotos', 'revistas', 'filatelia', 'varios'].includes(this.selectedSubcategory);
+  }
+
+  showsElementFilter(): boolean {
+    return ['escultura', 'varios'].includes(this.selectedSubcategory);
+  }
+
+  showsThemeFilter(): boolean {
+    return ['pintura', 'escultura', 'fotos', 'revistas', 'filatelia', 'varios'].includes(this.selectedSubcategory);
+  }
+
+  showsSignatureFilter(): boolean {
+    return ['pintura', 'escultura', 'varios'].includes(this.selectedSubcategory);
+  }
+
+  activeFilterTags(): { key: string; label: string }[] {
+    const tags: { key: string; label: string }[] = [];
+    if (this.selectedType) tags.push({ key: 'type', label: `Tipo: ${this.typeLabel(this.selectedType)}` });
+    if (this.selectedSubcategory) tags.push({ key: 'subcategory', label: `Categoría: ${this.subLabel(this.selectedSubcategory)}` });
+    if (this.selectedDetail) tags.push({ key: 'detail', label: `Detalle: ${this.detLabel(this.selectedDetail)}` });
+    if (this.filterYearEra) tags.push({ key: 'yearEra', label: `Período: ${this.filterYearEra}` });
+    if (this.filterCentury) tags.push({ key: 'century', label: `Siglo: ${this.filterCentury}` });
+    if (this.filterCountry) tags.push({ key: 'country', label: `País: ${this.filterCountry}` });
+    if (this.filterRegion) tags.push({ key: 'region', label: `Región: ${this.filterRegion}` });
+    if (this.filterElement) tags.push({ key: 'element', label: `Elemento: ${this.filterElement}` });
+    if (this.filterTheme) tags.push({ key: 'theme', label: `Tema: ${this.filterTheme}` });
+    if (this.filterSignature) tags.push({ key: 'signature', label: `Firma: ${this.filterSignature}` });
+    if (this.filterItemTitle) tags.push({ key: 'title', label: `Título: ${this.filterItemTitle}` });
+    if (this.filterAuthor) tags.push({ key: 'author', label: `Autor: ${this.filterAuthor}` });
+    if (this.filterEditor) tags.push({ key: 'editor', label: `Editor: ${this.filterEditor}` });
+    if (this.filterImprenta) tags.push({ key: 'imprenta', label: `Imprenta: ${this.filterImprenta}` });
+    if (this.filterEdition) tags.push({ key: 'edition', label: `Edición: ${this.filterEdition}` });
+    if (this.auth.isLoggedIn && this.minValue !== null) tags.push({ key: 'minValue', label: `Valor desde: ${this.minValue} €` });
+    if (this.auth.isLoggedIn && this.maxValue !== null) tags.push({ key: 'maxValue', label: `Valor hasta: ${this.maxValue} €` });
+    return tags;
+  }
+
+  removeFilter(key: string) {
+    const clear: Record<string, () => void> = {
+      type: () => {
+        this.selectedType = '';
+        this.selectedSubcategory = '';
+        this.selectedDetail = '';
+        this.resetAdvancedValues();
+      },
+      subcategory: () => {
+        this.selectedSubcategory = '';
+        this.selectedDetail = '';
+        this.resetAdvancedValues();
+      },
+      detail: () => this.selectedDetail = '',
+      yearEra: () => this.filterYearEra = '',
+      century: () => this.filterCentury = '',
+      country: () => this.filterCountry = '',
+      region: () => this.filterRegion = '',
+      element: () => this.filterElement = '',
+      theme: () => this.filterTheme = '',
+      signature: () => this.filterSignature = '',
+      title: () => this.filterItemTitle = '',
+      author: () => this.filterAuthor = '',
+      editor: () => this.filterEditor = '',
+      imprenta: () => this.filterImprenta = '',
+      edition: () => this.filterEdition = '',
+      minValue: () => this.minValue = null,
+      maxValue: () => this.maxValue = null,
+    };
+    clear[key]?.();
+    this.applyFilters();
+  }
+
+  private contains(value: string | undefined, term: string): boolean {
+    if (!term.trim()) return true;
+    const normalize = (text: string) => text
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLocaleLowerCase('es');
+    return normalize(value ?? '').includes(normalize(term.trim()));
   }
 
   applyFilters() {
@@ -905,16 +1512,37 @@ export class CollectionComponent implements OnInit {
       const term = this.searchTerm.toLowerCase();
       result = result.filter(a =>
         a.name.toLowerCase().includes(term) ||
-        a.material.toLowerCase().includes(term) ||
-        a.year_era.toLowerCase().includes(term) ||
-        a.description.toLowerCase().includes(term)
+        (a.title ?? '').toLowerCase().includes(term) ||
+        (a.author ?? '').toLowerCase().includes(term) ||
+        (a.editor ?? '').toLowerCase().includes(term) ||
+        (a.imprenta ?? '').toLowerCase().includes(term) ||
+        (a.edition ?? '').toLowerCase().includes(term) ||
+        (a.signature ?? '').toLowerCase().includes(term) ||
+        (a.theme ?? '').toLowerCase().includes(term) ||
+        (a.century ?? '').toLowerCase().includes(term) ||
+        a.country.toLowerCase().includes(term) ||
+        a.region.toLowerCase().includes(term) ||
+        a.element.toLowerCase().includes(term) ||
+        a.year_era.toLowerCase().includes(term)
       );
     }
     if (this.selectedType) result = result.filter(a => a.type === this.selectedType);
     if (this.selectedSubcategory) result = result.filter(a => a.subcategory === this.selectedSubcategory);
     if (this.selectedDetail) result = result.filter(a => a.detail === this.selectedDetail);
-    if (this.selectedCatalog) result = result.filter(a => a.catalog_id === this.selectedCatalog);
-    if (this.selectedCondition) result = result.filter(a => a.condition === this.selectedCondition);
+    if (this.filterYearEra) result = result.filter(a => this.contains(a.year_era, this.filterYearEra));
+    if (this.filterCentury) result = result.filter(a => this.contains(a.century, this.filterCentury));
+    if (this.filterCountry) result = result.filter(a => this.contains(a.country, this.filterCountry));
+    if (this.filterRegion) result = result.filter(a => this.contains(a.region, this.filterRegion));
+    if (this.filterElement) result = result.filter(a => this.contains(a.element, this.filterElement));
+    if (this.filterTheme) result = result.filter(a => this.contains(a.theme, this.filterTheme));
+    if (this.filterSignature) result = result.filter(a => this.contains(a.signature, this.filterSignature));
+    if (this.filterItemTitle) result = result.filter(a => this.contains(a.title, this.filterItemTitle));
+    if (this.filterAuthor) result = result.filter(a => this.contains(a.author, this.filterAuthor));
+    if (this.filterEditor) result = result.filter(a => this.contains(a.editor, this.filterEditor));
+    if (this.filterImprenta) result = result.filter(a => this.contains(a.imprenta, this.filterImprenta));
+    if (this.filterEdition) result = result.filter(a => this.contains(a.edition, this.filterEdition));
+    if (this.auth.isLoggedIn && this.minValue !== null) result = result.filter(a => (a.price || 0) >= this.minValue!);
+    if (this.auth.isLoggedIn && this.maxValue !== null) result = result.filter(a => (a.price || 0) <= this.maxValue!);
 
     if (this.sortBy === 'priceDesc') result.sort((a, b) => (b.price || 0) - (a.price || 0));
     if (this.sortBy === 'priceAsc') result.sort((a, b) => (a.price || 0) - (b.price || 0));

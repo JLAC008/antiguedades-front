@@ -1,13 +1,11 @@
-import { Component, inject, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { CurrencyPipe } from '@angular/common';
 import { Antique } from '../../models';
-import { AuthService } from '../../core/auth.service';
 
 @Component({
   selector: 'app-antique-card',
   standalone: true,
-  imports: [RouterLink, CurrencyPipe],
+  imports: [RouterLink],
   template: `
     <a [routerLink]="['/pieza', antique.id]" class="antique-card">
       <div class="antique-card-img">
@@ -18,7 +16,6 @@ import { AuthService } from '../../core/auth.service';
             <span>&#128250;</span>
           </div>
         }
-        <span class="antique-card-badge">{{ antique.condition }}</span>
       </div>
       <div class="antique-card-body">
         <h3 class="antique-card-title">{{ antique.name }}</h3>
@@ -31,9 +28,6 @@ import { AuthService } from '../../core/auth.service';
           </span>
           {{ categoryLabel() }}
         </p>
-        @if (auth.isAdmin && antique.price > 0) {
-          <p class="antique-card-price">{{ antique.price | currency:'EUR':'symbol':'1.0-0' }}</p>
-        }
         @if (antique.description) {
           <p class="antique-card-desc">{{ antique.description }}</p>
         }
@@ -252,11 +246,61 @@ import { AuthService } from '../../core/auth.service';
       font-size: 0.82rem;
       white-space: nowrap;
     }
+
+    :host-context(.page-collection) .antique-card {
+      background: #101110;
+      border-color: rgba(184, 149, 90, 0.22);
+      border-radius: 1px;
+      box-shadow: none;
+    }
+
+    :host-context(.page-collection) .antique-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.42);
+    }
+
+    :host-context(.page-collection) .antique-card-img {
+      aspect-ratio: 0.98;
+    }
+
+    :host-context(.page-collection) .antique-card-img::after {
+      height: 34%;
+      background: linear-gradient(180deg, transparent, rgba(8, 8, 8, 0.62));
+    }
+
+    :host-context(.page-collection) .antique-card-body {
+      padding: 0.85rem 0.8rem 0.95rem;
+    }
+
+    :host-context(.page-collection) .antique-card-title {
+      font-size: 1rem;
+      font-weight: 400;
+    }
+
+    :host-context(.page-collection) .antique-card-era {
+      margin-bottom: 0.5rem;
+      font-size: 0.74rem;
+    }
+
+    :host-context(.page-collection) .antique-card-meta {
+      margin-bottom: 0.55rem;
+      font-size: 0.74rem;
+    }
+
+    :host-context(.page-collection) .antique-card-desc {
+      margin-bottom: 0.8rem;
+      font-size: 0.74rem;
+      -webkit-line-clamp: 2;
+    }
+
+    :host-context(.page-collection) .antique-card-link {
+      color: #c79a55;
+      font-size: 0.72rem;
+    }
   `]
 })
 export class AntiqueCardComponent {
   @Input() antique!: Antique;
-  auth = inject(AuthService);
 
   categoryLabel(): string {
     const labels: Record<string, string> = {
@@ -269,6 +313,7 @@ export class AntiqueCardComponent {
       revistas: 'Revistas',
       documentos: 'Documentos',
       libros: 'Libros',
+      varios: 'Varios',
     };
 
     return labels[this.antique?.subcategory] ?? (this.antique?.type === 'papeleria' ? 'Papelería' : 'Antigüedad');

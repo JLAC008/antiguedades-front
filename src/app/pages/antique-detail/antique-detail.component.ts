@@ -115,6 +115,18 @@ import { Antique } from '../../models';
                         }
                       }
                       @if (antique()!.type === 'papeleria') {
+                        @if (antique()!.country) {
+                          <div class="spec-item">
+                            <span class="spec-label"><span class="spec-icon">◎</span> País</span>
+                            <span class="spec-value">{{ antique()!.country }}</span>
+                          </div>
+                        }
+                        @if (antique()!.region) {
+                          <div class="spec-item">
+                            <span class="spec-label"><span class="spec-icon">◇</span> Región</span>
+                            <span class="spec-value">{{ antique()!.region }}</span>
+                          </div>
+                        }
                         @if (antique()!.paper_type) {
                           <div class="spec-item">
                             <span class="spec-label"><span class="spec-icon">◇</span> Tipo de papel</span>
@@ -133,6 +145,54 @@ import { Antique } from '../../models';
                             <span class="spec-value">{{ antique()!.paper_weight }} g/m²</span>
                           </div>
                         }
+                      }
+                      @if (antique()!.title) {
+                        <div class="spec-item">
+                          <span class="spec-label"><span class="spec-icon">▤</span> Título</span>
+                          <span class="spec-value">{{ antique()!.title }}</span>
+                        </div>
+                      }
+                      @if (antique()!.author) {
+                        <div class="spec-item">
+                          <span class="spec-label"><span class="spec-icon">✎</span> Autor</span>
+                          <span class="spec-value">{{ antique()!.author }}</span>
+                        </div>
+                      }
+                      @if (antique()!.editor) {
+                        <div class="spec-item">
+                          <span class="spec-label"><span class="spec-icon">▣</span> Editor</span>
+                          <span class="spec-value">{{ antique()!.editor }}</span>
+                        </div>
+                      }
+                      @if (antique()!.imprenta) {
+                        <div class="spec-item">
+                          <span class="spec-label"><span class="spec-icon">▦</span> Imprenta</span>
+                          <span class="spec-value">{{ antique()!.imprenta }}</span>
+                        </div>
+                      }
+                      @if (antique()!.edition) {
+                        <div class="spec-item">
+                          <span class="spec-label"><span class="spec-icon">№</span> Edición</span>
+                          <span class="spec-value">{{ antique()!.edition }}</span>
+                        </div>
+                      }
+                      @if (antique()!.century) {
+                        <div class="spec-item">
+                          <span class="spec-label"><span class="spec-icon">◷</span> Siglo</span>
+                          <span class="spec-value">{{ antique()!.century }}</span>
+                        </div>
+                      }
+                      @if (antique()!.theme) {
+                        <div class="spec-item">
+                          <span class="spec-label"><span class="spec-icon">◆</span> Tema</span>
+                          <span class="spec-value">{{ antique()!.theme }}</span>
+                        </div>
+                      }
+                      @if (antique()!.signature) {
+                        <div class="spec-item">
+                          <span class="spec-label"><span class="spec-icon">✦</span> Firma / marca</span>
+                          <span class="spec-value">{{ antique()!.signature }}</span>
+                        </div>
                       }
                       @if (antique()!.material) {
                         <div class="spec-item">
@@ -825,6 +885,7 @@ export class AntiqueDetailComponent implements OnInit {
     revistas: 'Revistas / Periódicos',
     documentos: 'Documentos',
     libros: 'Libros',
+    varios: 'Varios',
   };
 
   detailLabels: Record<string, string> = {
