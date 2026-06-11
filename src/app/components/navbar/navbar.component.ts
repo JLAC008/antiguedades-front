@@ -254,7 +254,7 @@ import { AuthService } from '../../core/auth.service';
       .nav-actions {
         display: none;
       }
-      .nav-toggle { display: flex; }
+      .nav-toggle { display: flex; order: -1; }
     }
     @media (max-width: 520px) {
       .nav-container {

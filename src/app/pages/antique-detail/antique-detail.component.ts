@@ -865,6 +865,171 @@ import { Antique } from '../../models';
     .btn-delete-confirm:hover {
       background: #c43d36;
     }
+
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(32px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeSlideRight {
+      from { opacity: 0; transform: translateX(-16px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes scaleReveal {
+      from { opacity: 0; transform: scale(0.92); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes glowPulse {
+      0%, 100% { box-shadow: 0 28px 70px rgba(0,0,0,0.44), 0 0 0 rgba(212,172,98,0); }
+      50%      { box-shadow: 0 28px 70px rgba(0,0,0,0.44), 0 0 32px rgba(212,172,98,0.18); }
+    }
+
+    @keyframes badgePop {
+      0%   { opacity: 0; transform: scale(0.5); }
+      60%  { transform: scale(1.08); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes trustSlideLeft {
+      from { opacity: 0; transform: translateX(-30px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes trustSlideRight {
+      from { opacity: 0; transform: translateX(30px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .breadcrumb {
+      animation: fadeSlideUp 0.5s ease-out both;
+    }
+
+    .antique-gallery {
+      animation: fadeSlideUp 0.7s ease-out 0.1s both;
+    }
+
+    .antique-info {
+      animation: fadeSlideUp 0.7s ease-out 0.2s both;
+    }
+
+    .gallery-main {
+      animation: glowPulse 5s ease-in-out infinite, scaleReveal 0.8s ease-out 0.1s both;
+    }
+
+    .gallery-main-img {
+      transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.5s ease;
+    }
+
+    .gallery-main:hover .gallery-main-img {
+      transform: scale(1.04);
+    }
+
+    .gallery-arrow {
+      transition: background 0.25s, border-color 0.25s, color 0.25s, transform 0.25s;
+    }
+    .gallery-arrow:hover:not(:disabled) {
+      transform: translateY(-50%) scale(1.1);
+    }
+
+    .gallery-thumb-btn {
+      transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+    }
+    .gallery-thumb-btn:hover,
+    .gallery-thumb-btn.active {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 16px rgba(212,172,98,0.2);
+    }
+
+    .antique-title {
+      animation: fadeSlideUp 0.6s ease-out 0.25s both;
+    }
+
+    .antique-era {
+      animation: fadeSlideUp 0.5s ease-out 0.35s both;
+    }
+
+    .antique-badge {
+      animation: badgePop 0.5s ease-out both;
+    }
+    .antique-badge:nth-child(1) { animation-delay: 0.4s; }
+    .antique-badge:nth-child(2) { animation-delay: 0.47s; }
+    .antique-badge:nth-child(3) { animation-delay: 0.54s; }
+    .antique-badge:nth-child(4) { animation-delay: 0.61s; }
+    .antique-badge:nth-child(5) { animation-delay: 0.68s; }
+
+    .antique-price {
+      animation: fadeSlideUp 0.6s ease-out 0.35s both;
+    }
+
+    .section-label {
+      animation: fadeSlideUp 0.5s ease-out 0.4s both;
+    }
+
+    .antique-desc {
+      animation: fadeSlideUp 0.6s ease-out 0.45s both;
+    }
+
+    .spec-item {
+      animation: fadeSlideRight 0.45s ease-out both;
+    }
+    .spec-item:nth-child(1) { animation-delay: 0.45s; }
+    .spec-item:nth-child(2) { animation-delay: 0.48s; }
+    .spec-item:nth-child(3) { animation-delay: 0.51s; }
+    .spec-item:nth-child(4) { animation-delay: 0.54s; }
+    .spec-item:nth-child(5) { animation-delay: 0.57s; }
+    .spec-item:nth-child(6) { animation-delay: 0.60s; }
+    .spec-item:nth-child(7) { animation-delay: 0.63s; }
+    .spec-item:nth-child(8) { animation-delay: 0.66s; }
+    .spec-item:nth-child(9) { animation-delay: 0.69s; }
+    .spec-item:nth-child(10) { animation-delay: 0.72s; }
+    .spec-item:nth-child(11) { animation-delay: 0.75s; }
+    .spec-item:nth-child(12) { animation-delay: 0.78s; }
+    .spec-item:nth-child(13) { animation-delay: 0.81s; }
+    .spec-item:nth-child(14) { animation-delay: 0.84s; }
+    .spec-item:nth-child(15) { animation-delay: 0.87s; }
+
+    .admin-actions {
+      animation: fadeSlideUp 0.6s ease-out 0.5s both;
+    }
+
+    .trust-strip {
+      animation: fadeSlideUp 0.7s ease-out 0.3s both;
+    }
+    .trust-item:nth-child(1) {
+      animation: trustSlideLeft 0.6s ease-out 0.35s both;
+    }
+    .trust-item:nth-child(2) {
+      animation: fadeSlideUp 0.6s ease-out 0.45s both;
+    }
+    .trust-item:nth-child(3) {
+      animation: trustSlideRight 0.6s ease-out 0.55s both;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .breadcrumb,
+      .antique-gallery,
+      .antique-info,
+      .gallery-main,
+      .antique-title,
+      .antique-era,
+      .antique-badge,
+      .antique-price,
+      .section-label,
+      .antique-desc,
+      .spec-item,
+      .admin-actions,
+      .trust-strip,
+      .trust-item,
+      .gallery-main-img {
+        animation: none;
+        transition: none;
+      }
+      .gallery-main:hover .gallery-main-img {
+        transform: none;
+      }
+    }
   `]
 })
 export class AntiqueDetailComponent implements OnInit {
