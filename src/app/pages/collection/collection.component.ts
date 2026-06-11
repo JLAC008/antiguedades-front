@@ -622,6 +622,62 @@ import { AuthService } from '../../core/auth.service';
       100% { background-position: -200% 0; }
     }
 
+    .collection-hero-inner > * {
+      animation: fade-slide-up 0.7s ease-out both;
+    }
+    .collection-hero-inner > .hero-kicker { animation-delay: 0.15s; }
+    .collection-hero-inner > .hero-title { animation-delay: 0.3s; }
+    .collection-hero-inner > .hero-flourish { animation-delay: 0.45s; }
+    .collection-hero-inner > .hero-copy { animation-delay: 0.6s; }
+    .collection-hero-inner > .stats-row { animation-delay: 0.75s; }
+    .collection-hero-inner > .stats-row .stat-card {
+      animation: fade-slide-up 0.6s ease-out both;
+    }
+    .collection-hero-inner > .stats-row .stat-card:nth-child(1) { animation-delay: 0.8s; }
+    .collection-hero-inner > .stats-row .stat-card:nth-child(2) { animation-delay: 0.9s; }
+    .collection-hero-inner > .stats-row .stat-card:nth-child(3) { animation-delay: 1s; }
+    .collection-hero-inner > .stats-row .stat-card:nth-child(4) { animation-delay: 1.1s; }
+
+    .collection-panel {
+      animation: fade-slide-up 0.7s 0.4s ease-out both;
+    }
+
+    .antiques-grid > app-antique-card {
+      animation: fade-slide-up 0.5s ease-out both;
+    }
+    .antiques-grid > app-antique-card:nth-child(1) { animation-delay: 0.05s; }
+    .antiques-grid > app-antique-card:nth-child(2) { animation-delay: 0.1s; }
+    .antiques-grid > app-antique-card:nth-child(3) { animation-delay: 0.15s; }
+    .antiques-grid > app-antique-card:nth-child(4) { animation-delay: 0.2s; }
+    .antiques-grid > app-antique-card:nth-child(5) { animation-delay: 0.25s; }
+    .antiques-grid > app-antique-card:nth-child(6) { animation-delay: 0.3s; }
+    .antiques-grid > app-antique-card:nth-child(7) { animation-delay: 0.35s; }
+    .antiques-grid > app-antique-card:nth-child(8) { animation-delay: 0.4s; }
+    .antiques-grid > app-antique-card:nth-child(9) { animation-delay: 0.45s; }
+    .antiques-grid > app-antique-card:nth-child(10) { animation-delay: 0.5s; }
+    .antiques-grid > app-antique-card:nth-child(11) { animation-delay: 0.55s; }
+    .antiques-grid > app-antique-card:nth-child(12) { animation-delay: 0.6s; }
+
+    .filter-panel {
+      animation: fade-in 0.2s ease-out both;
+    }
+    .filter-panel-inner {
+      animation: scale-in 0.25s ease-out both;
+    }
+
+    @keyframes fade-slide-up {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fade-in {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes scale-in {
+      from { opacity: 0; transform: scale(0.95) translateY(-8px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
     .empty-state {
       text-align: center;
       padding: 4rem 1rem;
@@ -1207,6 +1263,17 @@ import { AuthService } from '../../core/auth.service';
     @media (max-width: 430px) {
       .antiques-grid {
         grid-template-columns: 1fr;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .collection-hero-inner > *,
+      .collection-hero-inner > .stats-row .stat-card,
+      .collection-panel,
+      .antiques-grid > app-antique-card,
+      .filter-panel,
+      .filter-panel-inner {
+        animation: none;
       }
     }
   `]

@@ -107,8 +107,15 @@ import { RouterLink } from '@angular/router';
       z-index: 1;
       padding: 4rem 1rem 3.4rem;
       text-align: center;
-      animation: content-rise 0.9s 0.15s ease-out both;
     }
+    .hero-content > * {
+      animation: content-rise 0.7s ease-out both;
+    }
+    .hero-content > .hero-overline { animation-delay: 0.1s; }
+    .hero-content > .ornament { animation-delay: 0.25s; }
+    .hero-content > .hero-title { animation-delay: 0.4s; }
+    .hero-content > .hero-subtitle { animation-delay: 0.6s; }
+    .hero-content > .hero-cta { animation-delay: 0.8s; }
     .hero-overline,
     .heritage-overline {
       margin: 0;
@@ -211,6 +218,12 @@ import { RouterLink } from '@angular/router';
       position: relative;
       z-index: 1;
     }
+    .heritage-inner > * {
+      animation: content-rise 0.8s 0.2s ease-out both;
+    }
+    .heritage-inner > .heritage-copy {
+      animation-delay: 0.4s;
+    }
     .heritage-media {
       height: clamp(390px, 47vw, 590px);
       overflow: hidden;
@@ -306,7 +319,7 @@ import { RouterLink } from '@angular/router';
       to { opacity: 1; transform: scale(1.015); }
     }
     @keyframes content-rise {
-      from { opacity: 0; transform: translateY(14px); }
+      from { opacity: 0; transform: translateY(18px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
@@ -369,7 +382,8 @@ import { RouterLink } from '@angular/router';
 
     @media (prefers-reduced-motion: reduce) {
       .hero-video,
-      .hero-content {
+      .hero-content > *,
+      .heritage-inner > * {
         animation: none;
       }
       .hero-cta,
