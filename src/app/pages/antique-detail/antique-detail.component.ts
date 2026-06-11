@@ -61,95 +61,101 @@ import { Antique } from '../../models';
                 </a>
               }
 
-              <h1 class="antique-title">{{ antique()!.name }}</h1>
-              @if (antique()!.year_era) {
-                <p class="antique-era">{{ antique()!.year_era }}</p>
-              }
-
-              <div class="title-rule" aria-hidden="true">⌘</div>
-
-              @if (auth.isAdmin && antique()!.price > 0) {
-                <p class="antique-price">{{ antique()!.price | currency:'EUR':'symbol':'1.0-0' }}</p>
-              }
-
-              <div class="antique-badge-row">
-                <span class="antique-badge">{{ antique()!.type === 'antiguedad' ? 'Antigüedades' : 'Papelería' }}</span>
-                @if (antique()!.subcategory) {
-                  <span class="antique-badge">{{ subLabel(antique()!.subcategory) }}</span>
+              <div class="info-head">
+                <div class="info-head-left">
+                  <h1 class="antique-title">{{ antique()!.name }}</h1>
+                  @if (antique()!.year_era) {
+                    <p class="antique-era">{{ antique()!.year_era }}</p>
+                  }
+                  <div class="antique-badge-row">
+                    <span class="antique-badge">{{ antique()!.type === 'antiguedad' ? 'Antigüedades' : 'Papelería' }}</span>
+                    @if (antique()!.subcategory) {
+                      <span class="antique-badge">{{ subLabel(antique()!.subcategory) }}</span>
+                    }
+                    @if (antique()!.detail) {
+                      <span class="antique-badge">{{ detLabel(antique()!.detail) }}</span>
+                    }
+                    <span class="antique-badge">{{ antique()!.condition }}</span>
+                  </div>
+                </div>
+                @if (auth.isAdmin && antique()!.price > 0) {
+                  <p class="antique-price">{{ antique()!.price | currency:'EUR':'symbol':'1.0-0' }}</p>
                 }
-                @if (antique()!.detail) {
-                  <span class="antique-badge">{{ detLabel(antique()!.detail) }}</span>
-                }
-                <span class="antique-badge">{{ antique()!.condition }}</span>
               </div>
 
-              @if (antique()!.description) {
-                <div class="antique-section">
-                  <h3 class="section-label">Descripción</h3>
-                  <p class="antique-desc">{{ antique()!.description }}</p>
-                </div>
-              }
-
-              <div class="antique-specs">
-                @if (antique()!.type === 'antiguedad') {
-                  @if (antique()!.country) {
-                    <div class="spec-item">
-                      <span class="spec-label"><span class="spec-icon">◎</span> País</span>
-                      <span class="spec-value">{{ antique()!.country }}</span>
+              <div class="info-card">
+                <div class="info-card-body">
+                  @if (antique()!.description) {
+                    <div class="info-desc-col">
+                      <h3 class="section-label">Descripción</h3>
+                      <p class="antique-desc">{{ antique()!.description }}</p>
                     </div>
                   }
-                  @if (antique()!.region) {
-                    <div class="spec-item">
-                      <span class="spec-label"><span class="spec-icon">◇</span> Región</span>
-                      <span class="spec-value">{{ antique()!.region }}</span>
+                  <div class="info-specs-col">
+                    <h3 class="section-label">Detalles</h3>
+                    <div class="specs-grid">
+                      @if (antique()!.type === 'antiguedad') {
+                        @if (antique()!.country) {
+                          <div class="spec-item">
+                            <span class="spec-label"><span class="spec-icon">◎</span> País</span>
+                            <span class="spec-value">{{ antique()!.country }}</span>
+                          </div>
+                        }
+                        @if (antique()!.region) {
+                          <div class="spec-item">
+                            <span class="spec-label"><span class="spec-icon">◇</span> Región</span>
+                            <span class="spec-value">{{ antique()!.region }}</span>
+                          </div>
+                        }
+                        @if (antique()!.element) {
+                          <div class="spec-item">
+                            <span class="spec-label"><span class="spec-icon">✦</span> Elemento</span>
+                            <span class="spec-value">{{ antique()!.element }}</span>
+                          </div>
+                        }
+                      }
+                      @if (antique()!.type === 'papeleria') {
+                        @if (antique()!.paper_type) {
+                          <div class="spec-item">
+                            <span class="spec-label"><span class="spec-icon">◇</span> Tipo de papel</span>
+                            <span class="spec-value">{{ antique()!.paper_type }}</span>
+                          </div>
+                        }
+                        @if (antique()!.paper_format) {
+                          <div class="spec-item">
+                            <span class="spec-label"><span class="spec-icon">□</span> Formato</span>
+                            <span class="spec-value">{{ antique()!.paper_format }}</span>
+                          </div>
+                        }
+                        @if (antique()!.paper_weight) {
+                          <div class="spec-item">
+                            <span class="spec-label"><span class="spec-icon">≋</span> Gramaje</span>
+                            <span class="spec-value">{{ antique()!.paper_weight }} g/m²</span>
+                          </div>
+                        }
+                      }
+                      @if (antique()!.material) {
+                        <div class="spec-item">
+                          <span class="spec-label"><span class="spec-icon">◇</span> Material</span>
+                          <span class="spec-value">{{ antique()!.material }}</span>
+                        </div>
+                      }
+                      @if (antique()!.dimensions) {
+                        <div class="spec-item">
+                          <span class="spec-label"><span class="spec-icon">↗</span> Dimensiones</span>
+                          <span class="spec-value">{{ antique()!.dimensions }}</span>
+                        </div>
+                      }
+                      <div class="spec-item">
+                        <span class="spec-label"><span class="spec-icon">✓</span> Estado</span>
+                        <span class="spec-value">{{ antique()!.condition }}</span>
+                      </div>
+                      <div class="spec-item">
+                        <span class="spec-label"><span class="spec-icon">▦</span> Añadido</span>
+                        <span class="spec-value">{{ antique()!.created_at | date:'d MMM y' }}</span>
+                      </div>
                     </div>
-                  }
-                  @if (antique()!.element) {
-                    <div class="spec-item">
-                      <span class="spec-label"><span class="spec-icon">✦</span> Elemento</span>
-                      <span class="spec-value">{{ antique()!.element }}</span>
-                    </div>
-                  }
-                }
-                @if (antique()!.type === 'papeleria') {
-                  @if (antique()!.paper_type) {
-                    <div class="spec-item">
-                      <span class="spec-label"><span class="spec-icon">◇</span> Tipo de papel</span>
-                      <span class="spec-value">{{ antique()!.paper_type }}</span>
-                    </div>
-                  }
-                  @if (antique()!.paper_format) {
-                    <div class="spec-item">
-                      <span class="spec-label"><span class="spec-icon">□</span> Formato</span>
-                      <span class="spec-value">{{ antique()!.paper_format }}</span>
-                    </div>
-                  }
-                  @if (antique()!.paper_weight) {
-                    <div class="spec-item">
-                      <span class="spec-label"><span class="spec-icon">≋</span> Gramaje</span>
-                      <span class="spec-value">{{ antique()!.paper_weight }} g/m²</span>
-                    </div>
-                  }
-                }
-                @if (antique()!.material) {
-                  <div class="spec-item">
-                    <span class="spec-label"><span class="spec-icon">◇</span> Material</span>
-                    <span class="spec-value">{{ antique()!.material }}</span>
                   </div>
-                }
-                @if (antique()!.dimensions) {
-                  <div class="spec-item">
-                    <span class="spec-label"><span class="spec-icon">↗</span> Dimensiones</span>
-                    <span class="spec-value">{{ antique()!.dimensions }}</span>
-                  </div>
-                }
-                <div class="spec-item">
-                  <span class="spec-label"><span class="spec-icon">✓</span> Estado</span>
-                  <span class="spec-value">{{ antique()!.condition }}</span>
-                </div>
-                <div class="spec-item">
-                  <span class="spec-label"><span class="spec-icon">▦</span> Añadido</span>
-                  <span class="spec-value">{{ antique()!.created_at | date:'d MMM y' }}</span>
                 </div>
               </div>
 
@@ -237,7 +243,7 @@ import { Antique } from '../../models';
 
     .antique-layout {
       display: grid;
-      grid-template-columns: minmax(0, 1.18fr) minmax(360px, 0.82fr);
+      grid-template-columns: minmax(0, 1fr) minmax(460px, 1fr);
       gap: clamp(2rem, 4.2vw, 4.2rem);
       align-items: start;
     }
@@ -381,7 +387,8 @@ import { Antique } from '../../models';
     }
 
     .antique-info {
-      padding-top: 0.25rem;
+      display: flex;
+      flex-direction: column;
     }
 
     .catalog-tag {
@@ -398,114 +405,119 @@ import { Antique } from '../../models';
     }
 
     .antique-title {
-      margin: 0 0 0.42rem;
+      margin: 0;
       color: #fff8ed;
       font-family: 'Playfair Display', serif;
-      font-size: clamp(2.75rem, 4.6vw, 4.6rem);
+      font-size: clamp(2.2rem, 3.8vw, 3.4rem);
       font-weight: 700;
-      line-height: 0.98;
+      line-height: 1;
       text-shadow: 0 14px 36px rgba(0, 0, 0, 0.56);
     }
 
     .antique-era {
-      margin: 0;
+      margin: 0.3rem 0 0;
       color: #d8bf91;
-      font-size: 1.05rem;
-    }
-
-    .title-rule {
-      display: flex;
-      align-items: center;
-      gap: 0.85rem;
-      max-width: 320px;
-      margin: 1rem 0 1.4rem;
-      color: #c89b4b;
-      font-family: Georgia, serif;
       font-size: 1rem;
     }
 
-    .title-rule::before,
-    .title-rule::after {
-      content: '';
-      height: 1px;
-      flex: 1;
-      background: linear-gradient(90deg, rgba(200, 155, 75, 0.9), transparent);
-    }
-
-    .title-rule::before {
-      background: linear-gradient(90deg, transparent, rgba(200, 155, 75, 0.9));
-    }
-
     .antique-price {
-      margin: 0 0 1.35rem;
+      margin: 0;
       color: #d4ac62;
       font-family: 'Playfair Display', serif;
-      font-size: clamp(2.3rem, 4vw, 3.25rem);
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
       font-weight: 700;
       line-height: 1;
+      white-space: nowrap;
+      align-self: center;
+    }
+
+    .info-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .info-head-left {
+      flex: 1;
+      min-width: 0;
     }
 
     .antique-badge-row {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.65rem;
-      margin-bottom: 1.8rem;
+      gap: 0.5rem;
+      margin-top: 0.65rem;
     }
 
     .antique-badge {
       display: inline-flex;
       align-items: center;
-      min-height: 34px;
-      padding: 0 1.05rem;
+      min-height: 30px;
+      padding: 0 0.85rem;
       border: 1px solid rgba(184, 149, 90, 0.62);
       border-radius: 999px;
       color: #e2c27f;
       background: rgba(7, 7, 6, 0.48);
-      font-size: 0.86rem;
+      font-size: 0.82rem;
       white-space: nowrap;
     }
 
-    .antique-section {
-      margin-bottom: 1.65rem;
-    }
-
     .section-label {
-      margin: 0 0 0.65rem;
+      margin: 0 0 0.55rem;
       color: #d4ac62;
       font-family: 'Playfair Display', serif;
-      font-size: 1.08rem;
+      font-size: 0.95rem;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.08em;
+    }
+
+    .info-card {
+      border: 1px solid rgba(184, 149, 90, 0.35);
+      border-radius: 8px;
+      background:
+        linear-gradient(180deg, rgba(18, 18, 17, 0.88), rgba(9, 9, 8, 0.8)),
+        radial-gradient(circle at 0% 0%, rgba(184, 149, 90, 0.06), transparent 16rem);
+      box-shadow: 0 18px 48px rgba(0, 0, 0, 0.28);
+    }
+
+    .info-card-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      padding: 1.15rem 1.25rem;
+    }
+
+    .info-desc-col {
+      min-width: 0;
     }
 
     .antique-desc {
-      max-width: 620px;
       margin: 0;
       color: rgba(247, 239, 227, 0.82);
-      font-size: 1rem;
-      line-height: 1.85;
+      font-size: 0.94rem;
+      line-height: 1.75;
     }
 
-    .antique-specs {
+    .info-specs-col {
+      min-width: 0;
+    }
+
+    .specs-grid {
       display: grid;
-      margin-bottom: 1.55rem;
-      padding: 0.95rem 1.25rem;
-      border: 1px solid rgba(184, 149, 90, 0.42);
-      border-radius: 8px;
-      background:
-        linear-gradient(180deg, rgba(18, 18, 17, 0.86), rgba(9, 9, 8, 0.78)),
-        radial-gradient(circle at 0% 0%, rgba(184, 149, 90, 0.08), transparent 16rem);
-      box-shadow: 0 18px 48px rgba(0, 0, 0, 0.24);
+      gap: 0.15rem;
     }
 
     .spec-item {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 1.25rem;
-      min-height: 42px;
-      border-bottom: 1px solid rgba(184, 149, 90, 0.16);
+      gap: 0.75rem;
+      min-height: 32px;
+      padding: 0.2rem 0;
+      border-bottom: 1px solid rgba(184, 149, 90, 0.12);
     }
 
     .spec-item:last-child {
@@ -515,23 +527,26 @@ import { Antique } from '../../models';
     .spec-label {
       display: inline-flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.45rem;
       color: #d8bf91;
       font-weight: 500;
+      font-size: 0.88rem;
+      white-space: nowrap;
     }
 
     .spec-icon {
-      width: 1.35rem;
+      width: 1.1rem;
       color: #d4ac62;
       text-align: center;
-      font-size: 1.05rem;
+      font-size: 0.9rem;
     }
 
     .spec-value {
       color: #fff8ed;
-      font-weight: 500;
+      font-weight: 400;
       text-align: right;
       overflow-wrap: anywhere;
+      font-size: 0.88rem;
     }
 
     .admin-actions {
@@ -643,12 +658,19 @@ import { Antique } from '../../models';
         grid-template-columns: 1fr;
       }
 
-      .antique-info {
-        padding-top: 0;
-      }
-
       .gallery-main {
         min-height: 390px;
+      }
+    }
+
+    @media (max-width: 820px) {
+      .info-card-body {
+        grid-template-columns: 1fr;
+      }
+
+      .info-desc-col {
+        border-bottom: 1px solid rgba(184, 149, 90, 0.18);
+        padding-bottom: 0.85rem;
       }
     }
 
@@ -676,8 +698,13 @@ import { Antique } from '../../models';
         height: 66px;
       }
 
+      .info-head {
+        flex-direction: column;
+        gap: 0.65rem;
+      }
+
       .antique-title {
-        font-size: clamp(2.35rem, 13vw, 3.4rem);
+        font-size: clamp(2rem, 11vw, 2.8rem);
       }
 
       .antique-badge-row {
@@ -685,14 +712,14 @@ import { Antique } from '../../models';
       }
 
       .antique-badge {
-        min-height: 32px;
-        padding: 0 0.8rem;
+        min-height: 30px;
+        padding: 0 0.7rem;
       }
 
       .spec-item {
         align-items: flex-start;
-        gap: 0.9rem;
-        padding: 0.7rem 0;
+        gap: 0.7rem;
+        padding: 0.35rem 0;
         min-height: auto;
       }
 
