@@ -1027,50 +1027,81 @@ import { AuthService } from '../../core/auth.service';
 
     .toolbar {
       display: grid;
-      grid-template-columns: minmax(220px, 1.15fr) minmax(0, 3fr) auto;
+      grid-template-columns: minmax(200px, 1fr) minmax(0, 2.4fr) auto;
       gap: 0;
       align-items: stretch;
-      border-top: 1px solid rgba(184, 149, 90, 0.28);
-      border-bottom: 1px solid rgba(184, 149, 90, 0.28);
+      border: 1px solid rgba(184, 149, 90, 0.2);
+      border-radius: 10px;
+      background: rgba(8, 8, 7, 0.6);
+      backdrop-filter: blur(4px);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
     }
 
     .search-bar {
-      height: 4rem;
+      height: 3.6rem;
       min-width: 0;
       max-width: none;
-      padding: 0 0.95rem;
-      border-top: 0;
-      border-bottom: 0;
-      border-left: 0;
+      padding: 0 1.1rem;
+      border: 0;
+      border-right: 1px solid rgba(184, 149, 90, 0.15);
+      border-radius: 10px 0 0 10px;
     }
 
     .filter-chips {
+      display: flex;
       gap: 0;
+      align-items: center;
     }
 
     .chip {
-      min-height: 4rem;
-      padding: 0 0.8rem;
+      min-height: 3.6rem;
+      padding: 0 1.25rem;
       flex: 1 1 0;
-      border-top: 0;
-      border-bottom: 0;
-      border-right: 0;
+      border: 0;
+      border-right: 1px solid rgba(184, 149, 90, 0.12);
       border-radius: 0;
       font-family: inherit;
-      font-size: 0.78rem;
+      font-size: 0.85rem;
+      gap: 0.5rem;
+      transition: background 0.2s, color 0.2s;
+      min-width: 0;
+    }
+
+    .chip:hover {
+      background: rgba(184, 149, 90, 0.08);
+    }
+
+    .chip-active {
+      background: rgba(184, 149, 90, 0.12);
+      color: #e8cf9a;
+      box-shadow: inset 0 -2px 0 #d4ac62;
+    }
+
+    .chip:last-of-type {
+      border-right: 0;
     }
 
     .toolbar-actions {
+      display: flex;
       gap: 0;
-      border-left: 1px solid rgba(184, 149, 90, 0.38);
+      align-items: center;
+      border-left: 1px solid rgba(184, 149, 90, 0.15);
     }
 
     .sort-select {
-      height: 4rem;
-      border-top: 0;
-      border-right: 0;
-      border-bottom: 0;
-      border-radius: 0;
+      height: 3.6rem;
+      min-width: 200px;
+      padding: 0 1rem;
+      border: 0;
+      border-radius: 0 10px 10px 0;
+      font-size: 0.85rem;
+      appearance: none;
+      background:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6' fill='none' stroke='%23d4ac62' stroke-width='1.5'/%3E%3C/svg%3E")
+        calc(100% - 0.85rem) center / 10px 6px no-repeat,
+        rgba(4, 4, 4, 0.72);
+      cursor: pointer;
+      padding-right: 2rem;
     }
 
     .antiques-grid {
@@ -1082,12 +1113,27 @@ import { AuthService } from '../../core/auth.service';
     @media (max-width: 1280px) {
       .toolbar {
         grid-template-columns: 1fr auto;
+        border-radius: 8px;
+      }
+
+      .search-bar {
+        border-radius: 8px 0 0 0;
+      }
+
+      .sort-select {
+        border-radius: 0 8px 0 0;
       }
 
       .filter-chips {
         grid-column: 1 / -1;
         grid-row: 2;
-        border-top: 1px solid rgba(184, 149, 90, 0.28);
+        border-top: 1px solid rgba(184, 149, 90, 0.2);
+        border-radius: 0 0 8px 8px;
+        overflow: hidden;
+      }
+
+      .chip:last-of-type {
+        border-right: 0;
       }
 
       .antiques-grid {
