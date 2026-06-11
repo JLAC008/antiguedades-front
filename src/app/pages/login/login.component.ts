@@ -279,14 +279,57 @@ import { AuthService } from '../../core/auth.service';
     }
     @media (max-width: 720px) {
       .auth-page {
-        align-items: center;
-        padding: 5.2rem 1rem 1rem;
+        padding: 0;
+        align-items: stretch;
+        background: linear-gradient(180deg, #050505 0%, #0b0b0a 100%);
+      }
+      .auth-page::before {
+        display: none;
       }
       .auth-card {
-        padding: 2rem 1.35rem;
+        width: 100%;
+        max-width: none;
+        height: 100dvh;
+        border: none;
+        border-radius: 0;
+        padding: 3.6rem 1.35rem 1rem;
+        backdrop-filter: none;
+        box-shadow: none;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+      }
+      .auth-brand {
+        margin-bottom: 0.4rem;
+      }
+      .auth-logo {
+        width: 40px;
+        height: 40px;
+        font-size: 1.4rem;
       }
       .auth-brand-name {
+        font-size: 1.6rem;
         letter-spacing: 0.14em;
+      }
+      .auth-brand-subtitle {
+        font-size: 0.82rem;
+      }
+      .auth-flourish {
+        display: none;
+      }
+      .auth-form {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .auth-quote {
+        margin: 1rem 0 0;
+        font-size: 0.85rem;
+      }
+      .public-nav {
+        top: 0.6rem;
+        left: 0.6rem;
       }
     }
   `]
