@@ -392,9 +392,9 @@ import { AuthService } from '../../core/auth.service';
     }
 
     .page-content {
-      max-width: 1320px;
+      max-width: none;
       margin: -0.1rem auto 0;
-      padding: 0 1.5rem 4rem;
+      padding: 0 0 4rem;
     }
 
     .collection-panel {
@@ -833,7 +833,7 @@ import { AuthService } from '../../core/auth.service';
       }
 
       .page-content {
-        padding: 0 1rem 3rem;
+        padding: 0 0 3rem;
       }
 
       .collection-panel {
@@ -964,9 +964,9 @@ import { AuthService } from '../../core/auth.service';
     }
 
     .page-content {
-      max-width: 1440px;
+      max-width: none;
       margin-top: 0;
-      padding: 0 1.75rem 4rem;
+      padding: 0 0 4rem;
     }
 
     .collection-panel {
