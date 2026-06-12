@@ -144,8 +144,15 @@ import { Antique } from '../../models';
       box-shadow: 0 28px 62px rgba(0, 0, 0, 0.44);
     }
     :host-context(.page-collection) .antique-card-img {
-      aspect-ratio: 1.42;
-      background: #090909;
+      aspect-ratio: 1;
+      background: #11100f;
+    }
+    :host-context(.page-collection) .antique-card-img img {
+      object-fit: fill;
+      object-position: center;
+    }
+    :host-context(.page-collection) .antique-card:hover .antique-card-img img {
+      transform: none;
     }
     :host-context(.page-collection) .antique-card-img::after {
       content: '';
@@ -154,6 +161,7 @@ import { Antique } from '../../models';
       height: 42%;
       background: linear-gradient(180deg, transparent, rgba(8, 8, 8, 0.82));
       pointer-events: none;
+      z-index: 2;
     }
     :host-context(.page-collection) .antique-card-placeholder {
       background:
@@ -260,7 +268,7 @@ import { Antique } from '../../models';
     }
 
     :host-context(.page-collection) .antique-card-img {
-      aspect-ratio: 0.98;
+      aspect-ratio: 1;
     }
 
     :host-context(.page-collection) .antique-card-img::after {

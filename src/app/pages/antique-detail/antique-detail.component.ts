@@ -324,7 +324,7 @@ import { Antique } from '../../models';
     .gallery-main-img {
       width: 100%;
       height: 100%;
-      object-fit: scale-down;
+      object-fit: fill;
       display: block;
     }
 
@@ -923,7 +923,7 @@ import { Antique } from '../../models';
     }
 
     .gallery-main:hover .gallery-main-img {
-      transform: scale(1.04);
+      transform: none;
     }
 
     .gallery-arrow {
