@@ -350,7 +350,7 @@ export class LoginComponent {
       await this.auth.signIn(this.email, this.password);
       this.router.navigate(['/']);
     } catch (err: any) {
-      this.error.set(err?.message ?? 'Error al iniciar sesión. Verifica tus credenciales.');
+      this.error.set(err?.error?.error ?? err?.message ?? 'Error al iniciar sesión. Verifica tus credenciales.');
     } finally {
       this.loading.set(false);
     }

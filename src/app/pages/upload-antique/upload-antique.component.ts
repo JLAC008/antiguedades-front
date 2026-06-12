@@ -1628,7 +1628,7 @@ export class UploadAntiqueComponent implements OnInit {
         setTimeout(() => this.router.navigate(['/pieza', created.id]), 1200);
       }
     } catch (err: any) {
-      this.error.set(err?.message ?? 'Error al guardar la pieza.');
+      this.error.set(err?.error?.error ?? err?.message ?? 'Error al guardar la pieza.');
     } finally {
       this.saving.set(false);
     }

@@ -1010,7 +1010,7 @@ export class ManageUsersComponent {
       this.formRole = 'user';
       await this.loadUsers();
     } catch (err: any) {
-      this.error.set(err?.error ?? err?.message ?? 'Error al crear usuario.');
+      this.error.set(err?.error?.error ?? err?.message ?? 'Error al crear usuario.');
     } finally {
       this.saving.set(false);
     }
@@ -1038,7 +1038,7 @@ export class ManageUsersComponent {
       this.cancelEdit();
       await this.loadUsers();
     } catch (err: any) {
-      this.error.set(err?.error ?? err?.message ?? 'Error al actualizar usuario.');
+      this.error.set(err?.error?.error ?? err?.message ?? 'Error al actualizar usuario.');
     } finally {
       this.saving.set(false);
     }
@@ -1061,7 +1061,7 @@ export class ManageUsersComponent {
       await this.auth.deleteUser(user.id);
       await this.loadUsers();
     } catch (err: any) {
-      this.error.set(err?.error ?? err?.message ?? 'Error al eliminar usuario.');
+      this.error.set(err?.error?.error ?? err?.message ?? 'Error al eliminar usuario.');
     }
   }
 }
