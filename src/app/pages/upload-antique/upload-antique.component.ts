@@ -788,7 +788,7 @@ import { Antique, AntiqueType } from '../../models';
       overflow: hidden;
       border: 1px solid var(--color-border);
     }
-    .image-preview-item img { width: 100%; height: 100%; object-fit: cover; }
+    .image-preview-item img { width: 100%; height: 100%; object-fit: scale-down; }
     .image-preview-item.main-image {
       border-color: var(--color-accent);
       box-shadow: 0 0 0 2px var(--color-accent), 0 0 16px rgba(200, 155, 75, 0.34);
@@ -1523,6 +1523,12 @@ export class UploadAntiqueComponent implements OnInit {
         century: this.form.century,
         year_era: this.form.year_era,
         price: this.form.price,
+        condition: 'Bueno',
+        material: '',
+        dimensions: '',
+        paper_type: '',
+        paper_format: '',
+        paper_weight: 0,
         images: this.existingImages()
       };
       if (this.editMode) {

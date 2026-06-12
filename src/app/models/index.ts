@@ -52,8 +52,21 @@ export type UserRole = 'admin' | 'user';
 export interface AppUser {
   id: string;
   email: string;
-  password: string;
+  password?: string;
   role: UserRole;
   name: string;
   createdAt: string;
+}
+
+export interface LoginResponse {
+  token: string;
+  email: string;
+  username: string;
+  role: string;
+  user_id: string;
+}
+
+export interface CountsResponse {
+  antiguedad: number;
+  papeleria: number;
 }

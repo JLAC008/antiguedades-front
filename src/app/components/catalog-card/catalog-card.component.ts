@@ -49,7 +49,7 @@ import { Catalog } from '../../models';
     .catalog-card-img img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: scale-down;
       transition: transform 0.4s;
     }
     .catalog-card:hover .catalog-card-img img { transform: scale(1.04); }

@@ -64,7 +64,7 @@ import { Antique } from '../../models';
     .antique-card-img img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: scale-down;
       transition: transform 0.4s;
     }
     .antique-card:hover .antique-card-img img { transform: scale(1.05); }

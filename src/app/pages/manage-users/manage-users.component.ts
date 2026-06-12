@@ -140,14 +140,7 @@ import { AppUser, UserRole } from '../../models';
                         <strong>{{ user.name }}</strong>
                         <span>{{ user.role === 'admin' ? 'Administrador' : 'Usuario' }}</span>
                         <div class="user-pw-row">
-                          <span class="user-pw" [class.blurred]="!revealed.has(user.id)">{{ user.password }}</span>
-                          <button class="btn-eye" (click)="togglePw(user.id)" [attr.aria-label]="revealed.has(user.id) ? 'Ocultar contraseña' : 'Mostrar contraseña'">
-                            @if (revealed.has(user.id)) {
-                              <svg viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><path d="M1 1l22 22"/></svg>
-                            } @else {
-                              <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                            }
-                          </button>
+                          <span class="user-pw-static">••••••••</span>
                         </div>
                       </div>
                     </div>
@@ -655,15 +648,11 @@ import { AppUser, UserRole } from '../../models';
       margin-top: 0.08rem;
     }
 
-    .user-pw {
-      color: rgba(247,239,227,0.5);
+    .user-pw-static {
+      color: rgba(247,239,227,0.35);
       font-family: 'Courier New', monospace;
       font-size: 0.76rem;
-      transition: filter 0.2s;
-    }
-
-    .user-pw.blurred {
-      filter: blur(4px);
+      letter-spacing: 0.12em;
     }
 
     .btn-eye {
@@ -931,7 +920,6 @@ export class ManageUsersComponent {
   success = signal('');
   editingUser = signal<AppUser | null>(null);
   showFormPassword = signal(false);
-  revealed = new Set<string>();
 
   deleteTarget = signal<AppUser | null>(null);
 
@@ -958,7 +946,7 @@ export class ManageUsersComponent {
   collectorCount = computed(() => this.users().filter(user => user.role === 'user').length);
 
   constructor() {
-    this.loadUsers();
+    this.loadUsers().then();
   }
 
   lastRegistrationLabel(): string {
@@ -975,14 +963,6 @@ export class ManageUsersComponent {
   initials(name: string): string {
     const parts = name.trim().split(/\s+/).filter(Boolean);
     return (parts[0]?.[0] ?? 'U') + (parts[1]?.[0] ?? '');
-  }
-
-  togglePw(id: string) {
-    if (this.revealed.has(id)) {
-      this.revealed.delete(id);
-    } else {
-      this.revealed.add(id);
-    }
   }
 
   editUser(user: AppUser) {
@@ -1005,8 +985,12 @@ export class ManageUsersComponent {
     this.success.set('');
   }
 
-  private loadUsers() {
-    this.users.set(this.auth.getUsers());
+  private async loadUsers() {
+    try {
+      this.users.set(await this.auth.listUsers());
+    } catch {
+      this.error.set('Error al cargar usuarios.');
+    }
   }
 
   async createUser() {
@@ -1024,9 +1008,9 @@ export class ManageUsersComponent {
       this.formEmail = '';
       this.formPassword = '';
       this.formRole = 'user';
-      this.loadUsers();
+      await this.loadUsers();
     } catch (err: any) {
-      this.error.set(err?.message ?? 'Error al crear usuario.');
+      this.error.set(err?.error ?? err?.message ?? 'Error al crear usuario.');
     } finally {
       this.saving.set(false);
     }
@@ -1052,9 +1036,9 @@ export class ManageUsersComponent {
       await this.auth.updateUser(user.id, data);
       this.success.set('Usuario actualizado correctamente.');
       this.cancelEdit();
-      this.loadUsers();
+      await this.loadUsers();
     } catch (err: any) {
-      this.error.set(err?.message ?? 'Error al actualizar usuario.');
+      this.error.set(err?.error ?? err?.message ?? 'Error al actualizar usuario.');
     } finally {
       this.saving.set(false);
     }
@@ -1075,9 +1059,9 @@ export class ManageUsersComponent {
     this.deleteTarget.set(null);
     try {
       await this.auth.deleteUser(user.id);
-      this.loadUsers();
+      await this.loadUsers();
     } catch (err: any) {
-      this.error.set(err?.message ?? 'Error al eliminar usuario.');
+      this.error.set(err?.error ?? err?.message ?? 'Error al eliminar usuario.');
     }
   }
 }

@@ -1,19 +1,26 @@
 import { Injectable, signal } from '@angular/core';
-import { AppUser } from '../models';
-
-const ADMIN_EMAIL = 'admin@antiguedades.com';
-const ADMIN_PASSWORD = 'admin123';
-
-let nextUserId = 2;
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
+import { AppUser, LoginResponse } from '../models';
+import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   currentUser = signal<AppUser | null>(null);
   loading = signal(false);
 
-  private users: AppUser[] = [
-    { id: 'user-1', email: ADMIN_EMAIL, password: ADMIN_PASSWORD, role: 'admin', name: 'Admin', createdAt: new Date().toISOString() },
-  ];
+  constructor(private http: HttpClient) {
+    const stored = localStorage.getItem('auth_user');
+    const token = localStorage.getItem('auth_token');
+    if (stored && token) {
+      try {
+        this.currentUser.set(JSON.parse(stored));
+      } catch {
+        localStorage.removeItem('auth_user');
+        localStorage.removeItem('auth_token');
+      }
+    }
+  }
 
   get isLoggedIn(): boolean {
     return this.currentUser() !== null;
@@ -24,45 +31,51 @@ export class AuthService {
   }
 
   getUsers(): AppUser[] {
-    return this.users.filter(u => u.id !== 'user-1');
+    return [];
   }
 
   async createUser(email: string, password: string, name: string, role: AppUser['role'] = 'user') {
-    if (!this.isAdmin) throw new Error('Solo el administrador puede crear usuarios.');
-    const exists = this.users.find(u => u.email.toLowerCase() === email.toLowerCase());
-    if (exists) throw new Error('Ya existe un usuario con ese correo.');
-    const newUser: AppUser = {
-      id: `user-${nextUserId++}`,
-      email: email.toLowerCase().trim(),
-      password,
-      role,
-      name: name.trim(),
-      createdAt: new Date().toISOString(),
-    };
-    this.users.push(newUser);
-    return newUser;
+    const res = await firstValueFrom(
+      this.http.post<AppUser>(`${environment.apiUrl}/api/admin/users`, {
+        name, email, password, role
+      })
+    );
+    return res;
   }
 
   async updateUser(id: string, data: { email?: string; password?: string; name?: string; role?: AppUser['role'] }) {
-    if (!this.isAdmin) throw new Error('Solo el administrador puede editar usuarios.');
-    const idx = this.users.findIndex(u => u.id === id);
-    if (idx === -1) throw new Error('Usuario no encontrado.');
-    const dup = this.users.find((u, i) => i !== idx && u.email.toLowerCase() === (data.email ?? this.users[idx].email).toLowerCase());
-    if (dup) throw new Error('Ya existe otro usuario con ese correo.');
-    this.users[idx] = { ...this.users[idx], ...data };
-    return this.users[idx];
+    const res = await firstValueFrom(
+      this.http.put<AppUser>(`${environment.apiUrl}/api/admin/users/${id}`, data)
+    );
+    return res;
   }
 
   async deleteUser(id: string) {
-    if (!this.isAdmin) throw new Error('Solo el administrador puede eliminar usuarios.');
-    this.users = this.users.filter(u => u.id !== id);
+    await firstValueFrom(
+      this.http.delete(`${environment.apiUrl}/api/admin/users/${id}`)
+    );
+  }
+
+  async listUsers(): Promise<AppUser[]> {
+    const res = await firstValueFrom(
+      this.http.get<AppUser[]>(`${environment.apiUrl}/api/admin/users`)
+    );
+    return res;
   }
 
   async signIn(email: string, password: string) {
-    const user = this.users.find(
-      u => u.email.toLowerCase() === email.trim().toLowerCase() && u.password === password
+    const res = await firstValueFrom(
+      this.http.post<LoginResponse>(`${environment.apiUrl}/api/auth/login`, { email, password })
     );
-    if (!user) throw new Error('Correo o contraseña incorrectos.');
+    const user: AppUser = {
+      id: res.user_id,
+      email: res.email,
+      role: res.role as AppUser['role'],
+      name: res.username,
+      createdAt: new Date().toISOString(),
+    };
+    localStorage.setItem('auth_token', res.token);
+    localStorage.setItem('auth_user', JSON.stringify(user));
     this.currentUser.set(user);
     return { user };
   }
@@ -72,6 +85,8 @@ export class AuthService {
   }
 
   async signOut() {
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('auth_user');
     this.currentUser.set(null);
   }
 }
