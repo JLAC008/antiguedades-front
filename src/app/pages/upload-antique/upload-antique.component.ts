@@ -135,7 +135,7 @@ import { Antique, AntiqueType } from '../../models';
                         <div class="upload-zone-inner">
                           <span class="upload-icon">&#128247;</span>
                           <p class="upload-text">Arrastra imágenes o haz clic para seleccionar</p>
-                          <p class="upload-hint">JPG, PNG, WebP — máx. 10 MB por imagen</p>
+                          <p class="upload-hint">JPG, PNG, WebP — máx. 2 MB por imagen</p>
                         </div>
                       </label>
                     </div>
@@ -241,7 +241,7 @@ import { Antique, AntiqueType } from '../../models';
                         <div class="upload-zone-inner">
                           <span class="upload-icon">&#128247;</span>
                           <p class="upload-text">Arrastra imágenes o haz clic para seleccionar</p>
-                          <p class="upload-hint">JPG, PNG, WebP — máx. 10 MB por imagen</p>
+                          <p class="upload-hint">JPG, PNG, WebP — máx. 2 MB por imagen</p>
                         </div>
                       </label>
                     </div>
@@ -444,6 +444,25 @@ import { Antique, AntiqueType } from '../../models';
                   </button>
                 }
               </div>
+
+              @if (showSizeModal()) {
+                <div class="modal-overlay" (click)="showSizeModal.set(false)">
+                  <div class="modal" (click)="$event.stopPropagation()">
+                    <h3 class="modal-title">Fotos no válidas</h3>
+                    <p class="modal-text">
+                      Las siguientes imágenes superan el tamaño máximo de 2 MB y no se han subido:
+                    </p>
+                    <ul class="modal-text file-list">
+                      @for (f of sizeModalFiles(); track f.name) {
+                        <li>{{ f.name }} — {{ (f.size / (1024 * 1024)).toFixed(1) }} MB</li>
+                      }
+                    </ul>
+                    <div class="modal-actions">
+                      <button class="btn-cancel" (click)="showSizeModal.set(false)">Entendido</button>
+                    </div>
+                  </div>
+                </div>
+              }
             </form>
           </div>
         </div>
@@ -1121,6 +1140,65 @@ import { Antique, AntiqueType } from '../../models';
         text-align: center;
       }
     }
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 1rem;
+    }
+    .modal {
+      background: #1c1b1a;
+      border: 1px solid rgba(184,149,90,0.35);
+      border-radius: 12px;
+      padding: 2rem;
+      max-width: 420px;
+      width: 100%;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+      color: #f0e8db;
+    }
+    .modal-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin: 0 0 0.75rem;
+      color: #f0e8db;
+    }
+    .modal-text {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin: 0 0 1.5rem;
+      color: rgba(240,232,219,0.8);
+    }
+    .modal-text.file-list {
+      margin-bottom: 1.5rem;
+      padding-left: 1.25rem;
+    }
+    .modal-text.file-list li {
+      margin-bottom: 0.35rem;
+    }
+    .modal-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+    .modal-actions .btn-cancel {
+      flex: 1;
+      border: 1px solid rgba(184,149,90,0.35);
+      background: transparent;
+      color: #f0e8db;
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 0.8rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .modal-actions .btn-cancel:hover {
+      background: rgba(184,149,90,0.1);
+    }
     @media (max-width: 420px) {
       .page-header {
         padding-top: 1.9rem;
@@ -1135,6 +1213,8 @@ export class UploadAntiqueComponent implements OnInit {
   uploadProgress = signal(0);
   error = signal('');
   success = signal('');
+  showSizeModal = signal(false);
+  sizeModalFiles = signal<{name: string, size: number}[]>([]);
   editMode = false;
   editId = '';
   category = signal<AntiqueType>('antiguedad');
@@ -1470,6 +1550,13 @@ export class UploadAntiqueComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     if (!input.files?.length) return;
     const files = Array.from(input.files);
+    const oversized = files.filter(f => f.size > 2 * 1024 * 1024);
+    if (oversized.length > 0) {
+      this.sizeModalFiles.set(oversized.map(f => ({ name: f.name, size: f.size })));
+      this.showSizeModal.set(true);
+      input.value = '';
+      return;
+    }
     this.uploadingImages.set(true);
     this.uploadProgress.set(0);
     const urls: string[] = [];
