@@ -237,6 +237,14 @@ import { AuthService } from '../../core/auth.service';
     .form-input::placeholder {
       color: rgba(255,255,255,0.5);
     }
+    .form-input:-webkit-autofill,
+    .form-input:-webkit-autofill:hover,
+    .form-input:-webkit-autofill:focus,
+    .form-input:-webkit-autofill:active {
+      transition: background-color 9999s ease-in-out 0s;
+      -webkit-text-fill-color: rgba(255,255,255,0.92) !important;
+      caret-color: rgba(255,255,255,0.92);
+    }
     .btn-submit,
     .btn-quick {
       width: 100%;
@@ -362,8 +370,8 @@ export class LoginComponent {
     try {
       await this.auth.signIn('admin@antiguedades.com', 'admin123');
       this.router.navigate(['/']);
-    } catch {
-      this.error.set('Error al acceder.');
+    } catch (err: any) {
+      this.error.set(err?.error?.error ?? 'Error al acceder.');
     } finally {
       this.loading.set(false);
     }

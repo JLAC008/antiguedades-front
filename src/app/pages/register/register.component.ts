@@ -168,6 +168,14 @@ import { RouterLink } from '@angular/router';
       color: var(--color-text-muted);
       opacity: 0.6;
     }
+    .form-input:-webkit-autofill,
+    .form-input:-webkit-autofill:hover,
+    .form-input:-webkit-autofill:focus,
+    .form-input:-webkit-autofill:active {
+      transition: background-color 9999s ease-in-out 0s;
+      -webkit-text-fill-color: var(--color-text) !important;
+      caret-color: var(--color-text);
+    }
     .btn-submit {
       background: var(--color-primary);
       color: white;

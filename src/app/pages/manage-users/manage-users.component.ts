@@ -400,6 +400,15 @@ import { AppUser, UserRole } from '../../models';
       color: rgba(247,239,227,0.42);
     }
 
+    .form-input:-webkit-autofill,
+    .form-input:-webkit-autofill:hover,
+    .form-input:-webkit-autofill:focus,
+    .form-input:-webkit-autofill:active {
+      transition: background-color 9999s ease-in-out 0s;
+      -webkit-text-fill-color: #fff8ed !important;
+      caret-color: #fff8ed;
+    }
+
     .form-input:focus,
     .search-box:focus-within,
     .role-filter:focus {

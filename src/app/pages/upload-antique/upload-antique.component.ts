@@ -761,6 +761,15 @@ import { Antique, AntiqueType } from '../../models';
       transition: border-color 0.2s, box-shadow 0.2s;
       font-family: inherit;
     }
+    .form-input:-webkit-autofill,
+    .form-input:-webkit-autofill:hover,
+    .form-input:-webkit-autofill:focus,
+    .form-input:-webkit-autofill:active {
+      transition: background-color 9999s ease-in-out 0s;
+      -webkit-text-fill-color: var(--color-text) !important;
+      caret-color: var(--color-text);
+    }
+
     .form-input:focus, .form-select:focus, .form-textarea:focus {
       outline: none;
       border-color: var(--color-accent);
@@ -1006,6 +1015,14 @@ import { Antique, AntiqueType } from '../../models';
     .upload-form-content .form-input::placeholder,
     .upload-form-content .form-textarea::placeholder {
       color: rgba(247,239,227,0.38);
+    }
+    .upload-form-content .form-input:-webkit-autofill,
+    .upload-form-content .form-input:-webkit-autofill:hover,
+    .upload-form-content .form-input:-webkit-autofill:focus,
+    .upload-form-content .form-input:-webkit-autofill:active {
+      transition: background-color 9999s ease-in-out 0s;
+      -webkit-text-fill-color: #fff8ed !important;
+      caret-color: #fff8ed;
     }
     .upload-form-content .form-select option {
       background: #11100f;
