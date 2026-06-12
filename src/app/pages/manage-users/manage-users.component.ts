@@ -950,8 +950,8 @@ export class ManageUsersComponent {
     });
   });
 
-  totalUsers = computed(() => this.users().length + 1);
-  adminCount = computed(() => this.users().filter(user => user.role === 'admin').length + 1);
+  totalUsers = computed(() => this.users().length);
+  adminCount = computed(() => this.users().filter(user => user.role === 'admin').length);
   collectorCount = computed(() => this.users().filter(user => user.role === 'user').length);
 
   constructor() {
