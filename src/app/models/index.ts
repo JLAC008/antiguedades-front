@@ -55,7 +55,7 @@ export interface AppUser {
   password?: string;
   role: UserRole;
   name: string;
-  createdAt: string;
+  created_at: string;
 }
 
 export interface LoginResponse {

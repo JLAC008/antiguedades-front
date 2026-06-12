@@ -72,7 +72,7 @@ export class AuthService {
       email: res.email,
       role: res.role as AppUser['role'],
       name: res.username,
-      createdAt: new Date().toISOString(),
+      created_at: new Date().toISOString(),
     };
     localStorage.setItem('auth_token', res.token);
     localStorage.setItem('auth_user', JSON.stringify(user));

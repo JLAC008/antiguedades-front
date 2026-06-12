@@ -30,10 +30,6 @@ import { AppUser, UserRole } from '../../models';
               <span class="stat-icon" aria-hidden="true">○</span>
               <div><strong>{{ collectorCount() }}</strong><span>Usuarios</span></div>
             </article>
-            <article class="stat-card">
-              <span class="stat-icon" aria-hidden="true">▦</span>
-              <div><strong>{{ lastRegistrationLabel() }}</strong><span>Último registro</span></div>
-            </article>
           </div>
         </div>
       </section>
@@ -146,7 +142,7 @@ import { AppUser, UserRole } from '../../models';
                     </div>
                     <span class="email-cell">{{ user.email }}</span>
                     <span><span class="role-pill">{{ user.role === 'admin' ? 'Administrador' : 'Usuario' }}</span></span>
-                    <span class="date-cell">{{ user.createdAt | date:'d MMM y' }}</span>
+                    <span class="date-cell">{{ user.created_at | date:'d MMM y' }}</span>
                     <span class="row-actions">
                       <button class="icon-btn edit" (click)="editUser(user)" aria-label="Editar usuario">
                         <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5Z"/></svg>
@@ -956,17 +952,6 @@ export class ManageUsersComponent {
 
   constructor() {
     this.loadUsers().then();
-  }
-
-  lastRegistrationLabel(): string {
-    const newest = this.users()
-      .map(user => new Date(user.createdAt))
-      .filter(date => !Number.isNaN(date.getTime()))
-      .sort((a, b) => b.getTime() - a.getTime())[0];
-
-    return newest
-      ? newest.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })
-      : 'Sin registros';
   }
 
   initials(name: string): string {

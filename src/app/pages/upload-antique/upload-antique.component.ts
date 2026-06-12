@@ -445,6 +445,18 @@ import { Antique, AntiqueType } from '../../models';
                 }
               </div>
 
+              @if (showErrorModal()) {
+                <div class="modal-overlay" (click)="showErrorModal.set(false)">
+                  <div class="modal" (click)="$event.stopPropagation()">
+                    <h3 class="modal-title">Completa el formulario</h3>
+                    <p class="modal-text">{{ errorModalMessage() }}</p>
+                    <div class="modal-actions">
+                      <button type="button" class="btn-cancel" (click)="showErrorModal.set(false)">Entendido</button>
+                    </div>
+                  </div>
+                </div>
+              }
+
               @if (showSizeModal()) {
                 <div class="modal-overlay" (click)="showSizeModal.set(false)">
                   <div class="modal" (click)="$event.stopPropagation()">
@@ -458,7 +470,7 @@ import { Antique, AntiqueType } from '../../models';
                       }
                     </ul>
                     <div class="modal-actions">
-                      <button class="btn-cancel" (click)="showSizeModal.set(false)">Entendido</button>
+                      <button type="button" class="btn-cancel" (click)="showSizeModal.set(false)">Entendido</button>
                     </div>
                   </div>
                 </div>
@@ -1230,6 +1242,8 @@ export class UploadAntiqueComponent implements OnInit {
   uploadProgress = signal(0);
   error = signal('');
   success = signal('');
+  showErrorModal = signal(false);
+  errorModalMessage = signal('');
   showSizeModal = signal(false);
   sizeModalFiles = signal<{name: string, size: number}[]>([]);
   editMode = false;
@@ -1520,7 +1534,8 @@ export class UploadAntiqueComponent implements OnInit {
   }
 
   private failValidation(message: string, fieldName: string, step: number): false {
-    this.error.set(message);
+    this.errorModalMessage.set(message);
+    this.showErrorModal.set(true);
     this.formStep.set(step);
     setTimeout(() => {
       const field = document.querySelector<HTMLElement>(`[name="${fieldName}"]`);
