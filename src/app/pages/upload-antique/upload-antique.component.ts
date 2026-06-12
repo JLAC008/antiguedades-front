@@ -135,7 +135,7 @@ import { Antique, AntiqueType } from '../../models';
                         <div class="upload-zone-inner">
                           <span class="upload-icon">&#128247;</span>
                           <p class="upload-text">Arrastra imágenes o haz clic para seleccionar</p>
-                          <p class="upload-hint">JPG, PNG, WebP — máx. 2 MB por imagen</p>
+                          <p class="upload-hint">JPG, PNG, WebP — máx. 2 MB · máx. 5 fotos</p>
                         </div>
                       </label>
                     </div>
@@ -241,7 +241,7 @@ import { Antique, AntiqueType } from '../../models';
                         <div class="upload-zone-inner">
                           <span class="upload-icon">&#128247;</span>
                           <p class="upload-text">Arrastra imágenes o haz clic para seleccionar</p>
-                          <p class="upload-hint">JPG, PNG, WebP — máx. 2 MB por imagen</p>
+                          <p class="upload-hint">JPG, PNG, WebP — máx. 2 MB · máx. 5 fotos</p>
                         </div>
                       </label>
                     </div>
@@ -1586,6 +1586,12 @@ export class UploadAntiqueComponent implements OnInit {
     if (oversized.length > 0) {
       this.sizeModalFiles.set(oversized.map(f => ({ name: f.name, size: f.size })));
       this.showSizeModal.set(true);
+      input.value = '';
+      return;
+    }
+    if (this.existingImages().length + files.length > 5) {
+      this.errorModalMessage.set('Máximo 5 fotos por pieza.');
+      this.showErrorModal.set(true);
       input.value = '';
       return;
     }
