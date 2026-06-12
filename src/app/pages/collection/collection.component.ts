@@ -65,15 +65,15 @@ import { AuthService } from '../../core/auth.service';
             <div class="filter-chips">
               <button class="chip" [class.chip-active]="selectedType" (click)="toggleFilter('type')">
                 <span>{{ selectedType ? typeLabel(selectedType) : 'Tipo' }}</span>
-                <span class="chip-caret">⌄</span>
+                <svg class="chip-caret" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg>
               </button>
               <button class="chip" [class.chip-active]="selectedSubcategory" (click)="toggleFilter('subcategory')">
                 <span>{{ selectedSubcategory ? subLabel(selectedSubcategory) : 'Categoría' }}</span>
-                <span class="chip-caret">⌄</span>
+                <svg class="chip-caret" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg>
               </button>
               <button class="chip" [class.chip-active]="selectedDetail" (click)="toggleFilter('detail')">
                 <span>{{ selectedDetail ? detLabel(selectedDetail) : 'Detalle' }}</span>
-                <span class="chip-caret">⌄</span>
+                <svg class="chip-caret" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg>
               </button>
               <button class="chip chip-more" [class.chip-active]="hasAdvancedFilters()" (click)="openAdvancedFilters()">
                 <span>Filtros</span>
@@ -82,14 +82,10 @@ import { AuthService } from '../../core/auth.service';
             </div>
 
             <div class="toolbar-actions">
-              <select class="sort-select" [(ngModel)]="sortBy" (ngModelChange)="applyFilters()" aria-label="Ordenar colección">
-                <option value="recent">Ordenar por</option>
-                @if (auth.isLoggedIn) {
-                  <option value="priceDesc">Valor mayor</option>
-                  <option value="priceAsc">Valor menor</option>
-                }
-                <option value="name">Nombre</option>
-              </select>
+              <button class="chip sort-chip" [class.chip-active]="sortBy !== 'recent'" (click)="toggleFilter('sort')" type="button">
+                <span>{{ sortLabel() }}</span>
+                <svg class="chip-caret" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg>
+              </button>
             </div>
           </div>
 
@@ -149,6 +145,14 @@ import { AuthService } from '../../core/auth.service';
                   @for (det of availableDetails; track det) {
                     <button class="filter-option" [class.selected]="selectedDetail===det" (click)="selectDetail(det)">{{ detLabel(det) }}</button>
                   }
+                }
+                @if (openFilter === 'sort') {
+                  <button class="filter-option" [class.selected]="sortBy==='recent'" (click)="selectSort('recent')">Ordenar por</button>
+                  @if (auth.isLoggedIn) {
+                    <button class="filter-option" [class.selected]="sortBy==='priceDesc'" (click)="selectSort('priceDesc')">Valor mayor</button>
+                    <button class="filter-option" [class.selected]="sortBy==='priceAsc'" (click)="selectSort('priceAsc')">Valor menor</button>
+                  }
+                  <button class="filter-option" [class.selected]="sortBy==='name'" (click)="selectSort('name')">Nombre</button>
                 }
                 @if (openFilter === 'advanced') {
                   <div class="advanced-filters">
@@ -497,10 +501,12 @@ import { AuthService } from '../../core/auth.service';
       background: rgba(184, 149, 90, 0.1);
     }
 
-    .chip-caret {
+    .chip .chip-caret {
+      width: 0.95rem;
+      height: 0.95rem;
       color: #b8955a;
-      font-size: 1rem;
-      transform: translateY(-1px);
+      flex: 0 0 auto;
+      stroke-width: 1.9;
     }
 
     .chip-more svg {
@@ -520,6 +526,10 @@ import { AuthService } from '../../core/auth.service';
       gap: 0.5rem;
       flex: 0 0 auto;
       margin-left: auto;
+    }
+
+    .sort-chip {
+      min-width: 10.5rem;
     }
 
     .sort-select {
@@ -1399,9 +1409,19 @@ export class CollectionComponent implements OnInit {
   filterTitle(): string {
     const map: Record<string, string> = {
       type: 'Tipo', subcategory: 'Categoría', detail: 'Detalle',
-      advanced: 'Filtros',
+      advanced: 'Filtros', sort: 'Ordenar por',
     };
     return map[this.openFilter ?? ''] ?? '';
+  }
+
+  sortLabel(): string {
+    const labels: Record<string, string> = {
+      recent: 'Ordenar por',
+      priceDesc: 'Valor mayor',
+      priceAsc: 'Valor menor',
+      name: 'Nombre',
+    };
+    return labels[this.sortBy] ?? 'Ordenar por';
   }
 
   categoryCount(): number {
@@ -1478,6 +1498,12 @@ export class CollectionComponent implements OnInit {
 
   selectDetail(val: string) {
     this.selectedDetail = val;
+    this.openFilter = null;
+    this.applyFilters();
+  }
+
+  selectSort(val: string) {
+    this.sortBy = val;
     this.openFilter = null;
     this.applyFilters();
   }
