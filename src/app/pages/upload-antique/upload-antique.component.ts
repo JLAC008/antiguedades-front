@@ -2,7 +2,8 @@ import { Component, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { AntiquesService } from '../../core/antiques.service';
-import { Antique, AntiqueType } from '../../models';
+import { CategoryService } from '../../core/category.service';
+import { Antique, AntiqueType, CategoryGroup } from '../../models';
 
 @Component({
   selector: 'app-upload-antique',
@@ -1250,78 +1251,7 @@ export class UploadAntiqueComponent implements OnInit {
   editId = '';
   category = signal<AntiqueType>('antiguedad');
   formStep = signal(1);
-
-  subcategories = [
-    { key: 'escultura', label: 'Escultura', icon: '&#9997;' },
-    { key: 'pintura', label: 'Pintura', icon: '&#127912;' },
-    { key: 'cristal', label: 'Cristal', icon: '&#128161;' },
-    { key: 'ceramica', label: 'Cerámica', icon: '&#127834;' },
-    { key: 'varios', label: 'Varios', icon: '&#10022;' },
-  ];
-
-  esculturaDetails = [
-    { key: 'busto', label: 'Busto', desc: 'Representación de la parte superior del torso humano' },
-    { key: 'figura', label: 'Figura', desc: 'Escultura completa de cuerpo entero' },
-    { key: 'belen', label: 'Belén', desc: 'Figuras y escenas del belén tradicional' },
-  ];
-
-  pinturaDetails = [
-    { key: 'oleo', label: 'Óleo', desc: 'Pintura al óleo sobre lienzo, tabla u otros soportes' },
-    { key: 'grabado', label: 'Grabado', desc: 'Estampas, aguafuertes y técnicas de impresión' },
-    { key: 'acuarela', label: 'Acuarela', desc: 'Pintura ligera con pigmentos diluidos en agua' },
-  ];
-
-  filateliaDetails = [
-    { key: 'hist-postal', label: 'Hist. postal', desc: 'Historia y evolución de los servicios postales' },
-    { key: 'entero-postal', label: 'Entero postal', desc: 'Tarjetas, sobres y aerogramas con estampilla impresa' },
-    { key: 'sello', label: 'Sello', desc: 'Sellos individuales, series y bloques' },
-    { key: 'pre-filatelia', label: 'Pre-filatelia', desc: 'Marcas postales anteriores al sello adhesivo' },
-    { key: 'censura', label: 'Censura', desc: 'Correspondencia con marcas de censura militar o política' },
-  ];
-
-  fotosDetails = [
-    { key: 'familiar', label: 'Familiar', desc: 'Retratos y escenas familiares' },
-    { key: 'boda', label: 'Boda', desc: 'Fotografías de ceremonias nupciales' },
-    { key: 'ninos', label: 'Niños', desc: 'Retratos infantiles y de grupo' },
-    { key: 'hombres', label: 'Hombres', desc: 'Retratos masculinos individuales o grupales' },
-    { key: 'mujeres', label: 'Mujeres', desc: 'Retratos femeninos individuales o grupales' },
-    { key: 'militar', label: 'Militar', desc: 'Fotografías de uniformes, campamentos y conflictos' },
-    { key: 'etnica', label: 'Étnica', desc: 'Pueblos, tradiciones y vestimentas tradicionales' },
-    { key: 'paisaje', label: 'Paisaje', desc: 'Vistas, ciudades y entornos naturales' },
-    { key: 'retrato', label: 'Retrato', desc: 'Retratos de estudio formales' },
-    { key: 'blanco-negro', label: 'Blanco y negro', desc: 'Fotografía clásica en monocromo' },
-    { key: 'estudio', label: 'Estudio', desc: 'Fotografías realizadas en estudio profesional' },
-    { key: 'reportaje', label: 'Reportaje', desc: 'Escenas callejeras, eventos y documental' },
-    { key: 'arquitectura', label: 'Arquitectura', desc: 'Edificios, monumentos y construcciones' },
-    { key: 'naturaleza', label: 'Naturaleza', desc: 'Plantas, animales y paisajes naturales' },
-    { key: 'post-mortem', label: 'Post mortem', desc: 'Fotografía funeraria y de difuntos' },
-  ];
-
-  revistasDetails = [
-    { key: 'motos', label: 'Motos', desc: 'Revistas especializadas en motociclismo' },
-    { key: 'coches', label: 'Coches', desc: 'Publicaciones del mundo del automóvil' },
-    { key: 'politica', label: 'Política', desc: 'Revistas de actualidad política y social' },
-    { key: 'historia', label: 'Historia', desc: 'Publicaciones de divulgación histórica' },
-    { key: 'ciencia', label: 'Ciencia', desc: 'Revistas científicas y de divulgación' },
-    { key: 'deportes', label: 'Deportes', desc: 'Publicaciones deportivas especializadas' },
-    { key: 'moda', label: 'Moda', desc: 'Revistas de moda, tendencias y estilo' },
-    { key: 'arte', label: 'Arte', desc: 'Revistas de arte, museos y exposiciones' },
-    { key: 'musica', label: 'Música', desc: 'Publicaciones musicales y de artistas' },
-    { key: 'humor', label: 'Humor', desc: 'Revistas satíricas y de humor gráfico' },
-    { key: 'viajes', label: 'Viajes', desc: 'Revistas de viajes y turismo' },
-    { key: 'economia', label: 'Economía', desc: 'Publicaciones económicas y financieras' },
-    { key: 'cultura', label: 'Cultura', desc: 'Revistas culturales y literarias' },
-    { key: 'tecnologia', label: 'Tecnología', desc: 'Revistas de innovación y tecnología' },
-  ];
-
-  documentosDetails = [
-    { key: 'folletos', label: 'Folletos', desc: 'Folletos publicitarios, turísticos e informativos' },
-    { key: 'partituras', label: 'Partituras', desc: 'Partituras musicales originales o impresas' },
-    { key: 'escrituras', label: 'Escrituras', desc: 'Escrituras notariales, legales y oficiales' },
-    { key: 'mapas', label: 'Mapas', desc: 'Mapas, planos y cartografía histórica' },
-    { key: 'carteles', label: 'Carteles', desc: 'Carteles publicitarios, políticos y culturales' },
-    { key: 'otros', label: 'Otros', desc: 'Otros documentos no clasificados' },
-  ];
+  categories = signal<CategoryGroup[]>([]);
 
   form: {
     name: string;
@@ -1345,6 +1275,7 @@ export class UploadAntiqueComponent implements OnInit {
 
   constructor(
     private antiquesService: AntiquesService,
+    private categoryService: CategoryService,
     private router: Router,
     private route: ActivatedRoute
   ) {
@@ -1352,16 +1283,13 @@ export class UploadAntiqueComponent implements OnInit {
   }
 
   get detailLabel(): string {
-    const all = [
-      ...this.esculturaDetails,
-      ...this.pinturaDetails,
-      ...this.filateliaDetails,
-      ...this.fotosDetails,
-      ...this.revistasDetails,
-      ...this.documentosDetails,
-    ];
-    const found = all.find(d => d.key === this.form.detail);
-    return found ? found.label : '';
+    const group = this.categories().find(g => g.type === this.form.type);
+    if (!group) return '';
+    for (const sub of group.subcategories) {
+      const found = sub.details.find(d => d.key === this.form.detail);
+      if (found) return found.label;
+    }
+    return '';
   }
 
   defaultForm() {
@@ -1391,30 +1319,16 @@ export class UploadAntiqueComponent implements OnInit {
   }
 
   get subcategoryLabel(): string {
-    const all = [
-      ...this.subcategories,
-      { key: 'filatelia', label: 'Filatelia' },
-      { key: 'fotos', label: 'Fotos' },
-      { key: 'revistas', label: 'Revistas / Periódicos' },
-      { key: 'documentos', label: 'Documentos' },
-      { key: 'libros', label: 'Libros' },
-    ];
-    const found = all.find(s => s.key === this.form.subcategory);
+    const group = this.categories().find(g => g.type === this.form.type);
+    if (!group) return '';
+    const found = group.subcategories.find(s => s.key === this.form.subcategory);
     return found ? found.label : '';
   }
 
   get subcategoriesForType(): { key: string; label: string }[] {
-    if (this.form.type === 'antiguedad') {
-      return this.subcategories.map(s => ({ key: s.key, label: s.label }));
-    }
-    return [
-      { key: 'filatelia', label: 'Filatelia' },
-      { key: 'fotos', label: 'Fotos' },
-      { key: 'revistas', label: 'Revistas / Periódicos' },
-      { key: 'documentos', label: 'Documentos' },
-      { key: 'libros', label: 'Libros' },
-      { key: 'varios', label: 'Varios' },
-    ];
+    const group = this.categories().find(g => g.type === this.form.type);
+    if (!group) return [];
+    return group.subcategories.map(s => ({ key: s.key, label: s.label }));
   }
 
   onTypeChange() {
@@ -1428,22 +1342,17 @@ export class UploadAntiqueComponent implements OnInit {
   }
 
   hasDetail(key: string): boolean {
-    if (this.form.type === 'antiguedad') {
-      return key === 'escultura' || key === 'pintura';
-    }
-    return key === 'filatelia' || key === 'fotos' || key === 'revistas' || key === 'documentos';
+    const group = this.categories().find(g => g.type === this.form.type);
+    if (!group) return false;
+    const sub = group.subcategories.find(s => s.key === key);
+    return sub ? sub.details.length > 0 : false;
   }
 
   detailsForCurrent(): { key: string; label: string; desc: string }[] {
-    switch (this.form.subcategory) {
-      case 'escultura': return this.esculturaDetails;
-      case 'pintura': return this.pinturaDetails;
-      case 'filatelia': return this.filateliaDetails;
-      case 'fotos': return this.fotosDetails;
-      case 'revistas': return this.revistasDetails;
-      case 'documentos': return this.documentosDetails;
-      default: return [];
-    }
+    const group = this.categories().find(g => g.type === this.form.type);
+    if (!group) return [];
+    const sub = group.subcategories.find(s => s.key === this.form.subcategory);
+    return sub ? sub.details : [];
   }
 
   isBasicComplete(): boolean {
@@ -1547,6 +1456,7 @@ export class UploadAntiqueComponent implements OnInit {
   }
 
   async ngOnInit() {
+    this.categories.set(await this.categoryService.getCategories());
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.editMode = true;

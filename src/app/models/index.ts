@@ -47,6 +47,23 @@ export type AntiqueCondition = 'Excelente' | 'Bueno' | 'Regular' | 'Para restaur
 
 export const CONDITIONS: AntiqueCondition[] = ['Excelente', 'Bueno', 'Regular', 'Para restaurar'];
 
+export interface CategoryDetail {
+  key: string;
+  label: string;
+  desc: string;
+}
+
+export interface CategorySubcategory {
+  key: string;
+  label: string;
+  details: CategoryDetail[];
+}
+
+export interface CategoryGroup {
+  type: AntiqueType;
+  subcategories: CategorySubcategory[];
+}
+
 export type UserRole = 'admin' | 'user';
 
 export interface AppUser {
