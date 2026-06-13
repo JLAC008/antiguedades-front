@@ -125,6 +125,10 @@ import { Antique, AntiqueType, CategoryGroup } from '../../models';
                       <label class="form-label">Valor (€) <span class="required">*</span></label>
                       <input type="number" class="form-input" [(ngModel)]="form.price" name="price" placeholder="0" min="0.01" step="0.01" required />
                     </div>
+                    <div class="form-group">
+                      <label class="form-label">Descripción</label>
+                      <textarea class="form-input form-textarea" [(ngModel)]="form.description" name="description" placeholder="Describe brevemente la pieza (material, estado, historia...)" rows="3"></textarea>
+                    </div>
                   </div>
 
                   <div class="form-col">
@@ -231,6 +235,10 @@ import { Antique, AntiqueType, CategoryGroup } from '../../models';
                       <label class="form-label">Valor (€) <span class="required">*</span></label>
                       <input type="number" class="form-input" [(ngModel)]="form.price" name="price" placeholder="0" min="0.01" step="0.01" required />
                     </div>
+                    <div class="form-group">
+                      <label class="form-label">Descripción</label>
+                      <textarea class="form-input form-textarea" [(ngModel)]="form.description" name="paper_description" placeholder="Describe brevemente el documento (contenido, estado, procedencia...)" rows="3"></textarea>
+                    </div>
                   </div>
 
                   <div class="form-col">
@@ -306,6 +314,14 @@ import { Antique, AntiqueType, CategoryGroup } from '../../models';
                           <strong class="rv-value">{{ form.price || 0 }} €</strong>
                         </div>
                       </div>
+                      @if (form.description) {
+                        <div class="rv-row">
+                          <div class="rv-cell">
+                            <span class="rv-label">Descripción</span>
+                            <strong class="rv-value">{{ form.description }}</strong>
+                          </div>
+                        </div>
+                      }
                       @if (form.title || form.author || form.editor || form.imprenta || form.edition || form.century || form.theme || form.signature) {
                         <div class="rv-row">
                           @if (form.title) {
@@ -1271,6 +1287,7 @@ export class UploadAntiqueComponent implements OnInit {
     century: string;
     year_era: string;
     price: number;
+    description: string;
   };
 
   constructor(
@@ -1311,6 +1328,7 @@ export class UploadAntiqueComponent implements OnInit {
       century: '',
       year_era: '',
       price: 0,
+      description: '',
     };
   }
 
@@ -1482,6 +1500,7 @@ export class UploadAntiqueComponent implements OnInit {
           century: antique.century ?? '',
           year_era: antique.year_era,
           price: antique.price,
+          description: antique.description ?? '',
         };
         this.existingImages.set([...antique.images]);
       }
@@ -1558,6 +1577,7 @@ export class UploadAntiqueComponent implements OnInit {
         century: this.form.century,
         year_era: this.form.year_era,
         price: this.form.price,
+        description: this.form.description,
         condition: 'Bueno',
         material: '',
         dimensions: '',
