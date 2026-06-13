@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { Antique, CountsResponse } from '../models';
+import { Antique } from '../models';
 import { environment } from '../../environments/environment';
 
 function resolveImages(antique: Antique): Antique {
@@ -72,17 +72,5 @@ export class AntiquesService {
       this.http.post(`${environment.apiUrl}/api/upload`, formData)
     );
     return res.url.startsWith('http') ? res.url : `${environment.apiUrl}${res.url}`;
-  }
-
-  async getCountByType(type: string): Promise<number> {
-    const counts = await this.getCounts();
-    return type === 'antiguedad' ? counts.antiguedad : counts.papeleria;
-  }
-
-  async getCounts(): Promise<CountsResponse> {
-    const res = await firstValueFrom(
-      this.http.get<CountsResponse>(`${environment.apiUrl}/api/antiques/counts`)
-    );
-    return res;
   }
 }

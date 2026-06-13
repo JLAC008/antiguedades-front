@@ -76,18 +76,6 @@ import { Antique } from '../../models';
       justify-content: center;
       font-size: 3rem;
     }
-    .antique-card-badge {
-      position: absolute;
-      top: 0.625rem;
-      right: 0.625rem;
-      background: rgba(255,255,255,0.92);
-      border: 1px solid var(--color-border);
-      color: var(--color-secondary);
-      font-size: 0.75rem;
-      font-weight: 600;
-      padding: 0.25rem 0.625rem;
-      border-radius: 20px;
-    }
     .antique-card-body {
       padding: 1rem 1.125rem 1.25rem;
     }
@@ -104,12 +92,6 @@ import { Antique } from '../../models';
       font-weight: 600;
       margin: 0 0 0.375rem;
       letter-spacing: 0.02em;
-    }
-    .antique-card-price {
-      font-size: 1.125rem;
-      font-weight: 700;
-      color: var(--color-primary);
-      margin: 0 0 0.5rem;
     }
     .antique-card-desc {
       font-size: 0.8125rem;
@@ -217,13 +199,6 @@ import { Antique } from '../../models';
       stroke-width: 1.8;
       stroke-linecap: round;
       stroke-linejoin: round;
-    }
-    :host-context(.page-collection) .antique-card-price {
-      order: 4;
-      color: #e2b866;
-      font-family: 'Playfair Display', serif;
-      font-size: 1.45rem;
-      margin: auto 0 0;
     }
     :host-context(.page-collection) .antique-card-desc {
       color: rgba(247, 239, 227, 0.64);

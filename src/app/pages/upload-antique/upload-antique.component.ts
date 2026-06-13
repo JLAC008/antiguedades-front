@@ -731,15 +731,6 @@ import { Antique, AntiqueType, CategoryGroup } from '../../models';
       font-size: 0.88rem;
       overflow-wrap: anywhere;
     }
-    .rv-desc-row .rv-cell {
-      width: 100%;
-      flex: none;
-      flex-direction: column;
-      align-items: flex-start;
-    }
-    .rv-desc-row .rv-value {
-      white-space: pre-line;
-    }
     .rv-images-row .rv-cell {
       width: 100%;
       flex: none;
@@ -1170,9 +1161,6 @@ import { Antique, AntiqueType, CategoryGroup } from '../../models';
       .form-guidance {
         min-height: auto;
         padding: 1.15rem;
-      }
-      .review-grid {
-        grid-template-columns: 1fr;
       }
       .guidance-figure {
         display: none;

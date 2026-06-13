@@ -148,8 +148,7 @@ import { RouterLink } from '@angular/router';
       line-height: 1.55;
       text-shadow: 0 2px 12px rgba(0, 0, 0, 0.95);
     }
-    .hero-cta,
-    .heritage-link {
+    .hero-cta {
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -167,8 +166,7 @@ import { RouterLink } from '@angular/router';
       text-decoration: none;
       transition: background 180ms ease, transform 180ms ease, box-shadow 180ms ease;
     }
-    .hero-cta svg,
-    .heritage-link svg {
+    .hero-cta svg {
       width: 16px;
       height: 16px;
       fill: none;
@@ -177,8 +175,7 @@ import { RouterLink } from '@angular/router';
       stroke-linecap: round;
       stroke-linejoin: round;
     }
-    .hero-cta:hover,
-    .heritage-link:hover {
+    .hero-cta:hover {
       background: #c09a59;
       transform: translateY(-2px);
       box-shadow: 0 16px 34px rgba(0, 0, 0, 0.34);
@@ -301,19 +298,6 @@ import { RouterLink } from '@angular/router';
       font-size: 0.95rem;
       line-height: 1.55;
     }
-    .heritage-link {
-      margin-top: 1.8rem;
-      color: #d5ae69;
-      background: transparent;
-      border-color: rgba(184, 149, 90, 0.58);
-      box-shadow: none;
-    }
-    .heritage-link:hover {
-      color: #fff;
-      background: #a98147;
-      box-shadow: 0 10px 24px rgba(94, 67, 34, 0.18);
-    }
-
     @keyframes hero-reveal {
       from { opacity: 0; transform: scale(1.05); }
       to { opacity: 1; transform: scale(1.015); }
@@ -387,7 +371,6 @@ import { RouterLink } from '@angular/router';
         animation: none;
       }
       .hero-cta,
-      .heritage-link,
       .heritage-media img {
         transition: none;
       }

@@ -30,10 +30,6 @@ export class AuthService {
     return this.currentUser()?.role === 'admin';
   }
 
-  getUsers(): AppUser[] {
-    return [];
-  }
-
   async createUser(email: string, password: string, name: string, role: AppUser['role'] = 'user') {
     const res = await firstValueFrom(
       this.http.post<AppUser>(`${environment.apiUrl}/api/admin/users`, {
@@ -78,10 +74,6 @@ export class AuthService {
     localStorage.setItem('auth_user', JSON.stringify(user));
     this.currentUser.set(user);
     return { user };
-  }
-
-  async signUp(email: string, password: string) {
-    throw new Error('El registro no está disponible. Contacta al administrador.');
   }
 
   async signOut() {

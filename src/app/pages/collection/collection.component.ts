@@ -337,39 +337,8 @@ import { AuthService } from '../../core/auth.service';
       line-height: 1.75;
     }
 
-    .stats-row {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 0.9rem;
-      max-width: 930px;
-      margin: 0 auto;
-    }
-
-    .stat-card {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      min-height: 78px;
-      padding: 1rem 1.25rem;
-      text-align: left;
-      background: linear-gradient(135deg, rgba(21, 18, 14, 0.92), rgba(9, 9, 8, 0.78));
-      border: 1px solid rgba(200, 155, 75, 0.72);
-      box-shadow: 0 16px 42px rgba(0, 0, 0, 0.34);
-    }
-
-    .stat-icon {
-      display: grid;
-      place-items: center;
-      width: 2.25rem;
-      height: 2.25rem;
-      flex: 0 0 auto;
-      color: #d4ac62;
-    }
-
-    .stat-icon svg,
     .search-icon svg,
-    .chip svg,
-    .view-btn svg {
+    .chip svg {
       width: 100%;
       height: 100%;
       fill: none;
@@ -377,22 +346,6 @@ import { AuthService } from '../../core/auth.service';
       stroke-width: 1.7;
       stroke-linecap: round;
       stroke-linejoin: round;
-    }
-
-    .stat-card strong {
-      display: block;
-      font-family: 'Playfair Display', serif;
-      font-size: 1.72rem;
-      line-height: 1;
-      color: #ffe0a0;
-    }
-
-    .stat-card div span {
-      display: block;
-      margin-top: 0.28rem;
-      color: rgba(255, 248, 237, 0.78);
-      font-size: 0.9rem;
-      line-height: 1.2;
     }
 
     .page-content {
@@ -418,9 +371,7 @@ import { AuthService } from '../../core/auth.service';
     }
 
     .search-bar,
-    .chip,
-    .sort-select,
-    .view-btn {
+    .chip {
       background: rgba(4, 4, 4, 0.72);
       border: 1px solid rgba(184, 149, 90, 0.38);
       color: #f4eadb;
@@ -515,11 +466,6 @@ import { AuthService } from '../../core/auth.service';
       color: #d4ac62;
     }
 
-    .chip-clear {
-      color: #f0b7a9;
-      border-color: rgba(240, 183, 169, 0.35);
-    }
-
     .toolbar-actions {
       display: flex;
       align-items: center;
@@ -530,46 +476,6 @@ import { AuthService } from '../../core/auth.service';
 
     .sort-chip {
       min-width: 10.5rem;
-    }
-
-    .sort-select {
-      height: 3rem;
-      min-width: 132px;
-      padding: 0 0.85rem;
-      outline: 0;
-      cursor: pointer;
-    }
-
-    .sort-select option {
-      background: #11100f;
-      color: #f7efe3;
-    }
-
-    .view-btn {
-      width: 3rem;
-      height: 3rem;
-      display: grid;
-      place-items: center;
-      cursor: pointer;
-      color: rgba(247, 239, 227, 0.72);
-    }
-
-    .view-btn.active,
-    .view-btn:hover {
-      color: #d4ac62;
-      border-color: #d4ac62;
-      background: rgba(184, 149, 90, 0.12);
-    }
-
-    .view-btn svg {
-      width: 1.25rem;
-      height: 1.25rem;
-    }
-
-    .result-count {
-      margin: 1rem 0 0.85rem;
-      color: rgba(247, 239, 227, 0.56);
-      font-size: 0.9rem;
     }
 
     .antiques-grid {
@@ -638,16 +544,6 @@ import { AuthService } from '../../core/auth.service';
     .collection-hero-inner > .hero-kicker { animation-delay: 0.15s; }
     .collection-hero-inner > .hero-title { animation-delay: 0.3s; }
     .collection-hero-inner > .hero-flourish { animation-delay: 0.45s; }
-    .collection-hero-inner > .hero-copy { animation-delay: 0.6s; }
-    .collection-hero-inner > .stats-row { animation-delay: 0.75s; }
-    .collection-hero-inner > .stats-row .stat-card {
-      animation: fade-slide-up 0.6s ease-out both;
-    }
-    .collection-hero-inner > .stats-row .stat-card:nth-child(1) { animation-delay: 0.8s; }
-    .collection-hero-inner > .stats-row .stat-card:nth-child(2) { animation-delay: 0.9s; }
-    .collection-hero-inner > .stats-row .stat-card:nth-child(3) { animation-delay: 1s; }
-    .collection-hero-inner > .stats-row .stat-card:nth-child(4) { animation-delay: 1.1s; }
-
     .collection-panel {
       animation: fade-slide-up 0.7s 0.4s ease-out both;
     }
@@ -894,10 +790,6 @@ import { AuthService } from '../../core/auth.service';
         padding: 3.2rem 1rem 1.25rem;
       }
 
-      .stats-row {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
       .page-content {
         padding: 0 0 3rem;
       }
@@ -925,13 +817,8 @@ import { AuthService } from '../../core/auth.service';
         margin-bottom: 1.35rem;
       }
 
-      .stats-row,
       .antiques-grid {
         grid-template-columns: 1fr;
-      }
-
-      .stat-card {
-        min-height: 70px;
       }
 
       .filter-chips {
@@ -946,10 +833,6 @@ import { AuthService } from '../../core/auth.service';
 
       .toolbar-actions {
         justify-content: stretch;
-      }
-
-      .sort-select {
-        flex: 1;
       }
 
       .filter-panel {
@@ -1154,22 +1037,6 @@ import { AuthService } from '../../core/auth.service';
       border-left: 1px solid rgba(184, 149, 90, 0.15);
     }
 
-    .sort-select {
-      height: 3.6rem;
-      min-width: 200px;
-      padding: 0 1rem;
-      border: 0;
-      border-radius: 0 10px 10px 0;
-      font-size: 0.85rem;
-      appearance: none;
-      background:
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6' fill='none' stroke='%23d4ac62' stroke-width='1.5'/%3E%3C/svg%3E")
-        calc(100% - 0.85rem) center / 10px 6px no-repeat,
-        rgba(4, 4, 4, 0.72);
-      cursor: pointer;
-      padding-right: 2rem;
-    }
-
     .antiques-grid {
       grid-template-columns: repeat(5, minmax(0, 1fr));
       gap: 0.7rem;
@@ -1184,10 +1051,6 @@ import { AuthService } from '../../core/auth.service';
 
       .search-bar {
         border-radius: 8px 0 0 0;
-      }
-
-      .sort-select {
-        border-radius: 0 8px 0 0;
       }
 
       .filter-chips {
@@ -1278,7 +1141,6 @@ import { AuthService } from '../../core/auth.service';
 
     @media (prefers-reduced-motion: reduce) {
       .collection-hero-inner > *,
-      .collection-hero-inner > .stats-row .stat-card,
       .collection-panel,
       .antiques-grid > app-antique-card,
       .filter-panel,
@@ -1381,10 +1243,6 @@ export class CollectionComponent implements OnInit {
     }
   }
 
-  hasActiveFilters(): boolean {
-    return !!(this.selectedType || this.selectedSubcategory || this.selectedDetail || this.hasAdvancedFilters());
-  }
-
   hasAdvancedFilters(): boolean {
     return !!(
       this.filterYearEra || this.filterCentury || this.filterCountry ||
@@ -1424,31 +1282,9 @@ export class CollectionComponent implements OnInit {
     return labels[this.sortBy] ?? 'Ordenar por';
   }
 
-  categoryCount(): number {
-    return new Set(this.antiques().map(a => a.subcategory).filter(Boolean)).size;
-  }
-
   totalValueLabel(): string {
     const value = this.antiques().reduce((sum, antique) => sum + (antique.price || 0), 0);
     return `${value.toLocaleString('es-ES')}€`;
-  }
-
-  eraSummary(): string {
-    const years = this.antiques()
-      .map(a => a.year_era.match(/\d{4}/)?.[0])
-      .filter(Boolean)
-      .map(Number);
-
-    if (!years.length) return 'XVI - XX';
-
-    const min = Math.min(...years);
-    const max = Math.max(...years);
-    return `${this.century(min)} - ${this.century(max)}`;
-  }
-
-  century(year: number): string {
-    const romans = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII', 'XIV', 'XV', 'XVI', 'XVII', 'XVIII', 'XIX', 'XX', 'XXI'];
-    return romans[Math.ceil(year / 100) - 1] ?? `${year}`;
   }
 
   toggleFilter(name: string) {

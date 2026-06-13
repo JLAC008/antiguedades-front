@@ -43,10 +43,6 @@ export interface Antique {
   catalog?: Catalog;
 }
 
-export type AntiqueCondition = 'Excelente' | 'Bueno' | 'Regular' | 'Para restaurar';
-
-export const CONDITIONS: AntiqueCondition[] = ['Excelente', 'Bueno', 'Regular', 'Para restaurar'];
-
 export interface CategoryDetail {
   key: string;
   label: string;
