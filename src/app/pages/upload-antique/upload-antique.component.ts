@@ -3,7 +3,8 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { AntiquesService } from '../../core/antiques.service';
 import { CategoryService } from '../../core/category.service';
-import { Antique, AntiqueType, CategoryGroup } from '../../models';
+import { ConditionService } from '../../core/condition.service';
+import { Antique, AntiqueType, CategoryGroup, ConditionItem } from '../../models';
 
 @Component({
   selector: 'app-upload-antique',
@@ -85,7 +86,7 @@ import { Antique, AntiqueType, CategoryGroup } from '../../models';
                       <label class="form-label">Nombre <span class="required">*</span></label>
                       <input type="text" class="form-input" [(ngModel)]="form.name" name="name" placeholder="Ej. Reloj de péndulo del siglo XIX" required />
                     </div>
-                    <div class="form-row form-row-3">
+                    <div class="form-row form-row-4">
                       <div class="form-group">
                         <label class="form-label">País</label>
                         <input type="text" class="form-input" [(ngModel)]="form.country" name="country" placeholder="Ej. España, Francia..." />
@@ -97,6 +98,14 @@ import { Antique, AntiqueType, CategoryGroup } from '../../models';
                       <div class="form-group">
                         <label class="form-label">Elemento</label>
                         <input type="text" class="form-input" [(ngModel)]="form.element" name="element" placeholder="Ej. Madera, Bronce..." />
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label">Estado <span class="required">*</span></label>
+                        <select class="form-select" [(ngModel)]="form.condition" name="edit-condition">
+                          @for (c of conditions(); track c.label) {
+                            <option [value]="c.label">{{ c.label }}</option>
+                          }
+                        </select>
                       </div>
                     </div>
                     <div class="form-row">
@@ -199,7 +208,7 @@ import { Antique, AntiqueType, CategoryGroup } from '../../models';
                       <label class="form-label">Imprenta</label>
                       <input type="text" class="form-input" [(ngModel)]="form.imprenta" name="imprenta" placeholder="Taller o establecimiento impresor" />
                     </div>
-                    <div class="form-row">
+                    <div class="form-row form-row-3">
                       <div class="form-group">
                         <label class="form-label">País</label>
                         <input type="text" class="form-input" [(ngModel)]="form.country" name="paper_country" placeholder="Ej. España, Francia..." />
@@ -207,6 +216,14 @@ import { Antique, AntiqueType, CategoryGroup } from '../../models';
                       <div class="form-group">
                         <label class="form-label">Región</label>
                         <input type="text" class="form-input" [(ngModel)]="form.region" name="paper_region" placeholder="Ej. Madrid, Cataluña..." />
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label">Estado <span class="required">*</span></label>
+                        <select class="form-select" [(ngModel)]="form.condition" name="paper-condition">
+                          @for (c of conditions(); track c.label) {
+                            <option [value]="c.label">{{ c.label }}</option>
+                          }
+                        </select>
                       </div>
                     </div>
                     <div class="form-row">
@@ -312,6 +329,10 @@ import { Antique, AntiqueType, CategoryGroup } from '../../models';
                         <div class="rv-cell">
                           <span class="rv-label">Valor</span>
                           <strong class="rv-value">{{ form.price || 0 }} €</strong>
+                        </div>
+                        <div class="rv-cell">
+                          <span class="rv-label">Estado</span>
+                          <strong class="rv-value">{{ form.condition }}</strong>
                         </div>
                       </div>
                       @if (form.description) {
@@ -1256,6 +1277,7 @@ export class UploadAntiqueComponent implements OnInit {
   category = signal<AntiqueType>('antiguedad');
   formStep = signal(1);
   categories = signal<CategoryGroup[]>([]);
+  conditions = signal<ConditionItem[]>([]);
 
   form: {
     name: string;
@@ -1276,11 +1298,13 @@ export class UploadAntiqueComponent implements OnInit {
     year_era: string;
     price: number;
     description: string;
+    condition: string;
   };
 
   constructor(
     private antiquesService: AntiquesService,
     private categoryService: CategoryService,
+    private conditionService: ConditionService,
     private router: Router,
     private route: ActivatedRoute
   ) {
@@ -1317,6 +1341,7 @@ export class UploadAntiqueComponent implements OnInit {
       year_era: '',
       price: 0,
       description: '',
+      condition: 'Bueno',
     };
   }
 
@@ -1463,6 +1488,7 @@ export class UploadAntiqueComponent implements OnInit {
 
   async ngOnInit() {
     this.categories.set(await this.categoryService.getCategories());
+    this.conditions.set(await this.conditionService.getConditions());
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.editMode = true;
@@ -1489,6 +1515,7 @@ export class UploadAntiqueComponent implements OnInit {
           year_era: antique.year_era,
           price: antique.price,
           description: antique.description ?? '',
+          condition: antique.condition ?? 'Bueno',
         };
         this.existingImages.set([...antique.images]);
       }
@@ -1566,7 +1593,7 @@ export class UploadAntiqueComponent implements OnInit {
         year_era: this.form.year_era,
         price: this.form.price,
         description: this.form.description,
-        condition: 'Bueno',
+        condition: this.form.condition,
         material: '',
         dimensions: '',
         paper_type: '',

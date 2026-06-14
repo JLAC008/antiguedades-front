@@ -79,6 +79,10 @@ export interface LoginResponse {
   user_id: string;
 }
 
+export interface ConditionItem {
+  label: string;
+}
+
 export interface CountsResponse {
   antiguedad: number;
   papeleria: number;
