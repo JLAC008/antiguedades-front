@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -8,8 +8,8 @@ import { RouterLink } from '@angular/router';
   template: `
     <main class="page-home">
       <section class="hero">
-        <video class="hero-video" autoplay muted playsinline>
-          <source src="assets/hero-bg.mp4" type="video/mp4" />
+        <video #heroVideo class="hero-video" autoplay muted loop playsinline preload="auto" poster="/assets/home-hero-study-v2.png">
+          <source src="/assets/hero-bg.mp4" type="video/mp4" />
         </video>
         <div class="hero-shade" aria-hidden="true"></div>
 
@@ -377,4 +377,16 @@ import { RouterLink } from '@angular/router';
     }
   `]
 })
-export class HomeComponent {}
+export class HomeComponent implements AfterViewInit {
+  @ViewChild('heroVideo') private heroVideo?: ElementRef<HTMLVideoElement>;
+
+  ngAfterViewInit() {
+    const video = this.heroVideo?.nativeElement;
+    if (!video) return;
+
+    video.muted = true;
+    video.play().catch(() => {
+      // Browsers can still defer autoplay on slow first loads; the poster remains visible.
+    });
+  }
+}
