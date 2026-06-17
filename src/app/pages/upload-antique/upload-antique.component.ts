@@ -680,7 +680,11 @@ import { Antique, AntiqueType, CategoryGroup, ConditionItem } from '../../models
     }
     .form-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 0; }
     .form-col { display: flex; flex-direction: column; gap: 1.25rem; }
-    .review-panel { display: none; }
+    .review-panel {
+      display: none;
+      max-width: 100%;
+      overflow: hidden;
+    }
     .form-step-1 .form-col:first-child > :nth-child(n+5),
     .form-step-1 .form-col:nth-child(2),
     .form-step-1 .review-panel {
@@ -723,8 +727,8 @@ import { Antique, AntiqueType, CategoryGroup, ConditionItem } from '../../models
       margin-top: 1.25rem;
     }
     .rv-row {
-      display: flex;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 0.5rem;
       margin-bottom: 0.5rem;
     }
@@ -734,10 +738,10 @@ import { Antique, AntiqueType, CategoryGroup, ConditionItem } from '../../models
       border-radius: 6px;
       padding: 0.55rem 0.75rem;
       display: flex;
-      align-items: center;
-      gap: 0.45rem;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.2rem;
       min-width: 0;
-      flex: 1;
     }
     .rv-label {
       color: #7b6d60;
@@ -750,13 +754,12 @@ import { Antique, AntiqueType, CategoryGroup, ConditionItem } from '../../models
     .rv-value {
       color: var(--color-primary);
       font-size: 0.88rem;
-      overflow-wrap: anywhere;
+      line-height: 1.45;
+      overflow-wrap: break-word;
+      word-break: normal;
     }
     .rv-images-row .rv-cell {
-      width: 100%;
-      flex: none;
-      flex-direction: column;
-      align-items: flex-start;
+      grid-column: 1 / -1;
     }
     .rv-images {
       display: flex;
