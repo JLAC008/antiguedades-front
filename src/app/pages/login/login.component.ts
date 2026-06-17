@@ -71,10 +71,6 @@ import { AuthService } from '../../core/auth.service';
           <button type="submit" class="btn-submit" [disabled]="loading()">
             @if (loading()) { Accediendo... } @else { Iniciar sesión }
           </button>
-
-          <button type="button" class="btn-quick" (click)="quickAccess()">
-            Acceso rápido (admin)
-          </button>
         </form>
 
         <p class="auth-quote">Piezas únicas. Historias eternas.</p>
@@ -245,8 +241,7 @@ import { AuthService } from '../../core/auth.service';
       -webkit-text-fill-color: rgba(255,255,255,0.92) !important;
       caret-color: rgba(255,255,255,0.92);
     }
-    .btn-submit,
-    .btn-quick {
+    .btn-submit {
       width: 100%;
       border-radius: 5px;
       padding: 0.95rem;
@@ -254,8 +249,6 @@ import { AuthService } from '../../core/auth.service';
       font-weight: 800;
       cursor: pointer;
       transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
-    }
-    .btn-submit {
       background: linear-gradient(180deg, #c59445, #9e6d26);
       color: white;
       border: none;
@@ -269,14 +262,6 @@ import { AuthService } from '../../core/auth.service';
       box-shadow: 0 20px 38px rgba(0,0,0,0.3);
     }
     .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
-    .btn-quick {
-      background: rgba(0,0,0,0.18);
-      border: 1px solid rgba(184,149,90,0.64);
-      color: #d4b483;
-    }
-    .btn-quick:hover {
-      background: rgba(184,149,90,0.12);
-    }
     .auth-quote {
       color: rgba(255,255,255,0.7);
       font-family: 'Playfair Display', serif;
@@ -364,16 +349,4 @@ export class LoginComponent {
     }
   }
 
-  async quickAccess() {
-    this.loading.set(true);
-    this.error.set('');
-    try {
-      await this.auth.signIn('admin@antiguedades.com', 'admin123');
-      this.router.navigate(['/']);
-    } catch (err: any) {
-      this.error.set(err?.error?.error ?? 'Error al acceder.');
-    } finally {
-      this.loading.set(false);
-    }
-  }
 }
