@@ -1,0 +1,23 @@
+[1m[33m
+Warning: This is a simple server for use in testing or debugging Angular applications
+locally. It hasn't been reviewed for security issues.
+
+Binding this server to an open connection can result in compromising your application or
+computer. Using a different host than the one passed to the "--host" flag might result in
+websocket connection issues.
+    [39m[22m
+C:\sts-5.1.1.RELEASE\workspace\antiguedades-front\node_modules\rxjs\dist\cjs\internal\util\reportUnhandledError.js:13
+            throw err;
+            ^
+
+Error: Port 4200 is already in use. Use '--port' to specify a different port.
+    at createInUseError (C:\sts-5.1.1.RELEASE\workspace\antiguedades-front\node_modules\@angular\build\src\utils\check-port.js:51:12)
+    at Server.<anonymous> (C:\sts-5.1.1.RELEASE\workspace\antiguedades-front\node_modules\@angular\build\src\utils\check-port.js:68:24)
+    at Object.onceWrapper (node:events:631:26)
+    at Server.emit (node:events:509:28)
+    at emitErrorNT (node:net:2044:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)
+
+Node.js v24.16.0
+
+C:\sts-5.1.1.RELEASE\workspace\antiguedades-front>

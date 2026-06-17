@@ -1,47 +1,47 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 import { Catalog } from '../models';
-import { AuthService } from './auth.service';
-import { MOCK_CATALOGS, getNextCatalogId } from './mock-data';
-
-let catalogs = [...MOCK_CATALOGS];
+import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class CatalogsService {
-  constructor(private auth: AuthService) {}
+  constructor(private http: HttpClient) {}
 
   async getAll(): Promise<Catalog[]> {
-    return catalogs.map(c => ({
-      ...c,
-      antiques_count: undefined,
-    }));
+    const res = await firstValueFrom(
+      this.http.get<Catalog[]>(`${environment.apiUrl}/api/catalogs`)
+    );
+    return res;
   }
 
   async getById(id: string): Promise<Catalog | null> {
-    return catalogs.find(c => c.id === id) ?? null;
+    try {
+      const res = await firstValueFrom(
+        this.http.get<Catalog>(`${environment.apiUrl}/api/catalogs/${id}`)
+      );
+      return res;
+    } catch {
+      return null;
+    }
   }
 
   async create(catalog: Partial<Catalog>): Promise<Catalog> {
-    const user = this.auth.currentUser();
-    if (!user) throw new Error('No autenticado');
-    const newCatalog: Catalog = {
-      id: getNextCatalogId(),
-      name: catalog.name ?? '',
-      description: catalog.description ?? '',
-      cover_image: catalog.cover_image ?? '',
-      created_by: user.id,
-      created_at: new Date().toISOString(),
-    };
-    catalogs.unshift(newCatalog);
-    return newCatalog;
+    const res = await firstValueFrom(
+      this.http.post<Catalog>(`${environment.apiUrl}/api/catalogs`, catalog)
+    );
+    return res;
   }
 
   async update(id: string, catalog: Partial<Catalog>): Promise<void> {
-    const index = catalogs.findIndex(c => c.id === id);
-    if (index === -1) throw new Error('Catálogo no encontrado');
-    catalogs[index] = { ...catalogs[index], ...catalog };
+    const res = await firstValueFrom(
+      this.http.put(`${environment.apiUrl}/api/catalogs/${id}`, catalog)
+    );
   }
 
   async delete(id: string): Promise<void> {
-    catalogs = catalogs.filter(c => c.id !== id);
+    await firstValueFrom(
+      this.http.delete(`${environment.apiUrl}/api/catalogs/${id}`)
+    );
   }
 }

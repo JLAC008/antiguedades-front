@@ -2,9 +2,9 @@ import { Component, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { AntiquesService } from '../../core/antiques.service';
-import { CatalogsService } from '../../core/catalogs.service';
-import { AuthService } from '../../core/auth.service';
-import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
+import { CategoryService } from '../../core/category.service';
+import { ConditionService } from '../../core/condition.service';
+import { Antique, AntiqueType, CategoryGroup, ConditionItem } from '../../models';
 
 @Component({
   selector: 'app-upload-antique',
@@ -12,149 +12,23 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
   imports: [FormsModule, RouterLink],
   template: `
     <div class="page">
-      <div class="page-header">
+      <div class="page-header upload-form-hero">
         <div class="page-header-inner">
-          @if (step() === 1) {
-            <a routerLink="/coleccion" class="breadcrumb">&larr; Cancelar</a>
-            <h1 class="page-title">Nueva pieza</h1>
-            <div class="page-flourish" aria-hidden="true">⌘</div>
-            <p class="page-subtitle">Selecciona el tipo de pieza que quieres añadir</p>
-          }
-          @if (step() === 2) {
-            <button class="breadcrumb" (click)="step.set(1)">&larr; Volver</button>
-            <h1 class="page-title">{{ categoryLabel }}</h1>
-            <div class="page-flourish" aria-hidden="true">⌘</div>
-            <p class="page-subtitle">Selecciona el tipo de {{ categoryLabel.toLowerCase() }}</p>
-          }
-          @if (step() === 3) {
-            <button class="breadcrumb" (click)="step.set(2)">&larr; Volver</button>
-            <h1 class="page-title">{{ categoryLabel }} - {{ subcategoryLabel }}</h1>
-            <div class="page-flourish" aria-hidden="true">⌘</div>
-            <p class="page-subtitle">Selecciona el tipo de {{ subcategoryLabel.toLowerCase() }}</p>
-          }
-          @if (step() === 4) {
-            <button class="breadcrumb" (click)="step.set(hasDetail(form.subcategory) ? 3 : 2)">&larr; Volver</button>
-            <h1 class="page-title">{{ categoryLabel }}{{ subcategoryLabel ? ' - ' + subcategoryLabel : '' }}{{ detailLabel ? ' - ' + detailLabel : '' }}</h1>
-            <div class="page-flourish" aria-hidden="true">⌘</div>
-            <p class="page-subtitle">Completa los datos de la pieza</p>
-          }
           @if (editMode) {
             <a routerLink="/coleccion" class="breadcrumb">&larr; Cancelar</a>
             <h1 class="page-title">{{ categoryLabel }}{{ subcategoryLabel ? ' - ' + subcategoryLabel : '' }}</h1>
             <div class="page-flourish" aria-hidden="true">⌘</div>
             <p class="page-subtitle">Modifica los datos de la pieza</p>
+          } @else {
+            <a routerLink="/coleccion" class="breadcrumb">&larr; Volver</a>
+            <h1 class="page-title">A&ntilde;adir nueva pieza</h1>
+            <div class="page-flourish" aria-hidden="true">⌘</div>
+            <p class="page-subtitle">Incorpora una nueva pieza a tu colecci&oacute;n privada</p>
           }
         </div>
       </div>
 
-      <div class="page-content">
-        @if (step() === 1 && !editMode) {
-          <div class="category-selector">
-            <div class="category-card" (click)="selectCategory('antiguedad')">
-              <div class="category-icon category-icon-swords" aria-hidden="true">
-                <svg viewBox="0 0 24 24" role="img">
-                  <path d="m14.5 5 4.4-3.4 1.5 1.5-3.4 4.4"/>
-                  <path d="m9.5 5-4.4-3.4-1.5 1.5 3.4 4.4"/>
-                  <path d="m8 8 8 8M16 8l-8 8"/>
-                  <path d="m6.5 17.5-2 2M17.5 17.5l2 2M6.7 15.3l2 2M17.3 15.3l-2 2"/>
-                </svg>
-              </div>
-              <h2 class="category-name">Antigüedades</h2>
-              <p class="category-desc">Muebles, relojes, porcelana, cerámica y piezas históricas</p>
-              <span class="category-divider" aria-hidden="true"></span>
-              <span class="category-action">Seleccionar &rarr;</span>
-            </div>
-            <div class="category-card" (click)="selectCategory('papeleria')">
-              <div class="category-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" role="img">
-                  <path d="M7 3h7l5 5v13H7Z"/>
-                  <path d="M14 3v6h5M10 13h6M10 17h6"/>
-                </svg>
-              </div>
-              <h2 class="category-name">Papelería</h2>
-              <p class="category-desc">Documentos, sellos, mapas, grabados y material de archivo</p>
-              <span class="category-divider" aria-hidden="true"></span>
-              <span class="category-action">Seleccionar &rarr;</span>
-            </div>
-          </div>
-        }
-
-        @if (step() === 2 && !editMode) {
-          <div class="subcategory-selector">
-            @if (category() === 'antiguedad') {
-              <div class="category-card" (click)="selectSubcategory('escultura')">
-                <div class="category-icon">&#9997;</div>
-                <h2 class="category-name">Escultura</h2>
-                <p class="category-desc">Figuras, relieves y piezas tridimensionales</p>
-                <span class="category-action">Seleccionar &rarr;</span>
-              </div>
-              <div class="category-card" (click)="selectSubcategory('pintura')">
-                <div class="category-icon">&#127912;</div>
-                <h2 class="category-name">Pintura</h2>
-                <p class="category-desc">Óleos, acuarelas, grabados y obras en lienzo</p>
-                <span class="category-action">Seleccionar &rarr;</span>
-              </div>
-              <div class="category-card" (click)="selectSubcategory('cristal')">
-                <div class="category-icon">&#128161;</div>
-                <h2 class="category-name">Cristal</h2>
-                <p class="category-desc">Vidrio, cristal tallado, lámparas y objetos de vidrio</p>
-                <span class="category-action">Seleccionar &rarr;</span>
-              </div>
-              <div class="category-card" (click)="selectSubcategory('ceramica')">
-                <div class="category-icon">&#127834;</div>
-                <h2 class="category-name">Cerámica</h2>
-                <p class="category-desc">Porcelana, loza, azulejos y piezas de barro</p>
-                <span class="category-action">Seleccionar &rarr;</span>
-              </div>
-            }
-            @if (category() === 'papeleria') {
-              <div class="category-card" (click)="selectSubcategory('filatelia')">
-                <div class="category-icon">&#9993;</div>
-                <h2 class="category-name">Filatelia</h2>
-                <p class="category-desc">Sellos, colecciones postales y material de correo</p>
-                <span class="category-action">Seleccionar &rarr;</span>
-              </div>
-              <div class="category-card" (click)="selectSubcategory('fotos')">
-                <div class="category-icon">&#128248;</div>
-                <h2 class="category-name">Fotos</h2>
-                <p class="category-desc">Fotografías antiguas, albumes y positivos</p>
-                <span class="category-action">Seleccionar &rarr;</span>
-              </div>
-              <div class="category-card" (click)="selectSubcategory('revistas')">
-                <div class="category-icon">&#128214;</div>
-                <h2 class="category-name">Revistas / Periódicos</h2>
-                <p class="category-desc">Publicaciones periódicas, diarios y revistas históricas</p>
-                <span class="category-action">Seleccionar &rarr;</span>
-              </div>
-              <div class="category-card" (click)="selectSubcategory('documentos')">
-                <div class="category-icon">&#128203;</div>
-                <h2 class="category-name">Documentos</h2>
-                <p class="category-desc">Escrituras, cartas, mapas y documentos históricos</p>
-                <span class="category-action">Seleccionar &rarr;</span>
-              </div>
-              <div class="category-card" (click)="selectSubcategory('libros')">
-                <div class="category-icon">&#128218;</div>
-                <h2 class="category-name">Libros</h2>
-                <p class="category-desc">Libros antiguos, primeras ediciones y volúmenes de colección</p>
-                <span class="category-action">Seleccionar &rarr;</span>
-              </div>
-            }
-          </div>
-        }
-
-        @if (step() === 3 && !editMode && hasDetail(form.subcategory)) {
-          <div class="subcategory-selector">
-            @for (d of detailsForCurrent(); track d.key) {
-              <div class="category-card" (click)="selectDetail(d.key)">
-                <h2 class="category-name">{{ d.label }}</h2>
-                <p class="category-desc">{{ d.desc }}</p>
-                <span class="category-action">Seleccionar &rarr;</span>
-              </div>
-            }
-          </div>
-        }
-
-        @if ((step() === 4 && !editMode) || editMode) {
+      <div class="page-content upload-form-content">
           <div class="form-container">
             @if (error()) {
               <div class="form-error">{{ error() }}</div>
@@ -165,14 +39,45 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
 
             <form (ngSubmit)="onSubmit()" class="antique-form" [class.form-step-1]="formStep() === 1" [class.form-step-2]="formStep() === 2" [class.form-step-3]="formStep() === 3" [class.form-step-4]="formStep() === 4">
               <div class="form-step-nav" aria-label="Secciones del formulario">
-                <button type="button" class="form-step-item" [class.active]="formStep() === 1" (click)="formStep.set(1)">1. Información básica</button>
-                <button type="button" class="form-step-item" [class.active]="formStep() === 2" (click)="formStep.set(2)">2. Detalles</button>
-                <button type="button" class="form-step-item" [class.active]="formStep() === 3" (click)="formStep.set(3)">3. Fotografías</button>
-                <button type="button" class="form-step-item" [class.active]="formStep() === 4" (click)="formStep.set(4)">4. Revisión</button>
+                <button type="button" class="form-step-item" [class.active]="formStep() === 1" (click)="goToStep(1)">1. Información básica</button>
+                <button type="button" class="form-step-item" [class.active]="formStep() === 2" [disabled]="!canAccessStep(2)" (click)="goToStep(2)">2. Detalles</button>
+                <button type="button" class="form-step-item" [class.active]="formStep() === 3" [disabled]="!canAccessStep(3)" (click)="goToStep(3)">3. Fotografías</button>
+                <button type="button" class="form-step-item" [class.active]="formStep() === 4" [disabled]="!canAccessStep(4)" (click)="goToStep(4)">4. Revisión</button>
               </div>
 
               <div class="form-option-c-layout">
                 <div class="form-panel-main">
+              <div class="form-classification">
+                <div class="form-row form-row-3">
+                  <div class="form-group">
+                    <label class="form-label">Tipo <span class="required">*</span></label>
+                    <select class="form-select" [(ngModel)]="form.type" name="edit-type" (change)="onTypeChange()">
+                      <option value="antiguedad">Antigüedades</option>
+                      <option value="papeleria">Papelería</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Subcategoría <span class="required">*</span></label>
+                    <select class="form-select" [(ngModel)]="form.subcategory" name="edit-sub" (change)="onSubcategoryChange()">
+                      <option value="">Seleccionar...</option>
+                      @for (sub of subcategoriesForType; track sub.key) {
+                        <option [value]="sub.key">{{ sub.label }}</option>
+                      }
+                    </select>
+                  </div>
+                  @if (hasDetail(form.subcategory)) {
+                    <div class="form-group">
+                      <label class="form-label">Detalle <span class="required">*</span></label>
+                      <select class="form-select" [(ngModel)]="form.detail" name="edit-det">
+                        <option value="">Seleccionar...</option>
+                        @for (d of detailsForCurrent(); track d.key) {
+                          <option [value]="d.key">{{ d.label }}</option>
+                        }
+                      </select>
+                    </div>
+                  }
+                </div>
+              </div>
               @if (category() === 'antiguedad') {
                 <div class="form-grid">
                   <div class="form-col">
@@ -181,16 +86,7 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
                       <label class="form-label">Nombre <span class="required">*</span></label>
                       <input type="text" class="form-input" [(ngModel)]="form.name" name="name" placeholder="Ej. Reloj de péndulo del siglo XIX" required />
                     </div>
-                    <div class="form-group">
-                      <label class="form-label">Catálogo</label>
-                      <select class="form-select" [(ngModel)]="form.catalog_id" name="catalog_id">
-                        <option value="">Sin catálogo</option>
-                        @for (cat of catalogs(); track cat.id) {
-                          <option [value]="cat.id">{{ cat.name }}</option>
-                        }
-                      </select>
-                    </div>
-                    <div class="form-row form-row-3">
+                    <div class="form-row form-row-4">
                       <div class="form-group">
                         <label class="form-label">País</label>
                         <input type="text" class="form-input" [(ngModel)]="form.country" name="country" placeholder="Ej. España, Francia..." />
@@ -203,53 +99,57 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
                         <label class="form-label">Elemento</label>
                         <input type="text" class="form-input" [(ngModel)]="form.element" name="element" placeholder="Ej. Madera, Bronce..." />
                       </div>
-                    </div>
-                    <div id="form-details" class="form-section-anchor"></div>
-                    <div class="form-section-title form-details-title">Detalles de la pieza</div>
-                    <div class="form-row">
                       <div class="form-group">
-                        <label class="form-label">Época / Año</label>
-                        <input type="text" class="form-input" [(ngModel)]="form.year_era" name="year_era" placeholder="Ej. Siglo XIX, 1850s" />
-                      </div>
-                      <div class="form-group">
-                        <label class="form-label">Estado</label>
-                        <select class="form-select" [(ngModel)]="form.condition" name="condition">
-                          @for (cond of conditions; track cond) {
-                            <option [value]="cond">{{ cond }}</option>
+                        <label class="form-label">Estado <span class="required">*</span></label>
+                        <select class="form-select" [(ngModel)]="form.condition" name="edit-condition">
+                          @for (c of conditions(); track c.label) {
+                            <option [value]="c.label">{{ c.label }}</option>
                           }
                         </select>
                       </div>
                     </div>
                     <div class="form-row">
                       <div class="form-group">
-                        <label class="form-label">Material</label>
-                        <input type="text" class="form-input" [(ngModel)]="form.material" name="material" placeholder="Ej. Roble, Bronce, Porcelana" />
+                        <label class="form-label">Tema</label>
+                        <input type="text" class="form-input" [(ngModel)]="form.theme" name="theme" placeholder="Ej. Religión, historia, retrato..." />
                       </div>
                       <div class="form-group">
-                        <label class="form-label">Precio (€)</label>
-                        <input type="number" class="form-input" [(ngModel)]="form.price" name="price" placeholder="0" min="0" step="1" />
+                        <label class="form-label">Firma / marca</label>
+                        <input type="text" class="form-input" [(ngModel)]="form.signature" name="signature" placeholder="Autor, fabricante, sello o inscripción" />
+                      </div>
+                    </div>
+                    <div id="form-details" class="form-section-anchor"></div>
+                    <div class="form-section-title form-details-title">Detalles de la pieza</div>
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label class="form-label">Época / Año <span class="required">*</span></label>
+                        <input type="text" class="form-input" [(ngModel)]="form.year_era" name="year_era" placeholder="Ej. Siglo XIX, 1850s" required />
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label">Siglo</label>
+                        <input type="text" class="form-input" [(ngModel)]="form.century" name="century" placeholder="Ej. XVIII, XIX, XX" />
                       </div>
                     </div>
                     <div class="form-group">
-                      <label class="form-label">Dimensiones</label>
-                      <input type="text" class="form-input" [(ngModel)]="form.dimensions" name="dimensions" placeholder="Ej. 45 x 30 x 20 cm" />
+                      <label class="form-label">Valor (€) <span class="required">*</span></label>
+                      <input type="number" class="form-input" [(ngModel)]="form.price" name="price" placeholder="0" min="0.01" step="0.01" required />
                     </div>
                     <div class="form-group">
                       <label class="form-label">Descripción</label>
-                      <textarea class="form-textarea" [(ngModel)]="form.description" name="description" rows="5" placeholder="Describe la pieza, su historia, características destacadas..."></textarea>
+                      <textarea class="form-input form-textarea" [(ngModel)]="form.description" name="description" placeholder="Describe brevemente la pieza (material, estado, historia...)" rows="3"></textarea>
                     </div>
                   </div>
 
                   <div class="form-col">
                     <div id="form-photos" class="form-section-title">Fotografías</div>
                     <div class="form-group">
-                      <label class="form-label">Añadir imágenes</label>
-                      <label class="upload-zone">
-                        <input type="file" accept="image/*" multiple (change)="onFilesSelected($event)" hidden />
+                      <label class="form-label">Añadir imágenes <span class="required">*</span></label>
+                      <label class="upload-zone" tabindex="-1">
+                        <input type="file" accept="image/*" multiple name="images" (change)="onFilesSelected($event)" hidden />
                         <div class="upload-zone-inner">
                           <span class="upload-icon">&#128247;</span>
                           <p class="upload-text">Arrastra imágenes o haz clic para seleccionar</p>
-                          <p class="upload-hint">JPG, PNG, WebP — máx. 10 MB por imagen</p>
+                          <p class="upload-hint">JPG, PNG, WebP — máx. 2 MB · máx. 5 fotos</p>
                         </div>
                       </label>
                     </div>
@@ -264,7 +164,7 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
                     @if (existingImages().length > 0) {
                       <div class="images-preview">
                         @for (img of existingImages(); track img; let i = $index) {
-                          <div class="image-preview-item">
+                          <div class="image-preview-item" [class.main-image]="i === 0" (dblclick)="setMainImage(i)" title="Doble clic para establecer como principal">
                             <img [src]="img" alt="Imagen" />
                             <button type="button" class="image-remove" (click)="removeImage(i)">&times;</button>
                             @if (i === 0) {
@@ -287,79 +187,87 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
                       <input type="text" class="form-input" [(ngModel)]="form.name" name="name" placeholder="Ej. Mapa del siglo XVIII, Carta antigua..." required />
                     </div>
                     <div class="form-group">
-                      <label class="form-label">Catálogo</label>
-                      <select class="form-select" [(ngModel)]="form.catalog_id" name="catalog_id">
-                        <option value="">Sin catálogo</option>
-                        @for (cat of catalogs(); track cat.id) {
-                          <option [value]="cat.id">{{ cat.name }}</option>
-                        }
-                      </select>
+                      <label class="form-label">Título</label>
+                      <input type="text" class="form-input" [(ngModel)]="form.title" name="title" placeholder="Título original de la obra o documento" />
                     </div>
-                    <div id="form-details" class="form-section-anchor"></div>
-                    <div class="form-section-title form-details-title">Detalles del documento</div>
-                    <div class="form-row">
+                    <div class="form-row form-row-3">
                       <div class="form-group">
-                        <label class="form-label">Tipo de papel</label>
-                        <select class="form-select" [(ngModel)]="form.paper_type" name="paper_type">
-                          <option value="">Seleccionar...</option>
-                          <option value="verjurado">Verjurado</option>
-                          <option value="vitela">Vitela</option>
-                          <option value="algodon">Algodón</option>
-                          <option value="offset">Offset</option>
-                          <option value="reciclado">Reciclado</option>
-                          <option value="otro">Otro</option>
-                        </select>
+                        <label class="form-label">Autor</label>
+                        <input type="text" class="form-input" [(ngModel)]="form.author" name="author" placeholder="Autor o creador" />
                       </div>
                       <div class="form-group">
-                        <label class="form-label">Estado</label>
-                        <select class="form-select" [(ngModel)]="form.condition" name="condition">
-                          @for (cond of conditions; track cond) {
-                            <option [value]="cond">{{ cond }}</option>
+                        <label class="form-label">Editor</label>
+                        <input type="text" class="form-input" [(ngModel)]="form.editor" name="editor" placeholder="Persona o entidad editorial" />
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label">Edición</label>
+                        <input type="text" class="form-input" [(ngModel)]="form.edition" name="edition" placeholder="Ej. 1.ª edición" />
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Imprenta</label>
+                      <input type="text" class="form-input" [(ngModel)]="form.imprenta" name="imprenta" placeholder="Taller o establecimiento impresor" />
+                    </div>
+                    <div class="form-row form-row-3">
+                      <div class="form-group">
+                        <label class="form-label">País</label>
+                        <input type="text" class="form-input" [(ngModel)]="form.country" name="paper_country" placeholder="Ej. España, Francia..." />
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label">Región</label>
+                        <input type="text" class="form-input" [(ngModel)]="form.region" name="paper_region" placeholder="Ej. Madrid, Cataluña..." />
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label">Estado <span class="required">*</span></label>
+                        <select class="form-select" [(ngModel)]="form.condition" name="paper-condition">
+                          @for (c of conditions(); track c.label) {
+                            <option [value]="c.label">{{ c.label }}</option>
                           }
                         </select>
                       </div>
                     </div>
                     <div class="form-row">
                       <div class="form-group">
-                        <label class="form-label">Formato</label>
-                        <select class="form-select" [(ngModel)]="form.paper_format" name="paper_format">
-                          <option value="">Seleccionar...</option>
-                          <option value="a4">A4</option>
-                          <option value="a5">A5</option>
-                          <option value="a3">A3</option>
-                          <option value="carta">Carta</option>
-                          <option value="otro">Otro</option>
-                        </select>
+                        <label class="form-label">Tema</label>
+                        <input type="text" class="form-input" [(ngModel)]="form.theme" name="paper_theme" placeholder="Ej. Historia, religión, militar, novela..." />
                       </div>
                       <div class="form-group">
-                        <label class="form-label">Gramaje (g/m²)</label>
-                        <input type="number" class="form-input" [(ngModel)]="form.paper_weight" name="paper_weight" placeholder="Ej. 120" min="0" step="1" />
+                        <label class="form-label">Firma / autógrafo</label>
+                        <input type="text" class="form-input" [(ngModel)]="form.signature" name="paper_signature" placeholder="Firma, dedicatoria o marca" />
+                      </div>
+                    </div>
+                    <div id="form-details" class="form-section-anchor"></div>
+                    <div class="form-section-title form-details-title">Detalles del documento</div>
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label class="form-label">Año / Período <span class="required">*</span></label>
+                        <input type="text" class="form-input" [(ngModel)]="form.year_era" name="year_era" placeholder="Ej. 1780, década de 1930..." required />
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label">Siglo</label>
+                        <input type="text" class="form-input" [(ngModel)]="form.century" name="paper_century" placeholder="Ej. XVIII, XIX, XX" />
                       </div>
                     </div>
                     <div class="form-group">
-                      <label class="form-label">Año / Época</label>
-                      <input type="text" class="form-input" [(ngModel)]="form.year_era" name="year_era" placeholder="Ej. 1780, Siglo XIX..." />
+                      <label class="form-label">Valor (€) <span class="required">*</span></label>
+                      <input type="number" class="form-input" [(ngModel)]="form.price" name="price" placeholder="0" min="0.01" step="0.01" required />
                     </div>
                     <div class="form-group">
                       <label class="form-label">Descripción</label>
-                      <textarea class="form-textarea" [(ngModel)]="form.description" name="description" rows="5" placeholder="Describe el documento, su estado, procedencia..."></textarea>
-                    </div>
-                    <div class="form-group">
-                      <label class="form-label">Precio (€)</label>
-                      <input type="number" class="form-input" [(ngModel)]="form.price" name="price" placeholder="0" min="0" step="1" />
+                      <textarea class="form-input form-textarea" [(ngModel)]="form.description" name="paper_description" placeholder="Describe brevemente el documento (contenido, estado, procedencia...)" rows="3"></textarea>
                     </div>
                   </div>
 
                   <div class="form-col">
                     <div id="form-photos" class="form-section-title">Fotografías</div>
                     <div class="form-group">
-                      <label class="form-label">Añadir imágenes</label>
-                      <label class="upload-zone">
-                        <input type="file" accept="image/*" multiple (change)="onFilesSelected($event)" hidden />
+                      <label class="form-label">Añadir imágenes <span class="required">*</span></label>
+                      <label class="upload-zone" tabindex="-1">
+                        <input type="file" accept="image/*" multiple name="images" (change)="onFilesSelected($event)" hidden />
                         <div class="upload-zone-inner">
                           <span class="upload-icon">&#128247;</span>
                           <p class="upload-text">Arrastra imágenes o haz clic para seleccionar</p>
-                          <p class="upload-hint">JPG, PNG, WebP — máx. 10 MB por imagen</p>
+                          <p class="upload-hint">JPG, PNG, WebP — máx. 2 MB · máx. 5 fotos</p>
                         </div>
                       </label>
                     </div>
@@ -374,7 +282,7 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
                     @if (existingImages().length > 0) {
                       <div class="images-preview">
                         @for (img of existingImages(); track img; let i = $index) {
-                          <div class="image-preview-item">
+                          <div class="image-preview-item" [class.main-image]="i === 0" (dblclick)="setMainImage(i)" title="Doble clic para establecer como principal">
                             <img [src]="img" alt="Imagen" />
                             <button type="button" class="image-remove" (click)="removeImage(i)">&times;</button>
                             @if (i === 0) {
@@ -388,39 +296,157 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
                 </div>
               }
 
-                  <div class="review-panel">
+              <div class="review-panel">
                     <div class="form-section-title">Revisión</div>
-                    <div class="review-grid">
-                      <div class="review-item">
-                        <span>Tipo</span>
-                        <strong>{{ categoryLabel }}</strong>
+                    <div class="review-fields">
+                      <div class="rv-row">
+                        <div class="rv-cell">
+                          <span class="rv-label">Tipo</span>
+                          <strong class="rv-value">{{ categoryLabel }}</strong>
+                        </div>
+                        <div class="rv-cell">
+                          <span class="rv-label">Categoría</span>
+                          <strong class="rv-value">{{ subcategoryLabel || 'Sin seleccionar' }}</strong>
+                        </div>
+                        @if (detailLabel) {
+                          <div class="rv-cell">
+                            <span class="rv-label">Detalle</span>
+                            <strong class="rv-value">{{ detailLabel }}</strong>
+                          </div>
+                        }
+                        <div class="rv-cell">
+                          <span class="rv-label">Nombre</span>
+                          <strong class="rv-value">{{ form.name || 'Pendiente' }}</strong>
+                        </div>
                       </div>
-                      <div class="review-item">
-                        <span>Categoría</span>
-                        <strong>{{ subcategoryLabel || 'Sin seleccionar' }}</strong>
+                      <div class="rv-row">
+                        @if (form.year_era) {
+                          <div class="rv-cell">
+                            <span class="rv-label">Año / Época</span>
+                            <strong class="rv-value">{{ form.year_era }}</strong>
+                          </div>
+                        }
+                        <div class="rv-cell">
+                          <span class="rv-label">Valor</span>
+                          <strong class="rv-value">{{ form.price || 0 }} €</strong>
+                        </div>
+                        <div class="rv-cell">
+                          <span class="rv-label">Estado</span>
+                          <strong class="rv-value">{{ form.condition }}</strong>
+                        </div>
                       </div>
-                      @if (detailLabel) {
-                        <div class="review-item">
-                          <span>Detalle</span>
-                          <strong>{{ detailLabel }}</strong>
+                      @if (form.description) {
+                        <div class="rv-row">
+                          <div class="rv-cell">
+                            <span class="rv-label">Descripción</span>
+                            <strong class="rv-value">{{ form.description }}</strong>
+                          </div>
                         </div>
                       }
-                      <div class="review-item">
-                        <span>Nombre</span>
-                        <strong>{{ form.name || 'Pendiente' }}</strong>
-                      </div>
-                      <div class="review-item">
-                        <span>Estado</span>
-                        <strong>{{ form.condition }}</strong>
-                      </div>
-                      <div class="review-item">
-                        <span>Precio</span>
-                        <strong>{{ form.price || 0 }} €</strong>
-                      </div>
-                      <div class="review-item">
-                        <span>Imágenes</span>
-                        <strong>{{ existingImages().length }}</strong>
-                      </div>
+                      @if (form.title || form.author || form.editor || form.imprenta || form.edition || form.century || form.theme || form.signature) {
+                        <div class="rv-row">
+                          @if (form.title) {
+                            <div class="rv-cell">
+                              <span class="rv-label">Título</span>
+                              <strong class="rv-value">{{ form.title }}</strong>
+                            </div>
+                          }
+                          @if (form.author) {
+                            <div class="rv-cell">
+                              <span class="rv-label">Autor</span>
+                              <strong class="rv-value">{{ form.author }}</strong>
+                            </div>
+                          }
+                          @if (form.editor) {
+                            <div class="rv-cell">
+                              <span class="rv-label">Editor</span>
+                              <strong class="rv-value">{{ form.editor }}</strong>
+                            </div>
+                          }
+                          @if (form.imprenta) {
+                            <div class="rv-cell">
+                              <span class="rv-label">Imprenta</span>
+                              <strong class="rv-value">{{ form.imprenta }}</strong>
+                            </div>
+                          }
+                          @if (form.edition) {
+                            <div class="rv-cell">
+                              <span class="rv-label">Edición</span>
+                              <strong class="rv-value">{{ form.edition }}</strong>
+                            </div>
+                          }
+                          @if (form.century) {
+                            <div class="rv-cell">
+                              <span class="rv-label">Siglo</span>
+                              <strong class="rv-value">{{ form.century }}</strong>
+                            </div>
+                          }
+                          @if (form.theme) {
+                            <div class="rv-cell">
+                              <span class="rv-label">Tema</span>
+                              <strong class="rv-value">{{ form.theme }}</strong>
+                            </div>
+                          }
+                          @if (form.signature) {
+                            <div class="rv-cell">
+                              <span class="rv-label">Firma / marca</span>
+                              <strong class="rv-value">{{ form.signature }}</strong>
+                            </div>
+                          }
+                        </div>
+                      }
+                      @if (form.type === 'antiguedad') {
+                        <div class="rv-row">
+                          @if (form.country) {
+                            <div class="rv-cell">
+                              <span class="rv-label">País</span>
+                              <strong class="rv-value">{{ form.country }}</strong>
+                            </div>
+                          }
+                          @if (form.region) {
+                            <div class="rv-cell">
+                              <span class="rv-label">Región</span>
+                              <strong class="rv-value">{{ form.region }}</strong>
+                            </div>
+                          }
+                          @if (form.element) {
+                            <div class="rv-cell">
+                              <span class="rv-label">Elemento</span>
+                              <strong class="rv-value">{{ form.element }}</strong>
+                            </div>
+                          }
+                        </div>
+                      }
+                      @if (form.type === 'papeleria') {
+                        <div class="rv-row">
+                          @if (form.country) {
+                            <div class="rv-cell">
+                              <span class="rv-label">País</span>
+                              <strong class="rv-value">{{ form.country }}</strong>
+                            </div>
+                          }
+                          @if (form.region) {
+                            <div class="rv-cell">
+                              <span class="rv-label">Región</span>
+                              <strong class="rv-value">{{ form.region }}</strong>
+                            </div>
+                          }
+                        </div>
+                      }
+                      @if (existingImages().length > 0) {
+                        <div class="rv-row rv-images-row">
+                          <div class="rv-cell rv-images-cell">
+                            <span class="rv-label">Imágenes</span>
+                            <div class="rv-images">
+                              @for (img of existingImages(); track img) {
+                                <div class="rv-thumb">
+                                  <img [src]="img" alt="" />
+                                </div>
+                              }
+                            </div>
+                          </div>
+                        </div>
+                      }
                     </div>
                     <p class="review-note">Revisa que los datos principales estén correctos antes de publicar la pieza.</p>
                   </div>
@@ -440,7 +466,7 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
 
               <div id="form-review" class="form-actions">
                 @if (formStep() === 1 && !editMode) {
-                  <button type="button" class="btn-cancel" (click)="goBack()">Volver</button>
+                  <a routerLink="/coleccion" class="btn-cancel">Cancelar</a>
                 }
                 @if (formStep() > 1) {
                   <button type="button" class="btn-cancel" (click)="previousFormStep()">Atrás</button>
@@ -456,12 +482,42 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
                   </button>
                 }
               </div>
+
+              @if (showErrorModal()) {
+                <div class="modal-overlay" (click)="showErrorModal.set(false)">
+                  <div class="modal" (click)="$event.stopPropagation()">
+                    <h3 class="modal-title">Completa el formulario</h3>
+                    <p class="modal-text">{{ errorModalMessage() }}</p>
+                    <div class="modal-actions">
+                      <button type="button" class="btn-cancel" (click)="showErrorModal.set(false)">Entendido</button>
+                    </div>
+                  </div>
+                </div>
+              }
+
+              @if (showSizeModal()) {
+                <div class="modal-overlay" (click)="showSizeModal.set(false)">
+                  <div class="modal" (click)="$event.stopPropagation()">
+                    <h3 class="modal-title">Fotos no válidas</h3>
+                    <p class="modal-text">
+                      Las siguientes imágenes superan el tamaño máximo de 2 MB y no se han subido:
+                    </p>
+                    <ul class="modal-text file-list">
+                      @for (f of sizeModalFiles(); track f.name) {
+                        <li>{{ f.name }} — {{ (f.size / (1024 * 1024)).toFixed(1) }} MB</li>
+                      }
+                    </ul>
+                    <div class="modal-actions">
+                      <button type="button" class="btn-cancel" (click)="showSizeModal.set(false)">Entendido</button>
+                    </div>
+                  </div>
+                </div>
+              }
             </form>
           </div>
-        }
+        </div>
       </div>
-    </div>
-  `,
+    `,
   styles: [`
     .page {
       min-height: 100vh;
@@ -549,90 +605,6 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
       margin-bottom: 1.5rem;
     }
 
-    .category-selector {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2.45rem;
-      max-width: 790px;
-      margin: 0 auto;
-      padding-top: 0.25rem;
-    }
-    .category-card {
-      background: rgba(255, 255, 255, 0.48);
-      border: 1px solid #dccdbd;
-      border-radius: 10px;
-      padding: 2.25rem 2rem 2.35rem;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.3s;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.85rem;
-      min-height: 360px;
-      box-shadow: 0 16px 42px rgba(64, 47, 29, 0.035);
-    }
-    .category-card:hover {
-      border-color: var(--color-accent);
-      box-shadow: 0 18px 38px rgba(84, 61, 38, 0.12);
-      transform: translateY(-4px);
-    }
-    .category-icon {
-      color: var(--color-accent);
-      width: 94px;
-      height: 94px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: radial-gradient(circle at 32% 22%, #33312d, #090909 68%);
-      border-radius: 50%;
-      margin-bottom: 0.45rem;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.11), 0 14px 28px rgba(0,0,0,0.18);
-      font-size: 2.3rem;
-    }
-    .category-icon svg {
-      width: 44px;
-      height: 44px;
-      fill: none;
-      stroke: currentColor;
-      stroke-width: 1.45;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      display: block;
-    }
-    .category-icon-swords svg {
-      width: 48px;
-      height: 48px;
-    }
-    .category-name {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.85rem;
-      font-weight: 700;
-      color: var(--color-primary);
-      margin: 0;
-    }
-    .category-desc {
-      color: #5b5046;
-      font-family: 'Playfair Display', serif;
-      font-size: 1.02rem;
-      margin: 0;
-      line-height: 1.55;
-      max-width: 270px;
-      min-height: 3.1rem;
-    }
-    .category-divider {
-      display: block;
-      width: 92px;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(184,149,90,0.72), transparent);
-      margin: 0.8rem 0 0.55rem;
-    }
-    .category-action {
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--color-accent);
-      margin-top: 0;
-    }
     .form-container { max-width: 1100px; margin: 0 auto; }
     .antique-form {
       background: transparent;
@@ -664,6 +636,14 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
     }
     .form-step-item:hover {
       color: var(--color-primary);
+    }
+    .form-step-item:disabled {
+      color: #b7aea4;
+      cursor: not-allowed;
+      opacity: 0.62;
+    }
+    .form-step-item:disabled:hover {
+      color: #b7aea4;
     }
     .form-step-item:focus-visible {
       outline: 2px solid rgba(184,149,90,0.45);
@@ -721,6 +701,11 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
     .form-step-4 .review-panel {
       display: block;
     }
+    .form-step-2 .form-classification,
+    .form-step-3 .form-classification,
+    .form-step-4 .form-classification {
+      display: none;
+    }
     .form-section-title {
       scroll-margin-top: 100px;
       font-size: 0.75rem;
@@ -734,33 +719,63 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
     .form-section-anchor {
       scroll-margin-top: 100px;
     }
-    .review-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 0.9rem;
+    .review-fields {
       margin-top: 1.25rem;
     }
-    .review-item {
+    .rv-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .rv-cell {
       background: rgba(250, 248, 244, 0.84);
       border: 1px solid #e2d6c8;
       border-radius: 6px;
-      padding: 0.85rem 0.95rem;
+      padding: 0.55rem 0.75rem;
       display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
+      align-items: center;
+      gap: 0.45rem;
       min-width: 0;
+      flex: 1;
     }
-    .review-item span {
+    .rv-label {
       color: #7b6d60;
-      font-size: 0.76rem;
+      font-size: 0.72rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.06em;
+      white-space: nowrap;
     }
-    .review-item strong {
+    .rv-value {
       color: var(--color-primary);
-      font-size: 0.95rem;
+      font-size: 0.88rem;
       overflow-wrap: anywhere;
+    }
+    .rv-images-row .rv-cell {
+      width: 100%;
+      flex: none;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .rv-images {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.25rem;
+    }
+    .rv-thumb {
+      width: 64px;
+      height: 64px;
+      border-radius: 4px;
+      overflow: hidden;
+      border: 1px solid var(--color-border);
+    }
+    .rv-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
     .review-note {
       color: #5f5145;
@@ -769,6 +784,11 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
     }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
     .form-row-3 { grid-template-columns: 1fr 1fr 1fr; }
+    .form-classification {
+      padding-bottom: 1.25rem;
+      margin-bottom: 1.25rem;
+      border-bottom: 1px solid var(--color-border);
+    }
     .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
     .form-label { font-size: 0.875rem; font-weight: 600; color: var(--color-text); }
     .required { color: var(--color-error); }
@@ -782,6 +802,15 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
       transition: border-color 0.2s, box-shadow 0.2s;
       font-family: inherit;
     }
+    .form-input:-webkit-autofill,
+    .form-input:-webkit-autofill:hover,
+    .form-input:-webkit-autofill:focus,
+    .form-input:-webkit-autofill:active {
+      transition: background-color 9999s ease-in-out 0s;
+      -webkit-text-fill-color: var(--color-text) !important;
+      caret-color: var(--color-text);
+    }
+
     .form-input:focus, .form-select:focus, .form-textarea:focus {
       outline: none;
       border-color: var(--color-accent);
@@ -828,7 +857,11 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
       overflow: hidden;
       border: 1px solid var(--color-border);
     }
-    .image-preview-item img { width: 100%; height: 100%; object-fit: cover; }
+    .image-preview-item img { width: 100%; height: 100%; object-fit: scale-down; }
+    .image-preview-item.main-image {
+      border-color: var(--color-accent);
+      box-shadow: 0 0 0 2px var(--color-accent), 0 0 16px rgba(200, 155, 75, 0.34);
+    }
     .image-remove {
       position: absolute;
       top: 4px;
@@ -930,45 +963,171 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
     }
     .btn-submit:hover:not(:disabled) { background: var(--color-secondary); }
     .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
-    .subcategory-selector {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 2rem;
-      max-width: 790px;
-      margin: 0 auto;
-      padding-top: 0.25rem;
-    }
-    .subcategory-selector .category-card {
-      min-height: 276px;
-      padding: 1.9rem 1.75rem 1.75rem;
-    }
-    .subcategory-selector .category-icon {
-      width: 72px;
-      height: 72px;
-      font-size: 2.2rem;
-      margin-bottom: 0.2rem;
-    }
-    .subcategory-selector .category-name {
-      font-size: 1.45rem;
-    }
-    .subcategory-selector .category-desc {
-      font-size: 0.95rem;
-      min-height: 2.95rem;
-    }
-    .subcategory-selector .category-action {
-      margin-top: auto;
-      padding-top: 0.85rem;
+    .page-header.upload-form-hero {
       position: relative;
+      overflow: hidden;
+      min-height: 245px;
+      padding: 3rem 1.5rem 2rem;
+      background:
+        linear-gradient(90deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.72) 38%, rgba(0,0,0,0.38) 70%, rgba(0,0,0,0.72) 100%),
+        url('/assets/login-bg-gallery.png') center 44% / cover no-repeat;
+      border-bottom: 1px solid rgba(184,149,90,0.28);
+      color: #fff8ed;
     }
-    .subcategory-selector .category-action::before {
+    .page-header.upload-form-hero::after {
       content: '';
       position: absolute;
-      left: 50%;
-      top: 0;
-      width: 82px;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(184,149,90,0.72), transparent);
-      transform: translateX(-50%);
+      inset: auto 0 0;
+      height: 55%;
+      background: linear-gradient(180deg, transparent, #090908);
+      pointer-events: none;
+    }
+    .page-header.upload-form-hero .page-header-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 1060px;
+    }
+    .page-header.upload-form-hero .breadcrumb {
+      color: #d4ac62;
+    }
+    .page-header.upload-form-hero .page-title {
+      color: #fff8ed;
+      font-size: clamp(2.35rem, 4.4vw, 4rem);
+      text-shadow: 0 16px 42px rgba(0,0,0,0.62);
+    }
+    .page-header.upload-form-hero .page-subtitle {
+      color: rgba(255,248,237,0.84);
+      margin-top: 1.05rem;
+    }
+    .page-header.upload-form-hero .page-flourish {
+      color: #d4ac62;
+      margin: 1.05rem 0 0;
+    }
+    .page-content.upload-form-content {
+      max-width: 1160px;
+      padding: 1.5rem 1.5rem 3.4rem;
+    }
+    .page:has(.upload-form-content) {
+      background:
+        radial-gradient(circle at 50% 0%, rgba(184,149,90,0.11), transparent 30rem),
+        linear-gradient(180deg, #090908 0%, #0b0b0a 48%, #10100f 100%);
+      color: #f7efe3;
+    }
+    .upload-form-content .form-container {
+      max-width: 1160px;
+    }
+    .upload-form-content .form-step-nav {
+      border-bottom-color: rgba(184,149,90,0.28);
+      margin-bottom: 1.35rem;
+    }
+    .upload-form-content .form-step-item {
+      color: rgba(247,239,227,0.58);
+    }
+    .upload-form-content .form-step-item:hover,
+    .upload-form-content .form-step-item.active {
+      color: #f2d292;
+    }
+    .upload-form-content .form-step-item.active::after {
+      background: #d4ac62;
+    }
+    .upload-form-content .form-panel-main,
+    .upload-form-content .form-guidance,
+    .upload-form-content .form-actions {
+      background:
+        radial-gradient(circle at 0% 0%, rgba(184,149,90,0.08), transparent 16rem),
+        linear-gradient(180deg, rgba(18,18,17,0.94), rgba(9,9,8,0.9));
+      border: 1px solid rgba(184,149,90,0.34);
+      box-shadow: 0 18px 48px rgba(0,0,0,0.25);
+    }
+    .upload-form-content .form-section-title {
+      color: #d4ac62;
+      border-bottom-color: rgba(184,149,90,0.25);
+    }
+    .upload-form-content .form-label {
+      color: #e5c98d;
+    }
+    .upload-form-content .form-input,
+    .upload-form-content .form-select,
+    .upload-form-content .form-textarea {
+      border-color: rgba(184,149,90,0.36);
+      background: rgba(3,3,3,0.56);
+      color: #fff8ed;
+    }
+    .upload-form-content .form-input::placeholder,
+    .upload-form-content .form-textarea::placeholder {
+      color: rgba(247,239,227,0.38);
+    }
+    .upload-form-content .form-input:-webkit-autofill,
+    .upload-form-content .form-input:-webkit-autofill:hover,
+    .upload-form-content .form-input:-webkit-autofill:focus,
+    .upload-form-content .form-input:-webkit-autofill:active {
+      transition: background-color 9999s ease-in-out 0s;
+      -webkit-text-fill-color: #fff8ed !important;
+      caret-color: #fff8ed;
+    }
+    .upload-form-content .form-select option {
+      background: #11100f;
+      color: #f7efe3;
+    }
+    .upload-form-content .form-input:focus,
+    .upload-form-content .form-select:focus,
+    .upload-form-content .form-textarea:focus {
+      border-color: #d4ac62;
+      box-shadow: 0 0 0 3px rgba(184,149,90,0.12);
+    }
+    .upload-form-content .upload-zone {
+      border-color: rgba(184,149,90,0.45);
+      background: rgba(3,3,3,0.35);
+    }
+    .upload-form-content .upload-zone:hover {
+      border-color: #d4ac62;
+      background: rgba(184,149,90,0.08);
+    }
+    .upload-form-content .upload-text {
+      color: #fff8ed;
+    }
+    .upload-form-content .upload-hint,
+    .upload-form-content .upload-progress-text,
+    .upload-form-content .form-guidance,
+    .upload-form-content .review-note {
+      color: rgba(247,239,227,0.62);
+    }
+    .upload-form-content .guidance-kicker {
+      color: #f2d292;
+    }
+    .upload-form-content .guidance-figure {
+      color: rgba(212,172,98,0.42);
+    }
+    .upload-form-content .rv-cell {
+      background: rgba(3,3,3,0.42);
+      border-color: rgba(184,149,90,0.3);
+    }
+    .upload-form-content .rv-label {
+      color: #d4ac62;
+    }
+    .upload-form-content .rv-value {
+      color: #fff8ed;
+    }
+    .upload-form-content .rv-thumb {
+      border-color: rgba(184,149,90,0.3);
+    }
+    .upload-form-content .btn-cancel {
+      border-color: rgba(184,149,90,0.42);
+      color: #d8bf91;
+      background: rgba(255,255,255,0.02);
+    }
+    .upload-form-content .btn-cancel:hover {
+      border-color: #d4ac62;
+      color: #f2d292;
+      background: rgba(184,149,90,0.08);
+    }
+    .upload-form-content .btn-submit {
+      border: 1px solid rgba(212,172,98,0.9);
+      background: linear-gradient(180deg, #c69842, #a97725);
+      color: #fff8ed;
+    }
+    .upload-form-content .btn-submit:hover:not(:disabled) {
+      background: linear-gradient(180deg, #d3aa59, #ae7d2d);
     }
     @media (max-width: 768px) {
       .page-header {
@@ -994,56 +1153,6 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
       }
       .page-content {
         padding: 2.4rem 1rem 3.5rem;
-      }
-      .category-selector,
-      .subcategory-selector {
-        grid-template-columns: minmax(0, 1fr);
-        gap: 1.2rem;
-        max-width: 430px;
-      }
-      .category-card {
-        min-height: auto;
-        padding: 1.65rem 1.25rem 1.55rem;
-        gap: 0.65rem;
-      }
-      .category-icon {
-        width: 72px;
-        height: 72px;
-        margin-bottom: 0.2rem;
-      }
-      .category-icon svg {
-        width: 34px;
-        height: 34px;
-      }
-      .category-icon-swords svg {
-        width: 38px;
-        height: 38px;
-      }
-      .category-name {
-        font-size: 1.55rem;
-      }
-      .category-desc {
-        font-size: 0.96rem;
-        min-height: auto;
-        max-width: 20rem;
-      }
-      .category-divider {
-        margin: 0.45rem 0 0.35rem;
-      }
-      .subcategory-selector .category-card {
-        min-height: auto;
-        padding: 1.45rem 1.2rem;
-      }
-      .subcategory-selector .category-icon {
-        width: 62px;
-        height: 62px;
-        font-size: 1.75rem;
-      }
-      .subcategory-selector .category-name {
-        font-size: 1.35rem;
-      }
-      .subcategory-selector .category-desc {
-        min-height: auto;
       }
       .form-grid { grid-template-columns: 1fr; }
       .form-row { grid-template-columns: 1fr; }
@@ -1074,9 +1183,6 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
         min-height: auto;
         padding: 1.15rem;
       }
-      .review-grid {
-        grid-template-columns: 1fr;
-      }
       .guidance-figure {
         display: none;
       }
@@ -1089,127 +1195,116 @@ import { Catalog, CONDITIONS, Antique, AntiqueType } from '../../models';
         text-align: center;
       }
     }
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 1rem;
+    }
+    .modal {
+      background: #1c1b1a;
+      border: 1px solid rgba(184,149,90,0.35);
+      border-radius: 12px;
+      padding: 2rem;
+      max-width: 420px;
+      width: 100%;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+      color: #f0e8db;
+    }
+    .modal-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin: 0 0 0.75rem;
+      color: #f0e8db;
+    }
+    .modal-text {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin: 0 0 1.5rem;
+      color: rgba(240,232,219,0.8);
+    }
+    .modal-text.file-list {
+      margin-bottom: 1.5rem;
+      padding-left: 1.25rem;
+    }
+    .modal-text.file-list li {
+      margin-bottom: 0.35rem;
+    }
+    .modal-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+    .modal-actions .btn-cancel {
+      flex: 1;
+      border: 1px solid rgba(184,149,90,0.35);
+      background: transparent;
+      color: #f0e8db;
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 0.8rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .modal-actions .btn-cancel:hover {
+      background: rgba(184,149,90,0.1);
+    }
     @media (max-width: 420px) {
       .page-header {
         padding-top: 1.9rem;
-      }
-      .category-card {
-        padding-inline: 1rem;
       }
     }
   `]
 })
 export class UploadAntiqueComponent implements OnInit {
-  catalogs = signal<Catalog[]>([]);
   existingImages = signal<string[]>([]);
   saving = signal(false);
   uploadingImages = signal(false);
   uploadProgress = signal(0);
   error = signal('');
   success = signal('');
+  showErrorModal = signal(false);
+  errorModalMessage = signal('');
+  showSizeModal = signal(false);
+  sizeModalFiles = signal<{name: string, size: number}[]>([]);
   editMode = false;
   editId = '';
-  conditions = CONDITIONS;
-
-  step = signal(1);
-  category = signal<AntiqueType | null>(null);
+  category = signal<AntiqueType>('antiguedad');
   formStep = signal(1);
-
-  subcategories = [
-    { key: 'escultura', label: 'Escultura', icon: '&#9997;' },
-    { key: 'pintura', label: 'Pintura', icon: '&#127912;' },
-    { key: 'cristal', label: 'Cristal', icon: '&#128161;' },
-    { key: 'ceramica', label: 'Cerámica', icon: '&#127834;' },
-  ];
-
-  esculturaDetails = [
-    { key: 'busto', label: 'Busto', desc: 'Representación de la parte superior del torso humano' },
-    { key: 'figura', label: 'Figura', desc: 'Escultura completa de cuerpo entero' },
-    { key: 'belen', label: 'Belén', desc: 'Figuras y escenas del belén tradicional' },
-  ];
-
-  pinturaDetails = [
-    { key: 'oleo', label: 'Óleo', desc: 'Pintura al óleo sobre lienzo, tabla u otros soportes' },
-    { key: 'grabado', label: 'Grabado', desc: 'Estampas, aguafuertes y técnicas de impresión' },
-    { key: 'acuarela', label: 'Acuarela', desc: 'Pintura ligera con pigmentos diluidos en agua' },
-  ];
-
-  filateliaDetails = [
-    { key: 'hist-postal', label: 'Hist. postal', desc: 'Historia y evolución de los servicios postales' },
-    { key: 'entero-postal', label: 'Entero postal', desc: 'Tarjetas, sobres y aerogramas con estampilla impresa' },
-    { key: 'sello', label: 'Sello', desc: 'Sellos individuales, series y bloques' },
-    { key: 'pre-filatelia', label: 'Pre-filatelia', desc: 'Marcas postales anteriores al sello adhesivo' },
-    { key: 'censura', label: 'Censura', desc: 'Correspondencia con marcas de censura militar o política' },
-  ];
-
-  fotosDetails = [
-    { key: 'familiar', label: 'Familiar', desc: 'Retratos y escenas familiares' },
-    { key: 'boda', label: 'Boda', desc: 'Fotografías de ceremonias nupciales' },
-    { key: 'ninos', label: 'Niños', desc: 'Retratos infantiles y de grupo' },
-    { key: 'hombres', label: 'Hombres', desc: 'Retratos masculinos individuales o grupales' },
-    { key: 'mujeres', label: 'Mujeres', desc: 'Retratos femeninos individuales o grupales' },
-    { key: 'militar', label: 'Militar', desc: 'Fotografías de uniformes, campamentos y conflictos' },
-    { key: 'etnica', label: 'Étnica', desc: 'Pueblos, tradiciones y vestimentas tradicionales' },
-    { key: 'paisaje', label: 'Paisaje', desc: 'Vistas, ciudades y entornos naturales' },
-    { key: 'retrato', label: 'Retrato', desc: 'Retratos de estudio formales' },
-    { key: 'blanco-negro', label: 'Blanco y negro', desc: 'Fotografía clásica en monocromo' },
-    { key: 'estudio', label: 'Estudio', desc: 'Fotografías realizadas en estudio profesional' },
-    { key: 'reportaje', label: 'Reportaje', desc: 'Escenas callejeras, eventos y documental' },
-    { key: 'arquitectura', label: 'Arquitectura', desc: 'Edificios, monumentos y construcciones' },
-    { key: 'naturaleza', label: 'Naturaleza', desc: 'Plantas, animales y paisajes naturales' },
-    { key: 'post-mortem', label: 'Post mortem', desc: 'Fotografía funeraria y de difuntos' },
-  ];
-
-  revistasDetails = [
-    { key: 'motos', label: 'Motos', desc: 'Revistas especializadas en motociclismo' },
-    { key: 'coches', label: 'Coches', desc: 'Publicaciones del mundo del automóvil' },
-    { key: 'politica', label: 'Política', desc: 'Revistas de actualidad política y social' },
-    { key: 'historia', label: 'Historia', desc: 'Publicaciones de divulgación histórica' },
-    { key: 'ciencia', label: 'Ciencia', desc: 'Revistas científicas y de divulgación' },
-    { key: 'deportes', label: 'Deportes', desc: 'Publicaciones deportivas especializadas' },
-    { key: 'moda', label: 'Moda', desc: 'Revistas de moda, tendencias y estilo' },
-    { key: 'arte', label: 'Arte', desc: 'Revistas de arte, museos y exposiciones' },
-    { key: 'musica', label: 'Música', desc: 'Publicaciones musicales y de artistas' },
-    { key: 'humor', label: 'Humor', desc: 'Revistas satíricas y de humor gráfico' },
-    { key: 'viajes', label: 'Viajes', desc: 'Revistas de viajes y turismo' },
-    { key: 'economia', label: 'Economía', desc: 'Publicaciones económicas y financieras' },
-    { key: 'cultura', label: 'Cultura', desc: 'Revistas culturales y literarias' },
-    { key: 'tecnologia', label: 'Tecnología', desc: 'Revistas de innovación y tecnología' },
-  ];
-
-  documentosDetails = [
-    { key: 'folletos', label: 'Folletos', desc: 'Folletos publicitarios, turísticos e informativos' },
-    { key: 'partituras', label: 'Partituras', desc: 'Partituras musicales originales o impresas' },
-    { key: 'escrituras', label: 'Escrituras', desc: 'Escrituras notariales, legales y oficiales' },
-    { key: 'mapas', label: 'Mapas', desc: 'Mapas, planos y cartografía histórica' },
-    { key: 'carteles', label: 'Carteles', desc: 'Carteles publicitarios, políticos y culturales' },
-    { key: 'otros', label: 'Otros', desc: 'Otros documentos no clasificados' },
-  ];
+  categories = signal<CategoryGroup[]>([]);
+  conditions = signal<ConditionItem[]>([]);
 
   form: {
     name: string;
-    catalog_id: string;
     type: AntiqueType;
     subcategory: string;
     detail: string;
     country: string;
     region: string;
     element: string;
+    title: string;
+    author: string;
+    editor: string;
+    imprenta: string;
+    edition: string;
+    signature: string;
+    theme: string;
+    century: string;
     year_era: string;
-    condition: string;
-    material: string;
     price: number;
-    dimensions: string;
     description: string;
-    paper_type: string;
-    paper_format: string;
-    paper_weight: number;
+    condition: string;
   };
 
   constructor(
     private antiquesService: AntiquesService,
-    private catalogsService: CatalogsService,
-    private auth: AuthService,
+    private categoryService: CategoryService,
+    private conditionService: ConditionService,
     private router: Router,
     private route: ActivatedRoute
   ) {
@@ -1217,37 +1312,36 @@ export class UploadAntiqueComponent implements OnInit {
   }
 
   get detailLabel(): string {
-    const all = [
-      ...this.esculturaDetails,
-      ...this.pinturaDetails,
-      ...this.filateliaDetails,
-      ...this.fotosDetails,
-      ...this.revistasDetails,
-      ...this.documentosDetails,
-    ];
-    const found = all.find(d => d.key === this.form.detail);
-    return found ? found.label : '';
+    const group = this.categories().find(g => g.type === this.form.type);
+    if (!group) return '';
+    for (const sub of group.subcategories) {
+      const found = sub.details.find(d => d.key === this.form.detail);
+      if (found) return found.label;
+    }
+    return '';
   }
 
   defaultForm() {
     return {
       name: '',
-      catalog_id: '',
       type: 'antiguedad' as AntiqueType,
       subcategory: '',
       detail: '',
       country: '',
       region: '',
       element: '',
+      title: '',
+      author: '',
+      editor: '',
+      imprenta: '',
+      edition: '',
+      signature: '',
+      theme: '',
+      century: '',
       year_era: '',
-      condition: 'Bueno',
-      material: '',
       price: 0,
-      dimensions: '',
       description: '',
-      paper_type: '',
-      paper_format: '',
-      paper_weight: 0,
+      condition: 'Bueno',
     };
   }
 
@@ -1256,73 +1350,145 @@ export class UploadAntiqueComponent implements OnInit {
   }
 
   get subcategoryLabel(): string {
-    const all = [
-      ...this.subcategories,
-      { key: 'filatelia', label: 'Filatelia' },
-      { key: 'fotos', label: 'Fotos' },
-      { key: 'revistas', label: 'Revistas / Periódicos' },
-      { key: 'documentos', label: 'Documentos' },
-      { key: 'libros', label: 'Libros' },
-    ];
-    const found = all.find(s => s.key === this.form.subcategory);
+    const group = this.categories().find(g => g.type === this.form.type);
+    if (!group) return '';
+    const found = group.subcategories.find(s => s.key === this.form.subcategory);
     return found ? found.label : '';
   }
 
-  selectCategory(type: AntiqueType) {
-    this.category.set(type);
-    this.form.type = type;
-    this.step.set(2);
+  get subcategoriesForType(): { key: string; label: string }[] {
+    const group = this.categories().find(g => g.type === this.form.type);
+    if (!group) return [];
+    return group.subcategories.map(s => ({ key: s.key, label: s.label }));
+  }
+
+  onTypeChange() {
+    this.category.set(this.form.type);
+    this.form.subcategory = '';
+    this.form.detail = '';
+  }
+
+  onSubcategoryChange() {
+    this.form.detail = '';
   }
 
   hasDetail(key: string): boolean {
-    if (this.category() === 'antiguedad') {
-      return key === 'escultura' || key === 'pintura';
-    }
-    return key === 'filatelia' || key === 'fotos' || key === 'revistas' || key === 'documentos';
+    const group = this.categories().find(g => g.type === this.form.type);
+    if (!group) return false;
+    const sub = group.subcategories.find(s => s.key === key);
+    return sub ? sub.details.length > 0 : false;
   }
 
   detailsForCurrent(): { key: string; label: string; desc: string }[] {
-    switch (this.form.subcategory) {
-      case 'escultura': return this.esculturaDetails;
-      case 'pintura': return this.pinturaDetails;
-      case 'filatelia': return this.filateliaDetails;
-      case 'fotos': return this.fotosDetails;
-      case 'revistas': return this.revistasDetails;
-      case 'documentos': return this.documentosDetails;
-      default: return [];
+    const group = this.categories().find(g => g.type === this.form.type);
+    if (!group) return [];
+    const sub = group.subcategories.find(s => s.key === this.form.subcategory);
+    return sub ? sub.details : [];
+  }
+
+  isBasicComplete(): boolean {
+    return !!(
+      this.form.type &&
+      this.form.subcategory &&
+      this.form.name.trim() &&
+      (!this.hasDetail(this.form.subcategory) || this.form.detail)
+    );
+  }
+
+  isDetailsComplete(): boolean {
+    return !!(this.form.year_era.trim() && Number(this.form.price) > 0);
+  }
+
+  isPhotosComplete(): boolean {
+    return this.existingImages().length > 0;
+  }
+
+  canAccessStep(step: number): boolean {
+    if (step <= 1) return true;
+    if (!this.isBasicComplete()) return false;
+    if (step <= 2) return true;
+    if (!this.isDetailsComplete()) return false;
+    if (step <= 3) return true;
+    return this.isPhotosComplete();
+  }
+
+  goToStep(step: number) {
+    if (step <= this.formStep()) {
+      this.error.set('');
+      this.formStep.set(step);
+      return;
     }
-  }
 
-  selectSubcategory(key: string) {
-    this.form.subcategory = key;
-    this.formStep.set(1);
-    this.step.set(this.hasDetail(key) ? 3 : 4);
-  }
-
-  selectDetail(key: string) {
-    this.form.detail = key;
-    this.formStep.set(1);
-    this.step.set(4);
-  }
-
-  goBack() {
-    if (this.hasDetail(this.form.subcategory)) {
-      this.step.set(3);
-    } else {
-      this.step.set(2);
-    }
+    if (!this.validateBeforeStep(step)) return;
+    this.error.set('');
+    this.formStep.set(step);
   }
 
   nextFormStep() {
-    this.formStep.set(Math.min(this.formStep() + 1, 4));
+    this.goToStep(Math.min(this.formStep() + 1, 4));
   }
 
   previousFormStep() {
+    this.error.set('');
     this.formStep.set(Math.max(this.formStep() - 1, 1));
   }
 
+  private validateBeforeStep(targetStep: number): boolean {
+    if (targetStep >= 2 && !this.validateBasicInformation()) return false;
+    if (targetStep >= 3 && !this.validateDetails()) return false;
+    if (targetStep >= 4 && !this.validatePhotos()) return false;
+    return true;
+  }
+
+  private validateBasicInformation(): boolean {
+    if (!this.form.type) {
+      return this.failValidation('Selecciona el tipo de pieza.', 'edit-type', 1);
+    }
+    if (!this.form.subcategory) {
+      return this.failValidation('Selecciona una categoría antes de continuar.', 'edit-sub', 1);
+    }
+    if (this.hasDetail(this.form.subcategory) && !this.form.detail) {
+      return this.failValidation('Selecciona el detalle de la categoría.', 'edit-det', 1);
+    }
+    if (!this.form.name.trim()) {
+      return this.failValidation('El nombre es obligatorio.', 'name', 1);
+    }
+    return true;
+  }
+
+  private validateDetails(): boolean {
+    if (!this.form.year_era.trim()) {
+      return this.failValidation('Indica el año o período de la pieza.', 'year_era', 2);
+    }
+    if (!Number.isFinite(Number(this.form.price)) || Number(this.form.price) <= 0) {
+      return this.failValidation('El valor debe ser superior a 0 €.', 'price', 2);
+    }
+    return true;
+  }
+
+  private validatePhotos(): boolean {
+    if (this.existingImages().length === 0) {
+      return this.failValidation('Añade al menos una fotografía antes de continuar.', 'images', 3);
+    }
+    return true;
+  }
+
+  private failValidation(message: string, fieldName: string, step: number): false {
+    this.errorModalMessage.set(message);
+    this.showErrorModal.set(true);
+    this.formStep.set(step);
+    setTimeout(() => {
+      const field = document.querySelector<HTMLElement>(`[name="${fieldName}"]`);
+      const target = fieldName === 'images' ? field?.closest<HTMLElement>('.upload-zone') : field;
+      target?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      target?.focus();
+    });
+    return false;
+  }
+
   async ngOnInit() {
-    this.catalogs.set(await this.catalogsService.getAll());
+    this.categories.set(await this.categoryService.getCategories());
+    this.conditions.set(await this.conditionService.getConditions());
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.editMode = true;
@@ -1332,22 +1498,24 @@ export class UploadAntiqueComponent implements OnInit {
         this.category.set(antique.type);
         this.form = {
           name: antique.name,
-          catalog_id: antique.catalog_id ?? '',
           type: antique.type,
           subcategory: antique.subcategory ?? '',
           detail: antique.detail ?? '',
           country: antique.country ?? '',
           region: antique.region ?? '',
           element: antique.element ?? '',
+          title: antique.title ?? '',
+          author: antique.author ?? '',
+          editor: antique.editor ?? '',
+          imprenta: antique.imprenta ?? '',
+          edition: antique.edition ?? '',
+          signature: antique.signature ?? '',
+          theme: antique.theme ?? '',
+          century: antique.century ?? '',
           year_era: antique.year_era,
-          condition: antique.condition,
-          material: antique.material,
           price: antique.price,
-          dimensions: antique.dimensions,
-          description: antique.description,
-          paper_type: '',
-          paper_format: '',
-          paper_weight: 0,
+          description: antique.description ?? '',
+          condition: antique.condition ?? 'Bueno',
         };
         this.existingImages.set([...antique.images]);
       }
@@ -1358,6 +1526,19 @@ export class UploadAntiqueComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     if (!input.files?.length) return;
     const files = Array.from(input.files);
+    const oversized = files.filter(f => f.size > 2 * 1024 * 1024);
+    if (oversized.length > 0) {
+      this.sizeModalFiles.set(oversized.map(f => ({ name: f.name, size: f.size })));
+      this.showSizeModal.set(true);
+      input.value = '';
+      return;
+    }
+    if (this.existingImages().length + files.length > 5) {
+      this.errorModalMessage.set('Máximo 5 fotos por pieza.');
+      this.showErrorModal.set(true);
+      input.value = '';
+      return;
+    }
     this.uploadingImages.set(true);
     this.uploadProgress.set(0);
     const urls: string[] = [];
@@ -1380,11 +1561,16 @@ export class UploadAntiqueComponent implements OnInit {
     this.existingImages.set(imgs);
   }
 
+  setMainImage(index: number) {
+    if (index === 0) return;
+    const imgs = [...this.existingImages()];
+    const [img] = imgs.splice(index, 1);
+    imgs.unshift(img);
+    this.existingImages.set(imgs);
+  }
+
   async onSubmit() {
-    if (!this.form.name.trim()) {
-      this.error.set('El nombre es obligatorio.');
-      return;
-    }
+    if (!this.validateBeforeStep(4)) return;
     this.saving.set(true);
     this.error.set('');
     try {
@@ -1392,17 +1578,27 @@ export class UploadAntiqueComponent implements OnInit {
         name: this.form.name,
         type: this.form.type,
         subcategory: this.form.subcategory,
-        detail: this.form.detail,
+        detail: this.form.detail || this.form.subcategory,
         country: this.form.country,
         region: this.form.region,
         element: this.form.element,
-        catalog_id: this.form.catalog_id || null,
+        title: this.form.title,
+        author: this.form.author,
+        editor: this.form.editor,
+        imprenta: this.form.imprenta,
+        edition: this.form.edition,
+        signature: this.form.signature,
+        theme: this.form.theme,
+        century: this.form.century,
         year_era: this.form.year_era,
-        condition: this.form.condition,
-        material: this.form.type === 'papeleria' ? this.form.paper_type : this.form.material,
-        dimensions: this.form.type === 'papeleria' ? `${this.form.paper_format} ${this.form.paper_weight ? '- ' + this.form.paper_weight + 'g' : ''}`.trim() : this.form.dimensions,
         price: this.form.price,
         description: this.form.description,
+        condition: this.form.condition,
+        material: '',
+        dimensions: '',
+        paper_type: '',
+        paper_format: '',
+        paper_weight: 0,
         images: this.existingImages()
       };
       if (this.editMode) {
@@ -1415,7 +1611,7 @@ export class UploadAntiqueComponent implements OnInit {
         setTimeout(() => this.router.navigate(['/pieza', created.id]), 1200);
       }
     } catch (err: any) {
-      this.error.set(err?.message ?? 'Error al guardar la pieza.');
+      this.error.set(err?.error?.error ?? err?.message ?? 'Error al guardar la pieza.');
     } finally {
       this.saving.set(false);
     }

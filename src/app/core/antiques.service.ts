@@ -1,83 +1,76 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 import { Antique } from '../models';
-import { AuthService } from './auth.service';
-import { MOCK_ANTIQUES, getNextAntiqueId } from './mock-data';
+import { environment } from '../../environments/environment';
 
-let antiques = [...MOCK_ANTIQUES];
+function resolveImages(antique: Antique): Antique {
+  if (antique.images) {
+    antique.images = antique.images.map(img =>
+      img.startsWith('http') ? img : `${environment.apiUrl}${img}`
+    );
+  }
+  return antique;
+}
 
 @Injectable({ providedIn: 'root' })
 export class AntiquesService {
-  constructor(private auth: AuthService) {}
+  constructor(private http: HttpClient) {}
 
-  async getAll(): Promise<Antique[]> {
-    return [...antiques].map(a => ({
-      ...a,
-      catalog: undefined,
-      catalog_id: a.catalog_id,
-    }));
+  async getAll(search?: string, type?: string, subcategory?: string, detail?: string, condition?: string): Promise<Antique[]> {
+    let params: any = {};
+    if (search) params.search = search;
+    if (type) params.type = type;
+    if (subcategory) params.subcategory = subcategory;
+    if (detail) params.detail = detail;
+    if (condition) params.condition = condition;
+    const res = await firstValueFrom(
+      this.http.get<Antique[]>(`${environment.apiUrl}/api/antiques`, { params })
+    );
+    return (res ?? []).map(resolveImages);
   }
 
   async getByCatalog(catalogId: string): Promise<Antique[]> {
-    return antiques.filter(a => a.catalog_id === catalogId);
+    const all = await this.getAll();
+    return all.filter(a => a.catalog_id === catalogId);
   }
 
   async getById(id: string): Promise<Antique | null> {
-    return antiques.find(a => a.id === id) ?? null;
+    try {
+      const res = await firstValueFrom(
+        this.http.get<Antique>(`${environment.apiUrl}/api/antiques/${id}`)
+      );
+      return resolveImages(res);
+    } catch {
+      return null;
+    }
   }
 
   async create(antique: Partial<Antique>): Promise<Antique> {
-    const user = this.auth.currentUser();
-    if (!user) throw new Error('No autenticado');
-    const newAntique: Antique = {
-      id: getNextAntiqueId(),
-      catalog_id: antique.catalog_id ?? null,
-      name: antique.name ?? '',
-      type: antique.type ?? 'antiguedad',
-      subcategory: antique.subcategory ?? '',
-      detail: antique.detail ?? '',
-      country: antique.country ?? '',
-      region: antique.region ?? '',
-      element: antique.element ?? '',
-      description: antique.description ?? '',
-      price: antique.price ?? 0,
-      year_era: antique.year_era ?? '',
-      condition: antique.condition ?? 'Bueno',
-      material: antique.material ?? '',
-      dimensions: antique.dimensions ?? '',
-      images: antique.images ?? [],
-      created_by: user.id,
-      created_at: new Date().toISOString(),
-    };
-    antiques.unshift(newAntique);
-    return newAntique;
+    const res = await firstValueFrom(
+      this.http.post<Antique>(`${environment.apiUrl}/api/antiques`, antique)
+    );
+    return res;
   }
 
   async update(id: string, antique: Partial<Antique>): Promise<void> {
-    const index = antiques.findIndex(a => a.id === id);
-    if (index === -1) throw new Error('Pieza no encontrada');
-    antiques[index] = { ...antiques[index], ...antique };
+    await firstValueFrom(
+      this.http.put(`${environment.apiUrl}/api/antiques/${id}`, antique)
+    );
   }
 
   async delete(id: string): Promise<void> {
-    antiques = antiques.filter(a => a.id !== id);
+    await firstValueFrom(
+      this.http.delete(`${environment.apiUrl}/api/antiques/${id}`)
+    );
   }
 
   async uploadImage(file: File): Promise<string> {
-    return new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result as string);
-      reader.readAsDataURL(file);
-    });
-  }
-
-  getCountByType(type: string): number {
-    return antiques.filter(a => a.type === type).length;
-  }
-
-  getCounts() {
-    return {
-      antiguedad: antiques.filter(a => a.type === 'antiguedad').length,
-      papeleria: antiques.filter(a => a.type === 'papeleria').length,
-    };
+    const formData = new FormData();
+    formData.append('file', file);
+    const res: any = await firstValueFrom(
+      this.http.post(`${environment.apiUrl}/api/upload`, formData)
+    );
+    return res.url.startsWith('http') ? res.url : `${environment.apiUrl}${res.url}`;
   }
 }
