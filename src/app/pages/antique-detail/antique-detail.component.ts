@@ -305,10 +305,16 @@ import { Antique } from '../../models';
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(460px, 1fr);
       gap: clamp(2rem, 4.2vw, 4.2rem);
-      align-items: start;
+      align-items: stretch;
+    }
+
+    .antique-gallery {
+      display: flex;
+      flex-direction: column;
     }
 
     .gallery-main {
+      flex: 1 1 auto;
       position: relative;
       min-height: 480px;
       aspect-ratio: 1.24;
@@ -324,7 +330,7 @@ import { Antique } from '../../models';
     .gallery-main-img {
       width: 100%;
       height: 100%;
-      object-fit: fill;
+      object-fit: contain;
       display: block;
     }
 
@@ -449,6 +455,8 @@ import { Antique } from '../../models';
     .antique-info {
       display: flex;
       flex-direction: column;
+      justify-content: center;
+      min-height: 100%;
     }
 
     .catalog-tag {
@@ -545,20 +553,24 @@ import { Antique } from '../../models';
 
     .info-card-body {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: minmax(0, 1.08fr) minmax(300px, 0.92fr);
       gap: 1.25rem;
       padding: 1.15rem 1.25rem;
     }
 
     .info-desc-col {
       min-width: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-right: 0.35rem;
     }
 
     .antique-desc {
       margin: 0;
       color: rgba(247, 239, 227, 0.82);
-      font-size: 0.94rem;
-      line-height: 1.75;
+      font-size: 0.98rem;
+      line-height: 1.82;
     }
 
     .info-specs-col {

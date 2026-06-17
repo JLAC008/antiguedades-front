@@ -84,20 +84,20 @@ import { Antique, AntiqueType, CategoryGroup, ConditionItem } from '../../models
                     <div id="form-basic" class="form-section-title">Información básica</div>
                     <div class="form-group">
                       <label class="form-label">Nombre <span class="required">*</span></label>
-                      <input type="text" class="form-input" [(ngModel)]="form.name" name="name" placeholder="Ej. Reloj de péndulo del siglo XIX" required />
+                      <input type="text" class="form-input" [(ngModel)]="form.name" name="name" placeholder="Ej. Reloj de péndulo del siglo XIX" maxlength="200" required />
                     </div>
                     <div class="form-row form-row-4">
                       <div class="form-group">
                         <label class="form-label">País</label>
-                        <input type="text" class="form-input" [(ngModel)]="form.country" name="country" placeholder="Ej. España, Francia..." />
+                        <input type="text" class="form-input" [(ngModel)]="form.country" name="country" placeholder="Ej. España, Francia..." maxlength="200" />
                       </div>
                       <div class="form-group">
                         <label class="form-label">Región</label>
-                        <input type="text" class="form-input" [(ngModel)]="form.region" name="region" placeholder="Ej. Cataluña, Provenza..." />
+                        <input type="text" class="form-input" [(ngModel)]="form.region" name="region" placeholder="Ej. Cataluña, Provenza..." maxlength="200" />
                       </div>
                       <div class="form-group">
                         <label class="form-label">Elemento</label>
-                        <input type="text" class="form-input" [(ngModel)]="form.element" name="element" placeholder="Ej. Madera, Bronce..." />
+                        <input type="text" class="form-input" [(ngModel)]="form.element" name="element" placeholder="Ej. Madera, Bronce..." maxlength="200" />
                       </div>
                       <div class="form-group">
                         <label class="form-label">Estado <span class="required">*</span></label>
@@ -111,11 +111,11 @@ import { Antique, AntiqueType, CategoryGroup, ConditionItem } from '../../models
                     <div class="form-row">
                       <div class="form-group">
                         <label class="form-label">Tema</label>
-                        <input type="text" class="form-input" [(ngModel)]="form.theme" name="theme" placeholder="Ej. Religión, historia, retrato..." />
+                        <input type="text" class="form-input" [(ngModel)]="form.theme" name="theme" placeholder="Ej. Religión, historia, retrato..." maxlength="200" />
                       </div>
                       <div class="form-group">
                         <label class="form-label">Firma / marca</label>
-                        <input type="text" class="form-input" [(ngModel)]="form.signature" name="signature" placeholder="Autor, fabricante, sello o inscripción" />
+                        <input type="text" class="form-input" [(ngModel)]="form.signature" name="signature" placeholder="Autor, fabricante, sello o inscripción" maxlength="200" />
                       </div>
                     </div>
                     <div id="form-details" class="form-section-anchor"></div>
@@ -123,11 +123,11 @@ import { Antique, AntiqueType, CategoryGroup, ConditionItem } from '../../models
                     <div class="form-row">
                       <div class="form-group">
                         <label class="form-label">Época / Año <span class="required">*</span></label>
-                        <input type="text" class="form-input" [(ngModel)]="form.year_era" name="year_era" placeholder="Ej. Siglo XIX, 1850s" required />
+                        <input type="text" class="form-input" [(ngModel)]="form.year_era" name="year_era" placeholder="Ej. Siglo XIX, 1850s" maxlength="100" required />
                       </div>
                       <div class="form-group">
                         <label class="form-label">Siglo</label>
-                        <input type="text" class="form-input" [(ngModel)]="form.century" name="century" placeholder="Ej. XVIII, XIX, XX" />
+                        <input type="text" class="form-input" [(ngModel)]="form.century" name="century" placeholder="Ej. XVIII, XIX, XX" maxlength="100" />
                       </div>
                     </div>
                     <div class="form-group">
@@ -136,7 +136,8 @@ import { Antique, AntiqueType, CategoryGroup, ConditionItem } from '../../models
                     </div>
                     <div class="form-group">
                       <label class="form-label">Descripción</label>
-                      <textarea class="form-input form-textarea" [(ngModel)]="form.description" name="description" placeholder="Describe brevemente la pieza (material, estado, historia...)" rows="3"></textarea>
+                      <textarea class="form-input form-textarea" [(ngModel)]="form.description" name="description" placeholder="Describe brevemente la pieza (material, estado, historia...)" rows="3" maxlength="2000"></textarea>
+                      <p class="char-counter">{{ form.description.length }}/2000 caracteres</p>
                     </div>
                   </div>
 
@@ -184,38 +185,38 @@ import { Antique, AntiqueType, CategoryGroup, ConditionItem } from '../../models
                     <div id="form-basic" class="form-section-title">Información del documento</div>
                     <div class="form-group">
                       <label class="form-label">Nombre <span class="required">*</span></label>
-                      <input type="text" class="form-input" [(ngModel)]="form.name" name="name" placeholder="Ej. Mapa del siglo XVIII, Carta antigua..." required />
+                      <input type="text" class="form-input" [(ngModel)]="form.name" name="name" placeholder="Ej. Mapa del siglo XVIII, Carta antigua..." maxlength="200" required />
                     </div>
                     <div class="form-group">
                       <label class="form-label">Título</label>
-                      <input type="text" class="form-input" [(ngModel)]="form.title" name="title" placeholder="Título original de la obra o documento" />
+                      <input type="text" class="form-input" [(ngModel)]="form.title" name="title" placeholder="Título original de la obra o documento" maxlength="200" />
                     </div>
                     <div class="form-row form-row-3">
                       <div class="form-group">
                         <label class="form-label">Autor</label>
-                        <input type="text" class="form-input" [(ngModel)]="form.author" name="author" placeholder="Autor o creador" />
+                        <input type="text" class="form-input" [(ngModel)]="form.author" name="author" placeholder="Autor o creador" maxlength="200" />
                       </div>
                       <div class="form-group">
                         <label class="form-label">Editor</label>
-                        <input type="text" class="form-input" [(ngModel)]="form.editor" name="editor" placeholder="Persona o entidad editorial" />
+                        <input type="text" class="form-input" [(ngModel)]="form.editor" name="editor" placeholder="Persona o entidad editorial" maxlength="200" />
                       </div>
                       <div class="form-group">
                         <label class="form-label">Edición</label>
-                        <input type="text" class="form-input" [(ngModel)]="form.edition" name="edition" placeholder="Ej. 1.ª edición" />
+                        <input type="text" class="form-input" [(ngModel)]="form.edition" name="edition" placeholder="Ej. 1.ª edición" maxlength="200" />
                       </div>
                     </div>
                     <div class="form-group">
                       <label class="form-label">Imprenta</label>
-                      <input type="text" class="form-input" [(ngModel)]="form.imprenta" name="imprenta" placeholder="Taller o establecimiento impresor" />
+                      <input type="text" class="form-input" [(ngModel)]="form.imprenta" name="imprenta" placeholder="Taller o establecimiento impresor" maxlength="200" />
                     </div>
                     <div class="form-row form-row-3">
                       <div class="form-group">
                         <label class="form-label">País</label>
-                        <input type="text" class="form-input" [(ngModel)]="form.country" name="paper_country" placeholder="Ej. España, Francia..." />
+                        <input type="text" class="form-input" [(ngModel)]="form.country" name="paper_country" placeholder="Ej. España, Francia..." maxlength="200" />
                       </div>
                       <div class="form-group">
                         <label class="form-label">Región</label>
-                        <input type="text" class="form-input" [(ngModel)]="form.region" name="paper_region" placeholder="Ej. Madrid, Cataluña..." />
+                        <input type="text" class="form-input" [(ngModel)]="form.region" name="paper_region" placeholder="Ej. Madrid, Cataluña..." maxlength="200" />
                       </div>
                       <div class="form-group">
                         <label class="form-label">Estado <span class="required">*</span></label>
@@ -229,11 +230,11 @@ import { Antique, AntiqueType, CategoryGroup, ConditionItem } from '../../models
                     <div class="form-row">
                       <div class="form-group">
                         <label class="form-label">Tema</label>
-                        <input type="text" class="form-input" [(ngModel)]="form.theme" name="paper_theme" placeholder="Ej. Historia, religión, militar, novela..." />
+                        <input type="text" class="form-input" [(ngModel)]="form.theme" name="paper_theme" placeholder="Ej. Historia, religión, militar, novela..." maxlength="200" />
                       </div>
                       <div class="form-group">
                         <label class="form-label">Firma / autógrafo</label>
-                        <input type="text" class="form-input" [(ngModel)]="form.signature" name="paper_signature" placeholder="Firma, dedicatoria o marca" />
+                        <input type="text" class="form-input" [(ngModel)]="form.signature" name="paper_signature" placeholder="Firma, dedicatoria o marca" maxlength="200" />
                       </div>
                     </div>
                     <div id="form-details" class="form-section-anchor"></div>
@@ -241,11 +242,11 @@ import { Antique, AntiqueType, CategoryGroup, ConditionItem } from '../../models
                     <div class="form-row">
                       <div class="form-group">
                         <label class="form-label">Año / Período <span class="required">*</span></label>
-                        <input type="text" class="form-input" [(ngModel)]="form.year_era" name="year_era" placeholder="Ej. 1780, década de 1930..." required />
+                        <input type="text" class="form-input" [(ngModel)]="form.year_era" name="year_era" placeholder="Ej. 1780, década de 1930..." maxlength="100" required />
                       </div>
                       <div class="form-group">
                         <label class="form-label">Siglo</label>
-                        <input type="text" class="form-input" [(ngModel)]="form.century" name="paper_century" placeholder="Ej. XVIII, XIX, XX" />
+                        <input type="text" class="form-input" [(ngModel)]="form.century" name="paper_century" placeholder="Ej. XVIII, XIX, XX" maxlength="100" />
                       </div>
                     </div>
                     <div class="form-group">
@@ -254,7 +255,8 @@ import { Antique, AntiqueType, CategoryGroup, ConditionItem } from '../../models
                     </div>
                     <div class="form-group">
                       <label class="form-label">Descripción</label>
-                      <textarea class="form-input form-textarea" [(ngModel)]="form.description" name="paper_description" placeholder="Describe brevemente el documento (contenido, estado, procedencia...)" rows="3"></textarea>
+                      <textarea class="form-input form-textarea" [(ngModel)]="form.description" name="paper_description" placeholder="Describe brevemente el documento (contenido, estado, procedencia...)" rows="3" maxlength="2000"></textarea>
+                      <p class="char-counter">{{ form.description.length }}/2000 caracteres</p>
                     </div>
                   </div>
 
@@ -820,6 +822,13 @@ import { Antique, AntiqueType, CategoryGroup, ConditionItem } from '../../models
       box-shadow: 0 0 0 3px rgba(184,149,90,0.12);
     }
     .form-textarea { resize: vertical; }
+    .char-counter {
+      align-self: flex-end;
+      margin: -0.25rem 0 0;
+      color: var(--color-text-muted);
+      font-size: 0.74rem;
+      font-weight: 600;
+    }
     .upload-zone {
       display: block;
       cursor: pointer;
@@ -1091,6 +1100,7 @@ import { Antique, AntiqueType, CategoryGroup, ConditionItem } from '../../models
     }
     .upload-form-content .upload-hint,
     .upload-form-content .upload-progress-text,
+    .upload-form-content .char-counter,
     .upload-form-content .form-guidance,
     .upload-form-content .review-note {
       color: rgba(247,239,227,0.62);
@@ -1465,6 +1475,10 @@ export class UploadAntiqueComponent implements OnInit {
     }
     if (!Number.isFinite(Number(this.form.price)) || Number(this.form.price) <= 0) {
       return this.failValidation('El valor debe ser superior a 0 €.', 'price', 2);
+    }
+    if (this.form.description.length > 2000) {
+      const fieldName = this.form.type === 'papeleria' ? 'paper_description' : 'description';
+      return this.failValidation('La descripción no puede superar los 2000 caracteres.', fieldName, 2);
     }
     return true;
   }
