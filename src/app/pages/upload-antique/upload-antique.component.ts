@@ -1578,7 +1578,7 @@ export class UploadAntiqueComponent implements OnInit {
         name: this.form.name,
         type: this.form.type,
         subcategory: this.form.subcategory,
-        detail: this.form.detail,
+        detail: this.form.detail || this.form.subcategory,
         country: this.form.country,
         region: this.form.region,
         element: this.form.element,
