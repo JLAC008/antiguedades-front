@@ -8,7 +8,7 @@ import { RouterLink } from '@angular/router';
   template: `
     <main class="page-home">
       <section class="hero">
-        <video #heroVideo class="hero-video" autoplay muted loop playsinline preload="auto" poster="/assets/home-hero-study-v2.png">
+        <video #heroVideo class="hero-video" autoplay muted playsinline preload="auto" poster="/assets/home-hero-study-v2.png">
           <source src="/assets/hero-bg.mp4" type="video/mp4" />
         </video>
         <div class="hero-shade" aria-hidden="true"></div>
