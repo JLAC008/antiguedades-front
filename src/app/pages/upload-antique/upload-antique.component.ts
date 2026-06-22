@@ -808,18 +808,56 @@ import { Antique, AntiqueType, CategoryGroup, ConditionItem } from '../../models
     .duplicate-name-option {
       display: flex;
       align-items: center;
-      gap: 0.65rem;
-      color: var(--color-text-muted);
-      font-size: 0.84rem;
-      line-height: 1.35;
+      gap: 0.6rem;
+      width: fit-content;
+      padding: 0.2rem 0;
+      color: rgba(214, 202, 184, 0.68);
+      font-size: 0.8rem;
+      font-weight: 500;
+      line-height: 1.3;
       cursor: pointer;
+      transition: color 0.2s;
+    }
+    .duplicate-name-option:hover {
+      color: rgba(235, 221, 199, 0.88);
+    }
+    .duplicate-name-option:focus-within {
+      color: rgba(235, 221, 199, 0.94);
+    }
+    .duplicate-name-option:has(input:checked) {
+      color: #d8b66d;
     }
     .duplicate-name-option input {
-      width: 17px;
-      height: 17px;
+      appearance: none;
+      width: 16px;
+      height: 16px;
       margin: 0;
-      accent-color: var(--color-accent);
+      border: 1px solid rgba(184, 149, 90, 0.65);
+      border-radius: 3px;
+      background: rgba(0, 0, 0, 0.28);
       flex: 0 0 auto;
+      position: relative;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+    }
+    .duplicate-name-option input:checked {
+      border-color: #9e6d26;
+      background: linear-gradient(180deg, #c59445, #9e6d26);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.18);
+    }
+    .duplicate-name-option input:checked::after {
+      content: '';
+      position: absolute;
+      left: 5px;
+      top: 2px;
+      width: 4px;
+      height: 8px;
+      border: solid #fff;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+    .duplicate-name-option input:focus-visible {
+      outline: none;
     }
     .form-label { font-size: 0.875rem; font-weight: 600; color: var(--color-text); }
     .required { color: var(--color-error); }
