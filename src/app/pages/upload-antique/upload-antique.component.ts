@@ -1696,7 +1696,7 @@ export class UploadAntiqueComponent implements OnInit {
         allow_duplicate_name: this.form.allow_duplicate_name,
         type: this.form.type,
         subcategory: this.form.subcategory,
-        detail: this.form.detail || this.form.subcategory,
+        detail: this.form.detail,
         country: this.form.country,
         region: this.form.region,
         element: this.form.element,
