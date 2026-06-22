@@ -2,12 +2,14 @@ import { Component, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../core/auth.service';
+import { NavbarComponent } from '../../components/navbar/navbar.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, NavbarComponent],
   template: `
+    <app-navbar />
     <div class="auth-page">
 
       <section class="auth-card" aria-label="Acceso al catálogo privado">
@@ -79,7 +81,7 @@ import { AuthService } from '../../core/auth.service';
   `,
   styles: [`
     .auth-page {
-      min-height: 100vh;
+      min-height: calc(100vh - 76px);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -282,7 +284,7 @@ import { AuthService } from '../../core/auth.service';
       .auth-card {
         width: 100%;
         max-width: none;
-        height: 100dvh;
+        height: calc(100dvh - 76px);
         border: none;
         border-radius: 0;
         padding: 3.6rem 1.35rem 1rem;
@@ -323,6 +325,14 @@ import { AuthService } from '../../core/auth.service';
       .public-nav {
         top: 0.6rem;
         left: 0.6rem;
+      }
+    }
+    @media (max-width: 520px) {
+      .auth-page {
+        min-height: calc(100vh - 68px);
+      }
+      .auth-card {
+        height: calc(100dvh - 68px);
       }
     }
   `]
