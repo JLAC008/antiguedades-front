@@ -36,7 +36,7 @@ import { AppUser, UserRole } from '../../models';
 
       <main class="page-content">
         <div class="layout">
-          <section class="form-panel">
+          <form class="form-panel" autocomplete="off" (ngSubmit)="editingUser() ? updateUser() : createUser()">
             <h2 class="panel-title">
               <span aria-hidden="true">⌘</span>
               {{ editingUser() ? 'Editar usuario' : 'Crear nuevo usuario' }}
@@ -51,12 +51,12 @@ import { AppUser, UserRole } from '../../models';
 
             <div class="form-group">
               <label class="form-label">Nombre completo</label>
-              <input class="form-input" [(ngModel)]="formName" name="name" placeholder="Nombre del usuario" />
+              <input class="form-input" [(ngModel)]="formName" name="name" autocomplete="off" placeholder="Nombre del usuario" />
             </div>
 
             <div class="form-group">
               <label class="form-label">Correo electrónico</label>
-              <input class="form-input" type="email" [(ngModel)]="formEmail" name="email" placeholder="correo@ejemplo.com" />
+              <input class="form-input" type="email" [(ngModel)]="formEmail" name="email" autocomplete="off" placeholder="correo@ejemplo.com" />
             </div>
 
             <div class="form-group">
@@ -67,6 +67,7 @@ import { AppUser, UserRole } from '../../models';
                   [type]="showFormPassword() ? 'text' : 'password'"
                   [(ngModel)]="formPassword"
                   name="password"
+                  autocomplete="new-password"
                   [placeholder]="editingUser() ? 'Nueva contraseña' : 'Escribe una contraseña'"
                 />
                 <button class="field-icon-btn" type="button" (click)="showFormPassword.set(!showFormPassword())" aria-label="Mostrar u ocultar contraseña">
@@ -84,15 +85,15 @@ import { AppUser, UserRole } from '../../models';
             </div>
 
             <div class="form-actions">
-              <button class="btn-submit" (click)="editingUser() ? updateUser() : createUser()" [disabled]="saving()">
+              <button type="submit" class="btn-submit" [disabled]="saving()">
                 <span aria-hidden="true">{{ editingUser() ? '✓' : '+' }}</span>
                 @if (saving()) { Guardando... } @else if (editingUser()) { Guardar cambios } @else { Crear usuario }
               </button>
               @if (editingUser()) {
-                <button class="btn-cancel" (click)="cancelEdit()">Cancelar</button>
+                <button type="button" class="btn-cancel" (click)="cancelEdit()">Cancelar</button>
               }
             </div>
-          </section>
+          </form>
 
           <section class="list-panel">
             <div class="list-header">

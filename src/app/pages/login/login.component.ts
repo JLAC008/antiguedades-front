@@ -29,7 +29,7 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
           <div class="auth-error">{{ error() }}</div>
         }
 
-        <form (ngSubmit)="onSubmit()" class="auth-form">
+        <form (ngSubmit)="onSubmit()" class="auth-form" autocomplete="on">
           <div class="form-group">
             <label class="form-label">Correo electrónico</label>
             <div class="input-shell">
@@ -44,6 +44,7 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
                 class="form-input"
                 [(ngModel)]="email"
                 name="email"
+                autocomplete="email"
                 placeholder="Correo electrónico"
                 required
               />
@@ -64,6 +65,7 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
                 class="form-input"
                 [(ngModel)]="password"
                 name="password"
+                autocomplete="current-password"
                 placeholder="Introduce tu contraseña"
                 required
               />
