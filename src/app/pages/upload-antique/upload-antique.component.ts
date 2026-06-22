@@ -126,8 +126,8 @@ import { Antique, AntiqueType, CategoryGroup, ConditionItem } from '../../models
                     <div class="form-section-title form-details-title">Detalles de la pieza</div>
                     <div class="form-row">
                       <div class="form-group">
-                        <label class="form-label">Época / Año <span class="required">*</span></label>
-                        <input type="text" class="form-input" [(ngModel)]="form.year_era" name="year_era" placeholder="Ej. Siglo XIX, 1850s" maxlength="100" required />
+                        <label class="form-label">Año</label>
+                        <input type="text" class="form-input" [(ngModel)]="form.year_era" name="year_era" placeholder="Ej. 1850" maxlength="100" />
                       </div>
                       <div class="form-group">
                         <label class="form-label">Siglo</label>
@@ -249,8 +249,8 @@ import { Antique, AntiqueType, CategoryGroup, ConditionItem } from '../../models
                     <div class="form-section-title form-details-title">Detalles del documento</div>
                     <div class="form-row">
                       <div class="form-group">
-                        <label class="form-label">Año / Período <span class="required">*</span></label>
-                        <input type="text" class="form-input" [(ngModel)]="form.year_era" name="year_era" placeholder="Ej. 1780, década de 1930..." maxlength="100" required />
+                        <label class="form-label">Año</label>
+                        <input type="text" class="form-input" [(ngModel)]="form.year_era" name="year_era" placeholder="Ej. 1780" maxlength="100" />
                       </div>
                       <div class="form-group">
                         <label class="form-label">Siglo</label>
@@ -332,7 +332,7 @@ import { Antique, AntiqueType, CategoryGroup, ConditionItem } from '../../models
                       <div class="rv-row">
                         @if (form.year_era) {
                           <div class="rv-cell">
-                            <span class="rv-label">Año / Época</span>
+                            <span class="rv-label">Año</span>
                             <strong class="rv-value">{{ form.year_era }}</strong>
                           </div>
                         }
@@ -1477,7 +1477,7 @@ export class UploadAntiqueComponent implements OnInit {
   }
 
   isDetailsComplete(): boolean {
-    return !!(this.form.year_era.trim() && Number(this.form.price) > 0);
+    return Number(this.form.price) > 0;
   }
 
   isPhotosComplete(): boolean {
@@ -1539,9 +1539,6 @@ export class UploadAntiqueComponent implements OnInit {
   }
 
   private validateDetails(): boolean {
-    if (!this.form.year_era.trim()) {
-      return this.failValidation('Indica el año o período de la pieza.', 'year_era', 2);
-    }
     if (!Number.isFinite(Number(this.form.price)) || Number(this.form.price) <= 0) {
       return this.failValidation('El valor debe ser superior a 0 €.', 'price', 2);
     }
