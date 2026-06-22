@@ -85,6 +85,10 @@ import { Antique, AntiqueType, CategoryGroup, ConditionItem } from '../../models
                     <div class="form-group">
                       <label class="form-label">Nombre <span class="required">*</span></label>
                       <input type="text" class="form-input" [(ngModel)]="form.name" name="name" placeholder="Ej. Reloj de péndulo del siglo XIX" maxlength="200" required />
+                      <label class="duplicate-name-option">
+                        <input type="checkbox" [(ngModel)]="form.allow_duplicate_name" name="allow_duplicate_name" />
+                        <span>Permitir guardar esta pieza aunque el nombre ya exista</span>
+                      </label>
                     </div>
                     <div class="form-row form-row-4">
                       <div class="form-group">
@@ -186,6 +190,10 @@ import { Antique, AntiqueType, CategoryGroup, ConditionItem } from '../../models
                     <div class="form-group">
                       <label class="form-label">Nombre <span class="required">*</span></label>
                       <input type="text" class="form-input" [(ngModel)]="form.name" name="name" placeholder="Ej. Mapa del siglo XVIII, Carta antigua..." maxlength="200" required />
+                      <label class="duplicate-name-option">
+                        <input type="checkbox" [(ngModel)]="form.allow_duplicate_name" name="paper_allow_duplicate_name" />
+                        <span>Permitir guardar esta pieza aunque el nombre ya exista</span>
+                      </label>
                     </div>
                     <div class="form-group">
                       <label class="form-label">Título</label>
@@ -797,6 +805,22 @@ import { Antique, AntiqueType, CategoryGroup, ConditionItem } from '../../models
       border-bottom: 1px solid var(--color-border);
     }
     .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+    .duplicate-name-option {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      color: var(--color-text-muted);
+      font-size: 0.84rem;
+      line-height: 1.35;
+      cursor: pointer;
+    }
+    .duplicate-name-option input {
+      width: 17px;
+      height: 17px;
+      margin: 0;
+      accent-color: var(--color-accent);
+      flex: 0 0 auto;
+    }
     .form-label { font-size: 0.875rem; font-weight: 600; color: var(--color-text); }
     .required { color: var(--color-error); }
     .form-input, .form-select, .form-textarea {
@@ -1298,6 +1322,7 @@ export class UploadAntiqueComponent implements OnInit {
 
   form: {
     name: string;
+    allow_duplicate_name: boolean;
     type: AntiqueType;
     subcategory: string;
     detail: string;
@@ -1341,6 +1366,7 @@ export class UploadAntiqueComponent implements OnInit {
   defaultForm() {
     return {
       name: '',
+      allow_duplicate_name: false,
       type: 'antiguedad' as AntiqueType,
       subcategory: '',
       detail: '',
@@ -1510,6 +1536,7 @@ export class UploadAntiqueComponent implements OnInit {
   }
 
   private async validateUniqueName(): Promise<boolean> {
+    if (this.form.allow_duplicate_name) return true;
     const normalizedName = this.form.name.trim();
     this.validatingName.set(true);
     try {
@@ -1550,6 +1577,7 @@ export class UploadAntiqueComponent implements OnInit {
         this.category.set(antique.type);
         this.form = {
           name: antique.name,
+          allow_duplicate_name: antique.allow_duplicate_name ?? false,
           type: antique.type,
           subcategory: antique.subcategory ?? '',
           detail: antique.detail ?? '',
@@ -1630,6 +1658,7 @@ export class UploadAntiqueComponent implements OnInit {
       if (!(await this.validateUniqueName())) return;
       const payload: Partial<Antique> = {
         name: normalizedName,
+        allow_duplicate_name: this.form.allow_duplicate_name,
         type: this.form.type,
         subcategory: this.form.subcategory,
         detail: this.form.detail || this.form.subcategory,

@@ -14,6 +14,7 @@ export interface Antique {
   id: string;
   catalog_id: string | null;
   name: string;
+  allow_duplicate_name: boolean;
   type: AntiqueType;
   subcategory: string;
   detail: string;
