@@ -40,9 +40,9 @@ import { Antique, AntiqueType, CategoryGroup, ConditionItem } from '../../models
             <form (ngSubmit)="onSubmit()" class="antique-form" [class.form-step-1]="formStep() === 1" [class.form-step-2]="formStep() === 2" [class.form-step-3]="formStep() === 3" [class.form-step-4]="formStep() === 4">
               <div class="form-step-nav" aria-label="Secciones del formulario">
                 <button type="button" class="form-step-item" [class.active]="formStep() === 1" (click)="goToStep(1)">1. Información básica</button>
-                <button type="button" class="form-step-item" [class.active]="formStep() === 2" [disabled]="!canAccessStep(2)" (click)="goToStep(2)">2. Detalles</button>
-                <button type="button" class="form-step-item" [class.active]="formStep() === 3" [disabled]="!canAccessStep(3)" (click)="goToStep(3)">3. Fotografías</button>
-                <button type="button" class="form-step-item" [class.active]="formStep() === 4" [disabled]="!canAccessStep(4)" (click)="goToStep(4)">4. Revisión</button>
+                <button type="button" class="form-step-item" [class.active]="formStep() === 2" [disabled]="validatingName() || !canAccessStep(2)" (click)="goToStep(2)">2. Detalles</button>
+                <button type="button" class="form-step-item" [class.active]="formStep() === 3" [disabled]="validatingName() || !canAccessStep(3)" (click)="goToStep(3)">3. Fotografías</button>
+                <button type="button" class="form-step-item" [class.active]="formStep() === 4" [disabled]="validatingName() || !canAccessStep(4)" (click)="goToStep(4)">4. Revisión</button>
               </div>
 
               <div class="form-option-c-layout">
@@ -477,7 +477,9 @@ import { Antique, AntiqueType, CategoryGroup, ConditionItem } from '../../models
                   <a routerLink="/coleccion" class="btn-cancel">Cancelar</a>
                 }
                 @if (formStep() < 4) {
-                  <button type="button" class="btn-submit" (click)="nextFormStep()">Siguiente &rarr;</button>
+                  <button type="button" class="btn-submit" [disabled]="validatingName()" (click)="nextFormStep()">
+                    @if (validatingName()) { Comprobando... } @else { Siguiente &rarr; }
+                  </button>
                 } @else {
                   <button type="submit" class="btn-submit" [disabled]="saving()">
                     @if (saving()) { Guardando... } @else { {{ editMode ? 'Guardar cambios' : 'Publicar pieza' }} }
@@ -488,7 +490,7 @@ import { Antique, AntiqueType, CategoryGroup, ConditionItem } from '../../models
               @if (showErrorModal()) {
                 <div class="modal-overlay" (click)="showErrorModal.set(false)">
                   <div class="modal" (click)="$event.stopPropagation()">
-                    <h3 class="modal-title">Completa el formulario</h3>
+                    <h3 class="modal-title">{{ errorModalTitle() }}</h3>
                     <p class="modal-text">{{ errorModalMessage() }}</p>
                     <div class="modal-actions">
                       <button type="button" class="btn-cancel" (click)="showErrorModal.set(false)">Entendido</button>
@@ -1278,10 +1280,12 @@ export class UploadAntiqueComponent implements OnInit {
   existingImages = signal<string[]>([]);
   saving = signal(false);
   uploadingImages = signal(false);
+  validatingName = signal(false);
   uploadProgress = signal(0);
   error = signal('');
   success = signal('');
   showErrorModal = signal(false);
+  errorModalTitle = signal('Completa el formulario');
   errorModalMessage = signal('');
   showSizeModal = signal(false);
   sizeModalFiles = signal<{name: string, size: number}[]>([]);
@@ -1425,7 +1429,7 @@ export class UploadAntiqueComponent implements OnInit {
     return this.isPhotosComplete();
   }
 
-  goToStep(step: number) {
+  async goToStep(step: number) {
     if (step <= this.formStep()) {
       this.error.set('');
       this.formStep.set(step);
@@ -1433,12 +1437,13 @@ export class UploadAntiqueComponent implements OnInit {
     }
 
     if (!this.validateBeforeStep(step)) return;
+    if (step >= 2 && !(await this.validateUniqueName())) return;
     this.error.set('');
     this.formStep.set(step);
   }
 
-  nextFormStep() {
-    this.goToStep(Math.min(this.formStep() + 1, 4));
+  async nextFormStep() {
+    await this.goToStep(Math.min(this.formStep() + 1, 4));
   }
 
   previousFormStep() {
@@ -1490,7 +1495,8 @@ export class UploadAntiqueComponent implements OnInit {
     return true;
   }
 
-  private failValidation(message: string, fieldName: string, step: number): false {
+  private failValidation(message: string, fieldName: string, step: number, title = 'Completa el formulario'): false {
+    this.errorModalTitle.set(title);
     this.errorModalMessage.set(message);
     this.showErrorModal.set(true);
     this.formStep.set(step);
@@ -1501,6 +1507,35 @@ export class UploadAntiqueComponent implements OnInit {
       target?.focus();
     });
     return false;
+  }
+
+  private async validateUniqueName(): Promise<boolean> {
+    const normalizedName = this.form.name.trim();
+    this.validatingName.set(true);
+    try {
+      const matches = await this.antiquesService.getAll(normalizedName);
+      const duplicate = matches.some(antique =>
+        antique.id !== this.editId && antique.name.trim().toLocaleLowerCase() === normalizedName.toLocaleLowerCase()
+      );
+      if (duplicate) {
+        return this.failValidation(
+          `Ya existe una pieza con el nombre "${normalizedName}". Utiliza un nombre diferente.`,
+          'name',
+          1,
+          'Pieza duplicada'
+        );
+      }
+      return true;
+    } catch {
+      return this.failValidation(
+        'No se ha podido comprobar si el nombre ya existe. Inténtalo de nuevo.',
+        'name',
+        1,
+        'No se pudo validar el nombre'
+      );
+    } finally {
+      this.validatingName.set(false);
+    }
   }
 
   async ngOnInit() {
@@ -1591,8 +1626,10 @@ export class UploadAntiqueComponent implements OnInit {
     this.saving.set(true);
     this.error.set('');
     try {
+      const normalizedName = this.form.name.trim();
+      if (!(await this.validateUniqueName())) return;
       const payload: Partial<Antique> = {
-        name: this.form.name,
+        name: normalizedName,
         type: this.form.type,
         subcategory: this.form.subcategory,
         detail: this.form.detail || this.form.subcategory,
@@ -1628,7 +1665,12 @@ export class UploadAntiqueComponent implements OnInit {
         setTimeout(() => this.router.navigate(['/pieza', created.id]), 1200);
       }
     } catch (err: any) {
-      this.error.set(err?.error?.error ?? err?.message ?? 'Error al guardar la pieza.');
+      const message = err?.error?.error ?? err?.message ?? 'Error al guardar la pieza.';
+      if (message.includes('Ya existe una pieza')) {
+        this.failValidation(message, 'name', 1, 'Pieza duplicada');
+      } else {
+        this.error.set(message);
+      }
     } finally {
       this.saving.set(false);
     }
