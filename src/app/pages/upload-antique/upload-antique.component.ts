@@ -150,11 +150,11 @@ import { Antique, AntiqueType, CategoryGroup, ConditionItem } from '../../models
                     <div class="form-group">
                       <label class="form-label">Añadir imágenes <span class="required">*</span></label>
                       <label class="upload-zone" tabindex="-1">
-                        <input type="file" accept="image/*" multiple name="images" (change)="onFilesSelected($event)" hidden />
+                        <input type="file" accept="image/jpeg,image/png" multiple name="images" (change)="onFilesSelected($event)" hidden />
                         <div class="upload-zone-inner">
                           <span class="upload-icon">&#128247;</span>
                           <p class="upload-text">Arrastra imágenes o haz clic para seleccionar</p>
-                          <p class="upload-hint">JPG, PNG, WebP — máx. 2 MB · máx. 5 fotos</p>
+                        <p class="upload-hint">JPG o PNG — máx. 2 MB · máx. 5 fotos</p>
                         </div>
                       </label>
                     </div>
@@ -273,11 +273,11 @@ import { Antique, AntiqueType, CategoryGroup, ConditionItem } from '../../models
                     <div class="form-group">
                       <label class="form-label">Añadir imágenes <span class="required">*</span></label>
                       <label class="upload-zone" tabindex="-1">
-                        <input type="file" accept="image/*" multiple name="images" (change)="onFilesSelected($event)" hidden />
+                        <input type="file" accept="image/jpeg,image/png" multiple name="images" (change)="onFilesSelected($event)" hidden />
                         <div class="upload-zone-inner">
                           <span class="upload-icon">&#128247;</span>
                           <p class="upload-text">Arrastra imágenes o haz clic para seleccionar</p>
-                          <p class="upload-hint">JPG, PNG, WebP — máx. 2 MB · máx. 5 fotos</p>
+                        <p class="upload-hint">JPG o PNG — máx. 2 MB · máx. 5 fotos</p>
                         </div>
                       </label>
                     </div>

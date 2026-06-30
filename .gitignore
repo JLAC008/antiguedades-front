@@ -1,8 +1,37 @@
-.angular
-dist
-node_modules
-angular-serve*.log
+# Secrets and local environment
 .env
+.env.*
+!.env.example
+token.txt
+
+# Angular and Node output
+node_modules/
+dist/
+.angular/
+coverage/
+.cache/
+
+# Runtime uploads
+uploads/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+
+# Local agent metadata
+.agents/
 skills-lock.json
-.agents/skills/frontend-design/LICENSE.txt
-.agents/skills/frontend-design/SKILL.md
+
+# IDE metadata
+.idea/
+*.iml
+.vscode/
+.settings/
+.classpath
+.project
+
+# Operating system files
+.DS_Store
+Thumbs.db
+Desktop.ini

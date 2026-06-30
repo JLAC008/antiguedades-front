@@ -11,13 +11,11 @@ export class AuthService {
 
   constructor(private http: HttpClient) {
     const stored = localStorage.getItem('auth_user');
-    const token = localStorage.getItem('auth_token');
-    if (stored && token) {
+    if (stored) {
       try {
         this.currentUser.set(JSON.parse(stored));
       } catch {
         localStorage.removeItem('auth_user');
-        localStorage.removeItem('auth_token');
       }
     }
   }
@@ -27,7 +25,8 @@ export class AuthService {
   }
 
   get isAdmin(): boolean {
-    return this.currentUser()?.role === 'admin';
+    const role = this.currentUser()?.role;
+    return role === 'admin' || role === 'superuser';
   }
 
   async createUser(email: string, password: string, name: string, role: AppUser['role'] = 'user') {
@@ -70,15 +69,17 @@ export class AuthService {
       name: res.username,
       created_at: new Date().toISOString(),
     };
-    localStorage.setItem('auth_token', res.token);
     localStorage.setItem('auth_user', JSON.stringify(user));
     this.currentUser.set(user);
     return { user };
   }
 
   async signOut() {
-    localStorage.removeItem('auth_token');
-    localStorage.removeItem('auth_user');
-    this.currentUser.set(null);
+    try {
+      await firstValueFrom(this.http.post(`${environment.apiUrl}/api/auth/logout`, {}));
+    } finally {
+      localStorage.removeItem('auth_user');
+      this.currentUser.set(null);
+    }
   }
 }

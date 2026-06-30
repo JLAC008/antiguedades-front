@@ -61,7 +61,7 @@ export interface CategoryGroup {
   subcategories: CategorySubcategory[];
 }
 
-export type UserRole = 'admin' | 'user';
+export type UserRole = 'superuser' | 'admin' | 'user';
 
 export interface AppUser {
   id: string;
@@ -73,7 +73,6 @@ export interface AppUser {
 }
 
 export interface LoginResponse {
-  token: string;
   email: string;
   username: string;
   role: string;
