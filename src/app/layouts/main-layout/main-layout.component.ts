@@ -15,7 +15,7 @@ import { AuthService } from '../../core/auth.service';
     <footer class="site-footer">
       <div class="footer-inner">
         <div class="footer-brand">
-          <span class="footer-brand-icon">A</span>
+          <img class="footer-brand-logo" src="assets/logo-antiguedades.png" alt="Antigüedades" />
           <div>
             <p class="footer-brand-name">Antigüedades</p>
             <p class="footer-brand-copy">Colección privada familiar</p>
@@ -62,20 +62,12 @@ import { AuthService } from '../../core/auth.service';
       gap: 0.9rem;
       justify-self: start;
     }
-    .footer-brand-icon {
-      width: 42px;
-      height: 42px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid rgba(184, 149, 90, 0.58);
-      border-radius: 50%;
-      font-family: 'Playfair Display', serif;
-      font-size: 1.35rem;
-      font-weight: 700;
-      color: #d0b272;
-      background: radial-gradient(circle, rgba(184,149,90,0.18), transparent 62%), #1b1a17;
-      box-shadow: inset 0 0 0 5px rgba(184,149,90,0.06);
+    .footer-brand-logo {
+      width: 52px;
+      height: 52px;
+      display: block;
+      object-fit: contain;
+      filter: drop-shadow(0 0 10px rgba(184,149,90,0.14));
     }
     .footer-brand-name {
       font-family: 'Playfair Display', serif;

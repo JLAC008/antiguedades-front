@@ -19,7 +19,7 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
         <span class="corner corner-br"></span>
 
         <div class="auth-brand">
-          <span class="auth-logo">A</span>
+          <img class="auth-logo" src="assets/logo-antiguedades.png" alt="Antigüedades" />
           <h1 class="auth-brand-name">Antigüedades</h1>
           <p class="auth-brand-subtitle">Acceso al catálogo privado</p>
           <div class="auth-flourish" aria-hidden="true">⌘</div>
@@ -132,22 +132,12 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
       margin-bottom: 2rem;
     }
     .auth-logo {
-      width: 74px;
-      height: 74px;
+      width: min(230px, 72vw);
+      height: 140px;
       margin: 0 auto 1.2rem;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid rgba(184,149,90,0.78);
-      border-radius: 50%;
-      font-family: 'Playfair Display', serif;
-      font-size: 2.6rem;
-      font-weight: 700;
-      color: #d0b272;
-      background:
-        radial-gradient(circle, rgba(184,149,90,0.12), transparent 64%),
-        rgba(0,0,0,0.18);
-      box-shadow: inset 0 0 0 6px rgba(184,149,90,0.04);
+      display: block;
+      object-fit: contain;
+      filter: drop-shadow(0 0 16px rgba(184,149,90,0.18));
     }
     .auth-brand-name {
       font-family: 'Playfair Display', serif;
@@ -300,9 +290,8 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
         margin-bottom: 0.4rem;
       }
       .auth-logo {
-        width: 40px;
-        height: 40px;
-        font-size: 1.4rem;
+        width: min(190px, 72vw);
+        height: 112px;
       }
       .auth-brand-name {
         font-size: 1.6rem;

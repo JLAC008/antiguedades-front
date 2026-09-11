@@ -10,7 +10,7 @@ import { AuthService } from '../../core/auth.service';
     <nav class="navbar">
       <div class="nav-container">
         <a routerLink="/" class="nav-brand">
-          <span class="nav-brand-icon">A</span>
+          <img class="nav-brand-logo" src="assets/logo-antiguedades.png" alt="Antigüedades" />
           <span class="nav-brand-text">Antigüedades</span>
         </a>
 
@@ -95,22 +95,12 @@ import { AuthService } from '../../core/auth.service';
       text-decoration: none;
       color: var(--color-accent-light);
     }
-    .nav-brand-icon {
-      width: 44px;
-      height: 44px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid rgba(184, 149, 90, 0.58);
-      border-radius: 50%;
-      font-family: 'Playfair Display', serif;
-      font-size: 1.45rem;
-      font-weight: 700;
-      color: #d0b272;
-      background:
-        radial-gradient(circle, rgba(184,149,90,0.18), transparent 62%),
-        #1b1a17;
-      box-shadow: inset 0 0 0 5px rgba(184,149,90,0.06), 0 0 28px rgba(184,149,90,0.08);
+    .nav-brand-logo {
+      width: 52px;
+      height: 52px;
+      display: block;
+      object-fit: contain;
+      filter: drop-shadow(0 0 10px rgba(184,149,90,0.16));
     }
     .nav-brand-text {
       font-family: 'Playfair Display', serif;
@@ -263,10 +253,9 @@ import { AuthService } from '../../core/auth.service';
       .nav-brand {
         gap: 0.7rem;
       }
-      .nav-brand-icon {
-        width: 38px;
-        height: 38px;
-        font-size: 1.22rem;
+      .nav-brand-logo {
+        width: 42px;
+        height: 42px;
       }
       .nav-brand-text {
         font-size: 0.82rem;
