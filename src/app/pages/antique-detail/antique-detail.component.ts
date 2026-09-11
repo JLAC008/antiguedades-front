@@ -361,9 +361,10 @@ import { Antique, AntiqueStatus, ANTIQUE_STATUS_LABELS, DEFAULT_ANTIQUE_IMAGE } 
       border-top: 0.42rem solid #80602d;
       border-left: 0.42rem solid transparent;
     }
-    .antique-status-pagado { background: #d9c188; }
-    .antique-status-vendido { background: #c98263; color: #fff4ec; }
-    .antique-status-enviado { background: #8fb1b1; }
+    .antique-status-reservado { background: var(--color-accent); }
+    .antique-status-pagado { background: var(--color-accent-light); }
+    .antique-status-vendido { background: var(--color-secondary); color: #fff8ed; }
+    .antique-status-enviado { background: var(--color-primary); color: var(--color-accent-light); }
 
     .gallery-shadow {
       position: absolute;

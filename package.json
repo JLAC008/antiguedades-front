@@ -20,7 +20,6 @@
     "@angular/build": "^21.2.17",
     "@angular/cli": "^21.2.17",
     "@angular/compiler-cli": "^21.2.17",
-    "ffmpeg-static": "^5.3.0",
     "typescript": "^5.9.3"
   }
 }
