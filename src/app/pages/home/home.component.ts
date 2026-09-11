@@ -16,9 +16,9 @@ import { RouterLink } from '@angular/router';
         <div class="hero-content">
           <p class="hero-overline">Colección privada</p>
           <span class="ornament" aria-hidden="true">◆</span>
-          <h1 class="hero-title">Nuestra Colección<br />Familiar</h1>
+          <h1 class="hero-title">Nuestra Colección</h1>
           <p class="hero-subtitle">
-            Piezas únicas reunidas con pasión, guardadas para la familia.
+            Piezas únicas reunidas con pasión.
           </p>
           <a routerLink="/coleccion" class="hero-cta">
             <span>Ver toda la colección</span>

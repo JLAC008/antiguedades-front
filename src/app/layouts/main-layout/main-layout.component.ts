@@ -18,7 +18,7 @@ import { AuthService } from '../../core/auth.service';
           <img class="footer-brand-logo" src="assets/logo-antiguedades.png" alt="Antigüedades" />
           <div>
             <p class="footer-brand-name">Antigüedades</p>
-            <p class="footer-brand-copy">Colección privada familiar</p>
+            <p class="footer-brand-copy">Colección privada</p>
           </div>
         </div>
 
@@ -30,11 +30,11 @@ import { AuthService } from '../../core/auth.service';
           }
         </nav>
 
-        <p class="footer-note">Piezas únicas reunidas con pasión, conservadas para la familia.</p>
+        <p class="footer-note">Piezas únicas reunidas con pasión.</p>
       </div>
       <div class="footer-bottom">
         <span>© 2026 Antigüedades</span>
-        <span>Archivo familiar privado</span>
+        <span>Archivo privado</span>
       </div>
     </footer>
   `,
