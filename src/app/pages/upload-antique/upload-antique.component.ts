@@ -4,7 +4,7 @@ import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { AntiquesService } from '../../core/antiques.service';
 import { CategoryService } from '../../core/category.service';
 import { ConditionService } from '../../core/condition.service';
-import { Antique, AntiqueType, CategoryGroup, ConditionItem, DEFAULT_ANTIQUE_IMAGE } from '../../models';
+import { Antique, AntiqueStatus, AntiqueType, ANTIQUE_STATUS_LABELS, CategoryGroup, ConditionItem, DEFAULT_ANTIQUE_IMAGE } from '../../models';
 
 @Component({
   selector: 'app-upload-antique',
@@ -113,6 +113,16 @@ import { Antique, AntiqueType, CategoryGroup, ConditionItem, DEFAULT_ANTIQUE_IMA
                       </div>
                     </div>
                     <div class="form-row">
+                      <div class="form-group">
+                        <label class="form-label">Estado de la pieza</label>
+                        <select class="form-select" [(ngModel)]="form.status" name="status">
+                          <option value="">Sin estado</option>
+                          <option value="reservado">Reservado</option>
+                          <option value="pagado">Pagado</option>
+                          <option value="vendido">Vendido</option>
+                          <option value="enviado">Enviado</option>
+                        </select>
+                      </div>
                       <div class="form-group">
                         <label class="form-label">Tema</label>
                         <input type="text" class="form-input" [(ngModel)]="form.theme" name="theme" placeholder="Ej. Religión, historia, retrato..." maxlength="200" />
@@ -237,6 +247,16 @@ import { Antique, AntiqueType, CategoryGroup, ConditionItem, DEFAULT_ANTIQUE_IMA
                     </div>
                     <div class="form-row">
                       <div class="form-group">
+                        <label class="form-label">Estado de la pieza</label>
+                        <select class="form-select" [(ngModel)]="form.status" name="status">
+                          <option value="">Sin estado</option>
+                          <option value="reservado">Reservado</option>
+                          <option value="pagado">Pagado</option>
+                          <option value="vendido">Vendido</option>
+                          <option value="enviado">Enviado</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
                         <label class="form-label">Tema</label>
                         <input type="text" class="form-input" [(ngModel)]="form.theme" name="paper_theme" placeholder="Ej. Historia, religión, militar, novela..." maxlength="200" />
                       </div>
@@ -344,6 +364,12 @@ import { Antique, AntiqueType, CategoryGroup, ConditionItem, DEFAULT_ANTIQUE_IMA
                           <span class="rv-label">Estado</span>
                           <strong class="rv-value">{{ form.condition }}</strong>
                         </div>
+                        @if (form.status) {
+                          <div class="rv-cell">
+                            <span class="rv-label">Estado de la pieza</span>
+                            <strong class="rv-value">{{ statusLabel(form.status) }}</strong>
+                          </div>
+                        }
                       </div>
                       @if (form.description) {
                         <div class="rv-row">
@@ -1398,6 +1424,7 @@ export class UploadAntiqueComponent implements OnInit {
     price: number;
     description: string;
     condition: string;
+    status: AntiqueStatus | '';
   };
 
   constructor(
@@ -1408,6 +1435,10 @@ export class UploadAntiqueComponent implements OnInit {
     private route: ActivatedRoute
   ) {
     this.form = this.defaultForm();
+  }
+
+  statusLabel(status: AntiqueStatus | ''): string {
+    return status ? ANTIQUE_STATUS_LABELS[status] : 'Sin estado';
   }
 
   get detailLabel(): string {
@@ -1442,6 +1473,7 @@ export class UploadAntiqueComponent implements OnInit {
       price: 0,
       description: '',
       condition: 'Bueno',
+      status: '' as AntiqueStatus | '',
     };
   }
 
@@ -1647,6 +1679,7 @@ export class UploadAntiqueComponent implements OnInit {
           price: antique.price,
           description: antique.description ?? '',
           condition: antique.condition ?? 'Bueno',
+          status: antique.status ?? '',
         };
         this.existingImages.set([...antique.images]);
       }
@@ -1728,6 +1761,7 @@ export class UploadAntiqueComponent implements OnInit {
         price: this.form.price,
         description: this.form.description,
         condition: this.form.condition,
+        status: this.form.status || null,
         material: '',
         dimensions: '',
         paper_type: '',

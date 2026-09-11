@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { AntiquesService } from '../../core/antiques.service';
 import { AntiqueCardComponent } from '../../components/antique-card/antique-card.component';
-import { Antique } from '../../models';
+import { Antique, AntiqueStatus, ANTIQUE_STATUS_LABELS } from '../../models';
 import { AuthService } from '../../core/auth.service';
 
 @Component({
@@ -73,6 +73,10 @@ import { AuthService } from '../../core/auth.service';
               </button>
               <button class="chip" [class.chip-active]="selectedDetail" (click)="toggleFilter('detail')">
                 <span>{{ selectedDetail ? detLabel(selectedDetail) : 'Detalle' }}</span>
+                <svg class="chip-caret" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg>
+              </button>
+              <button class="chip" [class.chip-active]="selectedStatus" (click)="toggleFilter('status')">
+                <span>{{ selectedStatus ? statusLabel(selectedStatus) : 'Estado' }}</span>
                 <svg class="chip-caret" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg>
               </button>
               <button class="chip chip-more" [class.chip-active]="hasAdvancedFilters()" (click)="openAdvancedFilters()">
@@ -145,6 +149,14 @@ import { AuthService } from '../../core/auth.service';
                   @for (det of availableDetails; track det) {
                     <button class="filter-option" [class.selected]="selectedDetail===det" (click)="selectDetail(det)">{{ detLabel(det) }}</button>
                   }
+                }
+                @if (openFilter === 'status') {
+                  <button class="filter-option" [class.selected]="!selectedStatus" (click)="selectStatus('')">Todos los estados</button>
+                  <button class="filter-option" [class.selected]="selectedStatus==='reservado'" (click)="selectStatus('reservado')">Reservado</button>
+                  <button class="filter-option" [class.selected]="selectedStatus==='pagado'" (click)="selectStatus('pagado')">Pagado</button>
+                  <button class="filter-option" [class.selected]="selectedStatus==='vendido'" (click)="selectStatus('vendido')">Vendido</button>
+                  <button class="filter-option" [class.selected]="selectedStatus==='enviado'" (click)="selectStatus('enviado')">Enviado</button>
+                  <button class="filter-option" [class.selected]="selectedStatus==='sin-estado'" (click)="selectStatus('sin-estado')">Sin estado</button>
                 }
                 @if (openFilter === 'sort') {
                   <button class="filter-option" [class.selected]="sortBy==='recent'" (click)="selectSort('recent')">Ordenar por</button>
@@ -1158,6 +1170,7 @@ export class CollectionComponent implements OnInit {
   selectedType = '';
   selectedSubcategory = '';
   selectedDetail = '';
+  selectedStatus: AntiqueStatus | 'sin-estado' | '' = '';
   filterYearEra = '';
   filterCentury = '';
   filterCountry = '';
@@ -1266,10 +1279,15 @@ export class CollectionComponent implements OnInit {
 
   filterTitle(): string {
     const map: Record<string, string> = {
-      type: 'Tipo', subcategory: 'Categoría', detail: 'Detalle',
+      type: 'Tipo', subcategory: 'Categoría', detail: 'Detalle', status: 'Estado',
       advanced: 'Filtros', sort: 'Ordenar por',
     };
     return map[this.openFilter ?? ''] ?? '';
+  }
+
+  statusLabel(status: AntiqueStatus | 'sin-estado' | ''): string {
+    if (status === 'sin-estado') return 'Sin estado';
+    return status ? ANTIQUE_STATUS_LABELS[status] : 'Estado';
   }
 
   sortLabel(): string {
@@ -1338,6 +1356,12 @@ export class CollectionComponent implements OnInit {
     this.applyFilters();
   }
 
+  selectStatus(val: AntiqueStatus | 'sin-estado' | '') {
+    this.selectedStatus = val;
+    this.openFilter = null;
+    this.applyFilters();
+  }
+
   selectSort(val: string) {
     this.sortBy = val;
     this.openFilter = null;
@@ -1348,6 +1372,7 @@ export class CollectionComponent implements OnInit {
     this.selectedType = '';
     this.selectedSubcategory = '';
     this.selectedDetail = '';
+    this.selectedStatus = '';
     this.resetAdvancedValues();
     this.openFilter = null;
     this.applyFilters();
@@ -1438,6 +1463,7 @@ export class CollectionComponent implements OnInit {
     if (this.selectedType) tags.push({ key: 'type', label: `Tipo: ${this.typeLabel(this.selectedType)}` });
     if (this.selectedSubcategory) tags.push({ key: 'subcategory', label: `Categoría: ${this.subLabel(this.selectedSubcategory)}` });
     if (this.selectedDetail) tags.push({ key: 'detail', label: `Detalle: ${this.detLabel(this.selectedDetail)}` });
+    if (this.selectedStatus) tags.push({ key: 'status', label: `Estado: ${this.statusLabel(this.selectedStatus)}` });
     if (this.filterYearEra) tags.push({ key: 'yearEra', label: `Período: ${this.filterYearEra}` });
     if (this.filterCentury) tags.push({ key: 'century', label: `Siglo: ${this.filterCentury}` });
     if (this.filterCountry) tags.push({ key: 'country', label: `País: ${this.filterCountry}` });
@@ -1469,6 +1495,7 @@ export class CollectionComponent implements OnInit {
         this.resetAdvancedValues();
       },
       detail: () => this.selectedDetail = '',
+      status: () => this.selectedStatus = '',
       yearEra: () => this.filterYearEra = '',
       century: () => this.filterCentury = '',
       country: () => this.filterCountry = '',
@@ -1520,6 +1547,8 @@ export class CollectionComponent implements OnInit {
     if (this.selectedType) result = result.filter(a => a.type === this.selectedType);
     if (this.selectedSubcategory) result = result.filter(a => a.subcategory === this.selectedSubcategory);
     if (this.selectedDetail) result = result.filter(a => a.detail === this.selectedDetail);
+    if (this.selectedStatus === 'sin-estado') result = result.filter(a => !a.status);
+    if (this.selectedStatus && this.selectedStatus !== 'sin-estado') result = result.filter(a => a.status === this.selectedStatus);
     if (this.filterYearEra) result = result.filter(a => this.contains(a.year_era, this.filterYearEra));
     if (this.filterCentury) result = result.filter(a => this.contains(a.century, this.filterCentury));
     if (this.filterCountry) result = result.filter(a => this.contains(a.country, this.filterCountry));

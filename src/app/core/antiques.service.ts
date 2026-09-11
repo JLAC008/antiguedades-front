@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { Antique } from '../models';
+import { Antique, AntiqueStatus } from '../models';
 import { environment } from '../../environments/environment';
 
 function resolveImages(antique: Antique): Antique {
@@ -19,13 +19,14 @@ function resolveImages(antique: Antique): Antique {
 export class AntiquesService {
   constructor(private http: HttpClient) {}
 
-  async getAll(search?: string, type?: string, subcategory?: string, detail?: string, condition?: string): Promise<Antique[]> {
+  async getAll(search?: string, type?: string, subcategory?: string, detail?: string, condition?: string, status?: AntiqueStatus): Promise<Antique[]> {
     let params: any = {};
     if (search) params.search = search;
     if (type) params.type = type;
     if (subcategory) params.subcategory = subcategory;
     if (detail) params.detail = detail;
     if (condition) params.condition = condition;
+    if (status) params.status = status;
     const res = await firstValueFrom(
       this.http.get<Antique[]>(`${environment.apiUrl}/api/antiques`, { params })
     );

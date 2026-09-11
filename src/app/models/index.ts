@@ -10,6 +10,15 @@ export interface Catalog {
 
 export type AntiqueType = 'antiguedad' | 'papeleria';
 
+export type AntiqueStatus = 'reservado' | 'pagado' | 'vendido' | 'enviado';
+
+export const ANTIQUE_STATUS_LABELS: Record<AntiqueStatus, string> = {
+  reservado: 'Reservado',
+  pagado: 'Pagado',
+  vendido: 'Vendido',
+  enviado: 'Enviado',
+};
+
 export const DEFAULT_ANTIQUE_IMAGE = 'assets/upload-busto-card.jpg';
 
 export interface Antique {
@@ -35,6 +44,7 @@ export interface Antique {
   price: number;
   year_era: string;
   condition: string;
+  status?: AntiqueStatus | null;
   material: string;
   dimensions: string;
   paper_type?: string;

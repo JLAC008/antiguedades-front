@@ -3,7 +3,7 @@ import { ActivatedRoute, RouterLink, Router } from '@angular/router';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { AntiquesService } from '../../core/antiques.service';
 import { AuthService } from '../../core/auth.service';
-import { Antique, DEFAULT_ANTIQUE_IMAGE } from '../../models';
+import { Antique, AntiqueStatus, ANTIQUE_STATUS_LABELS, DEFAULT_ANTIQUE_IMAGE } from '../../models';
 
 @Component({
   selector: 'app-antique-detail',
@@ -30,6 +30,9 @@ import { Antique, DEFAULT_ANTIQUE_IMAGE } from '../../models';
               @if (antique()!.images && antique()!.images.length > 0) {
                 <div class="gallery-main" tabindex="0" (keydown)="onKeydown($event)">
                   <img [src]="selectedImage()" [alt]="antique()!.name" class="gallery-main-img" />
+                  @if (antique()!.status) {
+                    <span class="antique-status-ribbon" [class]="'antique-status-' + antique()!.status">{{ statusLabel(antique()!.status) }}</span>
+                  }
                   <div class="gallery-shadow"></div>
                   @if (images.length > 1) {
                     <button class="gallery-arrow gallery-arrow-left" (click)="prevImage()" [disabled]="currentIndex === 0" aria-label="Imagen anterior">‹</button>
@@ -49,6 +52,9 @@ import { Antique, DEFAULT_ANTIQUE_IMAGE } from '../../models';
               } @else {
                 <div class="gallery-empty">
                   <img [src]="defaultImage" [alt]="antique()!.name + ' — imagen de referencia'" class="gallery-default-img" />
+                  @if (antique()!.status) {
+                    <span class="antique-status-ribbon" [class]="'antique-status-' + antique()!.status">{{ statusLabel(antique()!.status) }}</span>
+                  }
                   <p>Imagen de referencia</p>
                 </div>
               }
@@ -330,6 +336,35 @@ import { Antique, DEFAULT_ANTIQUE_IMAGE } from '../../models';
       display: block;
     }
 
+    .antique-status-ribbon {
+      position: absolute;
+      top: 1.15rem;
+      left: -0.35rem;
+      z-index: 3;
+      padding: 0.55rem 1.1rem 0.55rem 1.2rem;
+      color: #17120c;
+      background: #d4ac62;
+      border: 1px solid rgba(255, 239, 194, 0.8);
+      border-left: 0;
+      border-radius: 0 4px 4px 0;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.36);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .antique-status-ribbon::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -0.42rem;
+      border-top: 0.42rem solid #80602d;
+      border-left: 0.42rem solid transparent;
+    }
+    .antique-status-pagado { background: #d9c188; }
+    .antique-status-vendido { background: #c98263; color: #fff4ec; }
+    .antique-status-enviado { background: #8fb1b1; }
+
     .gallery-shadow {
       position: absolute;
       inset: 0;
@@ -423,6 +458,7 @@ import { Antique, DEFAULT_ANTIQUE_IMAGE } from '../../models';
     }
 
     .gallery-empty {
+      position: relative;
       min-height: 480px;
       border: 1px solid rgba(184, 149, 90, 0.45);
       border-radius: 8px;
@@ -1051,6 +1087,10 @@ import { Antique, DEFAULT_ANTIQUE_IMAGE } from '../../models';
 })
 export class AntiqueDetailComponent implements OnInit {
   defaultImage = DEFAULT_ANTIQUE_IMAGE;
+
+  statusLabel(status: AntiqueStatus | null | undefined): string {
+    return status ? ANTIQUE_STATUS_LABELS[status] : '';
+  }
   antique = signal<Antique | null>(null);
   loading = signal(true);
   selectedImage = signal('');

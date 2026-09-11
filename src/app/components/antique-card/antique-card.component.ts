@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { Antique, DEFAULT_ANTIQUE_IMAGE } from '../../models';
+import { Antique, ANTIQUE_STATUS_LABELS, DEFAULT_ANTIQUE_IMAGE } from '../../models';
 
 @Component({
   selector: 'app-antique-card',
@@ -13,6 +13,9 @@ import { Antique, DEFAULT_ANTIQUE_IMAGE } from '../../models';
           <img [src]="antique.images[0]" [alt]="antique.name" loading="lazy" />
         } @else {
           <img [src]="defaultImage" [alt]="antique.name + ' — imagen de referencia'" loading="lazy" />
+        }
+        @if (antique.status) {
+          <span class="antique-status-ribbon" [class]="'antique-status-' + antique.status">{{ statusLabel() }}</span>
         }
       </div>
       <div class="antique-card-body">
@@ -65,6 +68,34 @@ import { Antique, DEFAULT_ANTIQUE_IMAGE } from '../../models';
       object-fit: scale-down;
       transition: transform 0.4s;
     }
+    .antique-status-ribbon {
+      position: absolute;
+      top: 0.9rem;
+      left: -0.35rem;
+      z-index: 3;
+      padding: 0.45rem 0.9rem 0.45rem 1rem;
+      color: #17120c;
+      background: #d4ac62;
+      border: 1px solid rgba(255, 239, 194, 0.72);
+      border-left: 0;
+      border-radius: 0 3px 3px 0;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.32);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .antique-status-ribbon::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -0.36rem;
+      border-top: 0.36rem solid #80602d;
+      border-left: 0.36rem solid transparent;
+    }
+    .antique-status-pagado { background: #d9c188; }
+    .antique-status-vendido { background: #c98263; color: #fff4ec; }
+    .antique-status-enviado { background: #8fb1b1; }
     .antique-card:hover .antique-card-img img { transform: scale(1.05); }
     .antique-card-placeholder {
       width: 100%;
@@ -283,6 +314,10 @@ import { Antique, DEFAULT_ANTIQUE_IMAGE } from '../../models';
 export class AntiqueCardComponent {
   @Input() antique!: Antique;
   defaultImage = DEFAULT_ANTIQUE_IMAGE;
+
+  statusLabel(): string {
+    return this.antique.status ? ANTIQUE_STATUS_LABELS[this.antique.status] : '';
+  }
 
   categoryLabel(): string {
     const labels: Record<string, string> = {
