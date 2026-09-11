@@ -19,6 +19,9 @@ import { Antique, ANTIQUE_STATUS_LABELS, DEFAULT_ANTIQUE_IMAGE } from '../../mod
         }
       </div>
       <div class="antique-card-body">
+        @if (antique.lot_number) {
+          <p class="antique-card-lot">Lote nº {{ antique.lot_number }}</p>
+        }
         <h3 class="antique-card-title">{{ antique.name }}</h3>
         @if (antique.year_era) {
           <p class="antique-card-era">{{ antique.year_era }}</p>
@@ -116,6 +119,14 @@ import { Antique, ANTIQUE_STATUS_LABELS, DEFAULT_ANTIQUE_IMAGE } from '../../mod
       color: var(--color-primary);
       margin: 0 0 0.25rem;
     }
+    .antique-card-lot {
+      margin: 0 0 0.4rem;
+      color: var(--color-accent);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
     .antique-card-era {
       font-size: 0.8125rem;
       color: var(--color-accent);
@@ -203,6 +214,9 @@ import { Antique, ANTIQUE_STATUS_LABELS, DEFAULT_ANTIQUE_IMAGE } from '../../mod
       color: #fff8ed;
       font-size: 1.12rem;
       margin-bottom: 0.25rem;
+    }
+    :host-context(.page-collection) .antique-card-lot {
+      color: #d4ac62;
     }
     :host-context(.page-collection) .antique-card-era {
       color: #d4ac62;

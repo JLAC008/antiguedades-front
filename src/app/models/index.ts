@@ -23,6 +23,7 @@ export const DEFAULT_ANTIQUE_IMAGE = 'assets/upload-busto-card.jpg';
 
 export interface Antique {
   id: string;
+  lot_number: number;
   catalog_id: string | null;
   name: string;
   allow_duplicate_name: boolean;

@@ -69,6 +69,9 @@ import { Antique, AntiqueStatus, ANTIQUE_STATUS_LABELS, DEFAULT_ANTIQUE_IMAGE } 
 
               <div class="info-head">
                 <div class="info-head-left">
+                  @if (antique()!.lot_number) {
+                    <p class="antique-lot-number">Lote nº {{ antique()!.lot_number }}</p>
+                  }
                   <h1 class="antique-title">{{ antique()!.name }}</h1>
                   @if (antique()!.year_era) {
                     <p class="antique-era">{{ antique()!.year_era }}</p>
@@ -521,6 +524,15 @@ import { Antique, AntiqueStatus, ANTIQUE_STATUS_LABELS, DEFAULT_ANTIQUE_IMAGE } 
       font-weight: 700;
       line-height: 1;
       text-shadow: 0 14px 36px rgba(0, 0, 0, 0.56);
+    }
+
+    .antique-lot-number {
+      margin: 0 0 0.55rem;
+      color: #d4ac62;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
     }
 
     .antique-era {
