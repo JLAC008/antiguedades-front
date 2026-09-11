@@ -259,10 +259,6 @@ import { Antique, DEFAULT_ANTIQUE_IMAGE } from '../../models';
               <span class="trust-icon" aria-hidden="true">▤</span>
               <div><strong>Procedencia documentada</strong><span>Historial completo disponible</span></div>
             </div>
-            <div class="trust-item">
-              <span class="trust-icon" aria-hidden="true">▣</span>
-              <div><strong>Conservación privada</strong><span>Custodia y registro familiar</span></div>
-            </div>
           </div>
         }
       </div>
@@ -677,8 +673,9 @@ import { Antique, DEFAULT_ANTIQUE_IMAGE } from '../../models';
 
     .trust-strip {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 1rem;
+      grid-template-columns: repeat(2, minmax(260px, max-content));
+      justify-content: center;
+      gap: clamp(2rem, 7vw, 7rem);
       margin-top: 2.35rem;
       padding: 1.25rem 1.35rem;
       border: 1px solid rgba(184, 149, 90, 0.38);
