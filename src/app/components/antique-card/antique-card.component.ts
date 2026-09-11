@@ -12,7 +12,7 @@ import { Antique, ANTIQUE_STATUS_LABELS, DEFAULT_ANTIQUE_IMAGE } from '../../mod
         @if (antique.images && antique.images.length > 0) {
           <img [src]="antique.images[0]" [alt]="antique.name" loading="lazy" />
         } @else {
-          <img [src]="defaultImage" [alt]="antique.name + ' — imagen de referencia'" loading="lazy" />
+          <img class="default-antique-image" [src]="defaultImage" [alt]="antique.name + ' — imagen de referencia'" loading="lazy" />
         }
         @if (antique.status) {
           <span class="antique-status-ribbon" [class]="'antique-status-' + antique.status">{{ statusLabel() }}</span>
@@ -159,8 +159,11 @@ import { Antique, ANTIQUE_STATUS_LABELS, DEFAULT_ANTIQUE_IMAGE } from '../../mod
       background: #11100f;
     }
     :host-context(.page-collection) .antique-card-img img {
-      object-fit: fill;
+      object-fit: cover;
       object-position: center;
+    }
+    :host-context(.page-collection) .antique-card-img img.default-antique-image {
+      object-position: 68% center;
     }
     :host-context(.page-collection) .antique-card:hover .antique-card-img img {
       transform: none;
