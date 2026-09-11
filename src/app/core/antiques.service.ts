@@ -7,7 +7,9 @@ import { environment } from '../../environments/environment';
 function resolveImages(antique: Antique): Antique {
   if (antique.images) {
     antique.images = antique.images.map(img =>
-      img.startsWith('http') ? img : `${environment.apiUrl}${img}`
+      img.startsWith('http') || img.startsWith('data:') || img.startsWith('assets/') || img.startsWith('/assets/')
+        ? img
+        : `${environment.apiUrl}${img}`
     );
   }
   return antique;

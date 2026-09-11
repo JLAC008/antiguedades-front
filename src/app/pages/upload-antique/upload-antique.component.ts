@@ -4,7 +4,7 @@ import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { AntiquesService } from '../../core/antiques.service';
 import { CategoryService } from '../../core/category.service';
 import { ConditionService } from '../../core/condition.service';
-import { Antique, AntiqueType, CategoryGroup, ConditionItem } from '../../models';
+import { Antique, AntiqueType, CategoryGroup, ConditionItem, DEFAULT_ANTIQUE_IMAGE } from '../../models';
 
 @Component({
   selector: 'app-upload-antique',
@@ -146,15 +146,15 @@ import { Antique, AntiqueType, CategoryGroup, ConditionItem } from '../../models
                   </div>
 
                   <div class="form-col">
-                    <div id="form-photos" class="form-section-title">Fotografías</div>
+                    <div id="form-photos" class="form-section-title">Fotografías <span class="optional-label">(opcional)</span></div>
                     <div class="form-group">
-                      <label class="form-label">Añadir imágenes <span class="required">*</span></label>
+                      <label class="form-label">Añadir imágenes</label>
                       <label class="upload-zone" tabindex="-1">
                         <input type="file" accept="image/jpeg,image/png" multiple name="images" (change)="onFilesSelected($event)" hidden />
                         <div class="upload-zone-inner">
                           <span class="upload-icon">&#128247;</span>
                           <p class="upload-text">Arrastra imágenes o haz clic para seleccionar</p>
-                        <p class="upload-hint">JPG o PNG — máx. 2 MB · máx. 5 fotos</p>
+                        <p class="upload-hint">Opcional · JPG o PNG — máx. 2 MB · máx. 5 fotos</p>
                         </div>
                       </label>
                     </div>
@@ -269,15 +269,15 @@ import { Antique, AntiqueType, CategoryGroup, ConditionItem } from '../../models
                   </div>
 
                   <div class="form-col">
-                    <div id="form-photos" class="form-section-title">Fotografías</div>
+                    <div id="form-photos" class="form-section-title">Fotografías <span class="optional-label">(opcional)</span></div>
                     <div class="form-group">
-                      <label class="form-label">Añadir imágenes <span class="required">*</span></label>
+                      <label class="form-label">Añadir imágenes</label>
                       <label class="upload-zone" tabindex="-1">
                         <input type="file" accept="image/jpeg,image/png" multiple name="images" (change)="onFilesSelected($event)" hidden />
                         <div class="upload-zone-inner">
                           <span class="upload-icon">&#128247;</span>
                           <p class="upload-text">Arrastra imágenes o haz clic para seleccionar</p>
-                        <p class="upload-hint">JPG o PNG — máx. 2 MB · máx. 5 fotos</p>
+                        <p class="upload-hint">Opcional · JPG o PNG — máx. 2 MB · máx. 5 fotos</p>
                         </div>
                       </label>
                     </div>
@@ -453,6 +453,18 @@ import { Antique, AntiqueType, CategoryGroup, ConditionItem } from '../../models
                                   <img [src]="img" alt="" />
                                 </div>
                               }
+                            </div>
+                          </div>
+                        </div>
+                      } @else {
+                        <div class="rv-row rv-images-row">
+                          <div class="rv-cell rv-images-cell">
+                            <span class="rv-label">Imágenes</span>
+                            <div class="rv-images">
+                              <div class="rv-thumb">
+                                <img [src]="defaultImage" alt="Imagen por defecto" />
+                              </div>
+                              <span class="review-note">Se usará una imagen por defecto.</span>
                             </div>
                           </div>
                         </div>
@@ -731,6 +743,12 @@ import { Antique, AntiqueType, CategoryGroup, ConditionItem } from '../../models
       color: #8a6f4c;
       padding-bottom: 0.75rem;
       border-bottom: 1px solid var(--color-border);
+    }
+    .optional-label {
+      font-weight: 500;
+      letter-spacing: normal;
+      text-transform: none;
+      opacity: 0.65;
     }
     .form-section-anchor {
       scroll-margin-top: 100px;
@@ -1340,6 +1358,7 @@ import { Antique, AntiqueType, CategoryGroup, ConditionItem } from '../../models
 })
 export class UploadAntiqueComponent implements OnInit {
   existingImages = signal<string[]>([]);
+  defaultImage = DEFAULT_ANTIQUE_IMAGE;
   saving = signal(false);
   uploadingImages = signal(false);
   validatingName = signal(false);
@@ -1481,7 +1500,7 @@ export class UploadAntiqueComponent implements OnInit {
   }
 
   isPhotosComplete(): boolean {
-    return this.existingImages().length > 0;
+    return true;
   }
 
   canAccessStep(step: number): boolean {
@@ -1550,9 +1569,6 @@ export class UploadAntiqueComponent implements OnInit {
   }
 
   private validatePhotos(): boolean {
-    if (this.existingImages().length === 0) {
-      return this.failValidation('Añade al menos una fotografía antes de continuar.', 'images', 3);
-    }
     return true;
   }
 
@@ -1717,7 +1733,7 @@ export class UploadAntiqueComponent implements OnInit {
         paper_type: '',
         paper_format: '',
         paper_weight: 0,
-        images: this.existingImages()
+        images: this.existingImages().length > 0 ? this.existingImages() : [this.defaultImage]
       };
       if (this.editMode) {
         await this.antiquesService.update(this.editId, payload);

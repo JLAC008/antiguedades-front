@@ -41,27 +41,23 @@ import { RouterLink } from '@angular/router';
 
           <div class="heritage-copy">
             <p class="heritage-overline">Colección privada</p>
-            <h2>Conservando la<br />historia familiar</h2>
-            <p class="heritage-intro">
-              Una selección exclusiva de piezas históricas reunidas durante
-              décadas. Descubre objetos que representan recuerdos,
-              acontecimientos y momentos únicos.
-            </p>
-
-            <div class="heritage-feature">
-              <span class="feature-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24">
-                  <path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9Z" />
-                </svg>
-              </span>
-              <div>
-                <h3>Cada pieza cuenta una historia</h3>
-                <p>
-                  Nuestro catálogo digital permite explorar, documentar y
-                  preservar el patrimonio familiar de forma organizada y
-                  accesible.
-                </p>
-              </div>
+            <h2>La colección de<br />Marcelino Alburquerque</h2>
+            <div class="heritage-intro">
+              <p>
+                Estamos presentando la colección personal de Marcelino Alburquerque de antigüedades e incunables procedentes de América y Europa.
+              </p>
+              <p>
+                La colección tiene su origen en los años 70 hasta la actualidad.
+              </p>
+              <p>
+                Abarca Filatelia, Libros, Documentos, Pintura, Fotografía, Cerámica, Cristal, Vinilos, Cine, Etnología y otros.
+              </p>
+              <p>
+                Al ser la colección en parte originaria de América, se adopta el Exlibris de “La Gaceta de Ultramar”.
+              </p>
+              <p>
+                Rindiendo así homenaje a la historia de la Inmigración y exilio Europeo que formó las diferentes naciones Americanas y los recuerdos llevados de sus tierras.
+              </p>
             </div>
 
           </div>
@@ -252,12 +248,17 @@ import { RouterLink } from '@angular/router';
       line-height: 0.98;
     }
     .heritage-intro {
-      margin: 0;
       max-width: 46ch;
       color: rgba(255, 248, 237, 0.76);
       font-family: 'Playfair Display', Georgia, serif;
       font-size: 1.04rem;
       line-height: 1.65;
+    }
+    .heritage-intro p {
+      margin: 0 0 0.9rem;
+    }
+    .heritage-intro p:last-child {
+      margin-bottom: 0;
     }
     .heritage-feature {
       display: grid;

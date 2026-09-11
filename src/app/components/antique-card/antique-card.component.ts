@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { Antique } from '../../models';
+import { Antique, DEFAULT_ANTIQUE_IMAGE } from '../../models';
 
 @Component({
   selector: 'app-antique-card',
@@ -12,9 +12,7 @@ import { Antique } from '../../models';
         @if (antique.images && antique.images.length > 0) {
           <img [src]="antique.images[0]" [alt]="antique.name" loading="lazy" />
         } @else {
-          <div class="antique-card-placeholder">
-            <span>&#128250;</span>
-          </div>
+          <img [src]="defaultImage" [alt]="antique.name + ' — imagen de referencia'" loading="lazy" />
         }
       </div>
       <div class="antique-card-body">
@@ -284,6 +282,7 @@ import { Antique } from '../../models';
 })
 export class AntiqueCardComponent {
   @Input() antique!: Antique;
+  defaultImage = DEFAULT_ANTIQUE_IMAGE;
 
   categoryLabel(): string {
     const labels: Record<string, string> = {

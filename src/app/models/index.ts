@@ -10,6 +10,8 @@ export interface Catalog {
 
 export type AntiqueType = 'antiguedad' | 'papeleria';
 
+export const DEFAULT_ANTIQUE_IMAGE = 'assets/upload-busto-card.jpg';
+
 export interface Antique {
   id: string;
   catalog_id: string | null;

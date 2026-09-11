@@ -3,7 +3,7 @@ import { ActivatedRoute, RouterLink, Router } from '@angular/router';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { AntiquesService } from '../../core/antiques.service';
 import { AuthService } from '../../core/auth.service';
-import { Antique } from '../../models';
+import { Antique, DEFAULT_ANTIQUE_IMAGE } from '../../models';
 
 @Component({
   selector: 'app-antique-detail',
@@ -48,8 +48,8 @@ import { Antique } from '../../models';
                 }
               } @else {
                 <div class="gallery-empty">
-                  <span aria-hidden="true">A</span>
-                  <p>Sin imágenes</p>
+                  <img [src]="defaultImage" [alt]="antique()!.name + ' — imagen de referencia'" class="gallery-default-img" />
+                  <p>Imagen de referencia</p>
                 </div>
               }
             </section>
@@ -450,6 +450,14 @@ import { Antique } from '../../models';
       color: #d4ac62;
       font-family: 'Playfair Display', serif;
       font-size: 2rem;
+    }
+
+    .gallery-default-img {
+      width: min(82%, 560px);
+      max-height: 420px;
+      object-fit: contain;
+      display: block;
+      border-radius: 4px;
     }
 
     .antique-info {
@@ -1045,6 +1053,7 @@ import { Antique } from '../../models';
   `]
 })
 export class AntiqueDetailComponent implements OnInit {
+  defaultImage = DEFAULT_ANTIQUE_IMAGE;
   antique = signal<Antique | null>(null);
   loading = signal(true);
   selectedImage = signal('');
