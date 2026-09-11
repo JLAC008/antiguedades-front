@@ -73,6 +73,7 @@ export interface AppUser {
 }
 
 export interface LoginResponse {
+  token: string;
   email: string;
   username: string;
   role: string;

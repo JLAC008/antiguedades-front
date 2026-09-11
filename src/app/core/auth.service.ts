@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { AppUser, LoginResponse } from '../models';
 import { environment } from '../../environments/environment';
@@ -11,12 +11,17 @@ export class AuthService {
 
   constructor(private http: HttpClient) {
     const stored = localStorage.getItem('auth_user');
-    if (stored) {
+    const token = localStorage.getItem('auth_token');
+    if (stored && token) {
       try {
         this.currentUser.set(JSON.parse(stored));
       } catch {
         localStorage.removeItem('auth_user');
+        localStorage.removeItem('auth_token');
       }
+    } else {
+      localStorage.removeItem('auth_user');
+      localStorage.removeItem('auth_token');
     }
   }
 
@@ -69,17 +74,15 @@ export class AuthService {
       name: res.username,
       created_at: new Date().toISOString(),
     };
+    localStorage.setItem('auth_token', res.token);
     localStorage.setItem('auth_user', JSON.stringify(user));
     this.currentUser.set(user);
     return { user };
   }
 
   async signOut() {
-    try {
-      await firstValueFrom(this.http.post(`${environment.apiUrl}/api/auth/logout`, {}));
-    } finally {
-      localStorage.removeItem('auth_user');
-      this.currentUser.set(null);
-    }
+    localStorage.removeItem('auth_user');
+    localStorage.removeItem('auth_token');
+    this.currentUser.set(null);
   }
 }
