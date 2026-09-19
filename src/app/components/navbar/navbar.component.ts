@@ -20,6 +20,7 @@ import { AuthService } from '../../core/auth.service';
           @if (auth.isAdmin) {
             <a routerLink="/subir" routerLinkActive="active" class="nav-link">Subir Pieza</a>
             <a routerLink="/usuarios" routerLinkActive="active" class="nav-link">Usuarios</a>
+            <a routerLink="/reservadas" routerLinkActive="active" class="nav-link">Reservadas</a>
           }
         </div>
 
@@ -58,6 +59,7 @@ import { AuthService } from '../../core/auth.service';
           @if (auth.isAdmin) {
             <a routerLink="/subir" class="nav-mobile-link" (click)="closeMenu()">Subir Pieza</a>
             <a routerLink="/usuarios" class="nav-mobile-link" (click)="closeMenu()">Usuarios</a>
+            <a routerLink="/reservadas" class="nav-mobile-link" (click)="closeMenu()">Reservadas</a>
           }
           @if (auth.isLoggedIn) {
             <button class="nav-mobile-link nav-mobile-button" (click)="signOut()">Cerrar sesión</button>
