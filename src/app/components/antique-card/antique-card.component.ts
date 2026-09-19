@@ -98,7 +98,6 @@ import { Antique, ANTIQUE_STATUS_LABELS, DEFAULT_ANTIQUE_IMAGE } from '../../mod
     }
     .antique-status-reservado { background: var(--color-accent); }
     .antique-status-pagado { background: var(--color-accent-light); }
-    .antique-status-vendido { background: var(--color-secondary); color: #fff8ed; }
     .antique-status-enviado { background: var(--color-primary); color: var(--color-accent-light); }
     .antique-card:hover .antique-card-img img { transform: scale(1.05); }
     .antique-card-placeholder {

@@ -10,12 +10,11 @@ export interface Catalog {
 
 export type AntiqueType = 'antiguedad' | 'papeleria';
 
-export type AntiqueStatus = 'reservado' | 'pagado' | 'vendido' | 'enviado';
+export type AntiqueStatus = 'reservado' | 'pagado' | 'enviado';
 
 export const ANTIQUE_STATUS_LABELS: Record<AntiqueStatus, string> = {
   reservado: 'Reservado',
   pagado: 'Pagado',
-  vendido: 'Vendido',
   enviado: 'Enviado',
 };
 

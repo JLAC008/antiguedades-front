@@ -154,7 +154,6 @@ import { AuthService } from '../../core/auth.service';
                   <button class="filter-option" [class.selected]="!selectedStatus" (click)="selectStatus('')">Todos los estados</button>
                   <button class="filter-option" [class.selected]="selectedStatus==='reservado'" (click)="selectStatus('reservado')">Reservado</button>
                   <button class="filter-option" [class.selected]="selectedStatus==='pagado'" (click)="selectStatus('pagado')">Pagado</button>
-                  <button class="filter-option" [class.selected]="selectedStatus==='vendido'" (click)="selectStatus('vendido')">Vendido</button>
                   <button class="filter-option" [class.selected]="selectedStatus==='enviado'" (click)="selectStatus('enviado')">Enviado</button>
                   <button class="filter-option" [class.selected]="selectedStatus==='sin-estado'" (click)="selectStatus('sin-estado')">Sin estado</button>
                 }

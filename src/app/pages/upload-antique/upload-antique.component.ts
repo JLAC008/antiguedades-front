@@ -119,7 +119,6 @@ import { Antique, AntiqueStatus, AntiqueType, ANTIQUE_STATUS_LABELS, CategoryGro
                           <option value="">Sin estado</option>
                           <option value="reservado">Reservado</option>
                           <option value="pagado">Pagado</option>
-                          <option value="vendido">Vendido</option>
                           <option value="enviado">Enviado</option>
                         </select>
                       </div>
@@ -252,7 +251,6 @@ import { Antique, AntiqueStatus, AntiqueType, ANTIQUE_STATUS_LABELS, CategoryGro
                           <option value="">Sin estado</option>
                           <option value="reservado">Reservado</option>
                           <option value="pagado">Pagado</option>
-                          <option value="vendido">Vendido</option>
                           <option value="enviado">Enviado</option>
                         </select>
                       </div>

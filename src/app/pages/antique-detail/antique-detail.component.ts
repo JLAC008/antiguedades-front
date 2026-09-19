@@ -366,7 +366,6 @@ import { Antique, AntiqueStatus, ANTIQUE_STATUS_LABELS, DEFAULT_ANTIQUE_IMAGE } 
     }
     .antique-status-reservado { background: var(--color-accent); }
     .antique-status-pagado { background: var(--color-accent-light); }
-    .antique-status-vendido { background: var(--color-secondary); color: #fff8ed; }
     .antique-status-enviado { background: var(--color-primary); color: var(--color-accent-light); }
 
     .gallery-shadow {
