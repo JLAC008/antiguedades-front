@@ -243,7 +243,7 @@ import { RouterLink } from '@angular/router';
       margin: 0.55rem 0 1.2rem;
       color: #fff8ed;
       font-family: 'Playfair Display', Georgia, serif;
-      font-size: clamp(2.25rem, 4.1vw, 3.65rem);
+      font-size: clamp(2rem, 3.4vw, 3rem);
       font-weight: 700;
       line-height: 0.98;
     }
@@ -251,7 +251,7 @@ import { RouterLink } from '@angular/router';
       max-width: 46ch;
       color: rgba(255, 248, 237, 0.76);
       font-family: 'Playfair Display', Georgia, serif;
-      font-size: 1.04rem;
+      font-size: 0.94rem;
       line-height: 1.65;
     }
     .heritage-intro p {
@@ -354,7 +354,7 @@ import { RouterLink } from '@angular/router';
         height: 390px;
       }
       .heritage-copy h2 {
-        font-size: 2.55rem;
+        font-size: 2.25rem;
       }
       .heritage-feature {
         grid-template-columns: 48px 1fr;
