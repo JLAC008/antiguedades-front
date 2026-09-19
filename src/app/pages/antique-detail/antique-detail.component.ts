@@ -229,6 +229,17 @@ import { Antique, AntiqueStatus, ANTIQUE_STATUS_LABELS, DEFAULT_ANTIQUE_IMAGE } 
               </div>
 
               @if (auth.isAdmin) {
+                <div class="reserve-control">
+                  <label class="reserve-checkbox">
+                    <input
+                      type="checkbox"
+                      [checked]="reserveSelection()"
+                      [disabled]="updatingReservation()"
+                      (change)="onReserveToggle($event)"
+                    />
+                    <span>Marcar pieza como reservada</span>
+                  </label>
+                </div>
                 <div class="admin-actions">
                   <a [routerLink]="['/editar', antique()!.id]" class="btn-edit">
                     <span aria-hidden="true">✎</span>
@@ -238,6 +249,32 @@ import { Antique, AntiqueStatus, ANTIQUE_STATUS_LABELS, DEFAULT_ANTIQUE_IMAGE } 
                     <span aria-hidden="true">⌫</span>
                     Eliminar
                   </button>
+                </div>
+              }
+
+              @if (showReserveModal()) {
+                <div class="modal-overlay" (click)="cancelReservation()">
+                  <div class="modal" (click)="$event.stopPropagation()">
+                    <h3 class="modal-title">{{ reserveSelection() ? 'Marcar como reservada' : 'Quitar reserva' }}</h3>
+                    <p class="modal-text">
+                      @if (reserveSelection()) {
+                        ¿Estás seguro de que deseas marcar <strong>{{ antique()!.name }}</strong> como reservada?
+                        <br/>El estado actual se sustituirá por “Reservado”.
+                      } @else {
+                        ¿Estás seguro de que deseas quitar la reserva de <strong>{{ antique()!.name }}</strong>?
+                        <br/>La pieza quedará sin estado de reserva.
+                      }
+                    </p>
+                    @if (reserveError()) {
+                      <p class="reserve-error">{{ reserveError() }}</p>
+                    }
+                    <div class="modal-actions">
+                      <button class="btn-cancel" (click)="cancelReservation()" [disabled]="updatingReservation()">Cancelar</button>
+                      <button class="btn-reserve-confirm" (click)="confirmReservation()" [disabled]="updatingReservation()">
+                        {{ updatingReservation() ? 'Guardando...' : (reserveSelection() ? 'Confirmar' : 'Quitar reserva') }}
+                      </button>
+                    </div>
+                  </div>
                 </div>
               }
 
@@ -679,6 +716,38 @@ import { Antique, AntiqueStatus, ANTIQUE_STATUS_LABELS, DEFAULT_ANTIQUE_IMAGE } 
       gap: 0.85rem;
     }
 
+    .reserve-control {
+      margin-bottom: 0.85rem;
+      padding: 0.9rem 1rem;
+      border: 1px solid rgba(184, 149, 90, 0.3);
+      border-radius: 8px;
+      background: rgba(184, 149, 90, 0.07);
+    }
+
+    .reserve-checkbox {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.7rem;
+      color: #f0e8db;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .reserve-checkbox input {
+      width: 1.1rem;
+      height: 1.1rem;
+      margin: 0;
+      accent-color: #c69842;
+      cursor: pointer;
+    }
+
+    .reserve-checkbox input:disabled,
+    .modal-actions button:disabled {
+      cursor: wait;
+      opacity: 0.65;
+    }
+
     .btn-edit,
     .btn-delete,
     .btn-primary {
@@ -931,6 +1000,28 @@ import { Antique, AntiqueStatus, ANTIQUE_STATUS_LABELS, DEFAULT_ANTIQUE_IMAGE } 
       background: #c43d36;
     }
 
+    .btn-reserve-confirm {
+      flex: 1;
+      min-height: 48px;
+      border: none;
+      border-radius: 8px;
+      background: #b88936;
+      color: #fff8ed;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-reserve-confirm:hover {
+      background: #d0a24c;
+    }
+
+    .reserve-error {
+      margin: -0.5rem 0 1.25rem;
+      color: #ff8b84;
+      font-size: 0.88rem;
+    }
+
     @keyframes fadeSlideUp {
       from { opacity: 0; transform: translateY(32px); }
       to   { opacity: 1; transform: translateY(0); }
@@ -1109,6 +1200,10 @@ export class AntiqueDetailComponent implements OnInit {
   images: string[] = [];
   currentIndex = 0;
   showDeleteModal = signal(false);
+  showReserveModal = signal(false);
+  reserveSelection = signal(false);
+  updatingReservation = signal(false);
+  reserveError = signal('');
 
   subcategoryLabels: Record<string, string> = {
     escultura: 'Escultura',
@@ -1184,6 +1279,7 @@ export class AntiqueDetailComponent implements OnInit {
     try {
       const antique = await this.antiquesService.getById(id);
       this.antique.set(antique);
+      this.reserveSelection.set(antique?.status === 'reservado');
       if (antique?.images?.length) {
         this.images = antique.images;
         this.currentIndex = 0;
@@ -1238,6 +1334,45 @@ export class AntiqueDetailComponent implements OnInit {
 
   cancelDelete() {
     this.showDeleteModal.set(false);
+  }
+
+  onReserveToggle(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const nextValue = input.checked;
+    const currentValue = this.antique()?.status === 'reservado';
+    this.reserveSelection.set(nextValue);
+    if (nextValue !== currentValue) {
+      this.reserveError.set('');
+      this.showReserveModal.set(true);
+    }
+  }
+
+  cancelReservation() {
+    this.showReserveModal.set(false);
+    this.reserveError.set('');
+    this.reserveSelection.set(this.antique()?.status === 'reservado');
+  }
+
+  async confirmReservation() {
+    const current = this.antique();
+    if (!current) return;
+
+    const shouldReserve = this.reserveSelection();
+    this.updatingReservation.set(true);
+    this.reserveError.set('');
+    try {
+      const updated = await this.antiquesService.setStatus(
+        current.id,
+        shouldReserve ? 'reservado' : null
+      );
+      this.antique.set(updated);
+      this.reserveSelection.set(shouldReserve);
+      this.showReserveModal.set(false);
+    } catch {
+      this.reserveError.set('No se ha podido actualizar el estado de la pieza.');
+    } finally {
+      this.updatingReservation.set(false);
+    }
   }
 
   async confirmDelete() {

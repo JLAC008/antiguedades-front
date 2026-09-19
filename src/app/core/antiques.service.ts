@@ -62,6 +62,13 @@ export class AntiquesService {
     );
   }
 
+  async setStatus(id: string, status: AntiqueStatus | null): Promise<Antique> {
+    const res = await firstValueFrom(
+      this.http.patch<Antique>(`${environment.apiUrl}/api/antiques/${id}/status`, { status })
+    );
+    return resolveImages(res);
+  }
+
   async delete(id: string): Promise<void> {
     await firstValueFrom(
       this.http.delete(`${environment.apiUrl}/api/antiques/${id}`)
